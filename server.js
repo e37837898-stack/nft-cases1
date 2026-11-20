@@ -37,35 +37,65 @@ app.get('/api/user/:login', async (req, res) => {
     res.json({ balance: user.balance, inventory: inventory || [], is_admin: user.is_admin || false, is_super_admin: user.is_super_admin || false });
 });
 
+// === БАГ 1: атомарное списание звёзд с откатом при ошибке вставки ===
 app.post('/api/inventory/add', async (req, res) => {
     const { login, casePrice, itemId, name, icon, rarity, price } = req.body;
     const cost = Number(casePrice) || 0;
+    if (!login || cost <= 0) return res.status(400).json({ error: 'Некорректные данные' });
 
-    const { data: user } = await supabase.from('users').select('balance').eq('login', login).single();
-    if (!user || cost <= 0 || user.balance < cost) {
-        return res.status(400).json({ error: 'Недостаточно звёзд!' });
-    }
-
+    // Шаг 1: атомарно списываем баланс, только если его хватает.
+    // Если строка не обновилась (0 строк) — значит, баланса не хватило или юзера нет.
     const { data: updatedUser, error: balError } = await supabase
         .from('users')
-        .update({ balance: user.balance - cost })
+        .update({ balance: supabase.raw ? supabase.raw(`balance - ${cost}`) : undefined })
         .eq('login', login)
         .gte('balance', cost)
         .select()
         .single();
 
+    // fallback для версий supabase-js без .raw(): ручной RPC не нужен,
+    // но мы не можем использовать .raw в новых версиях — поэтому:
+    // если balError — пробуем через RPC-функцию decrement_balance (см. ниже).
     if (balError || !updatedUser) {
-        return res.status(400).json({ error: 'Ошибка списания баланса' });
+        // Альтернативный атомарный путь через RPC (рекомендуется создать функцию в SQL,
+        // см. комментарий в конце файла). Если её нет — вернём ошибку честно.
+        const { data: rpcData, error: rpcErr } = await supabase.rpc('decrement_balance', {
+            p_login: login,
+            p_amount: cost
+        });
+        if (rpcErr || !rpcData) {
+            return res.status(400).json({ error: 'Недостаточно звёзд!' });
+        }
+        // rpcData — новый баланс (number)
+        var newBalance = rpcData;
+
+        const uid = Date.now() + '_' + Math.random().toString(36).slice(2);
+        const { error: insErr } = await supabase.from('inventory').insert([{ uid, user_login: login, item_id: itemId, name, icon, rarity, price, status: 'inventory' }]);
+        if (insErr) {
+            // откат баланса
+            await supabase.rpc('increment_balance', { p_login: login, p_amount: cost });
+            return res.status(500).json({ error: insErr.message });
+        }
+        return res.json({ success: true, balance: newBalance });
     }
 
+    // Штатный путь (сработал update ... gte): баланс уже списан атомарно.
     const uid = Date.now() + '_' + Math.random().toString(36).slice(2);
-    const { error } = await supabase.from('inventory').insert([{ uid, user_login: login, item_id: itemId, name, icon, rarity, price, status: 'inventory' }]);
-    if (error) return res.status(500).json({ error: error.message });
+    const { error: insErr } = await supabase.from('inventory').insert([{ uid, user_login: login, item_id: itemId, name, icon, rarity, price, status: 'inventory' }]);
+    if (insErr) {
+        // откат: возвращаем звёзды
+        await supabase.rpc('increment_balance', { p_login: login, p_amount: cost });
+        return res.status(500).json({ error: insErr.message });
+    }
     res.json({ success: true, balance: updatedUser.balance });
 });
 
+// === БАГ 2: атомарная продажа — сначала DELETE ... SELECT, потом атомарный инкремент ===
 app.post('/api/inventory/sell', async (req, res) => {
     const { login, uid } = req.body;
+    if (!login || !uid) return res.status(400).json({ error: 'Некорректные данные' });
+
+    // Атомарно удаляем предмет; если его уже нет — 0 строк → отказ.
     const { data: deletedItems, error: delError } = await supabase
         .from('inventory')
         .delete()
@@ -73,14 +103,25 @@ app.post('/api/inventory/sell', async (req, res) => {
         .eq('uid', uid)
         .select();
 
-    if (delError || !deletedItems || deletedItems.length === 0) {
+    if (delError) return res.status(500).json({ error: delError.message });
+    if (!deletedItems || deletedItems.length === 0) {
         return res.status(400).json({ error: 'Предмет уже продан' });
     }
 
     const realPrice = Number(deletedItems[0].price) || 0;
-    const { data: user } = await supabase.from('users').select('balance').eq('login', login).single();
-    await supabase.from('users').update({ balance: user.balance + realPrice }).eq('login', login);
-    res.json({ success: true });
+
+    // Атомарный инкремент баланса через RPC (без гонки SELECT→UPDATE).
+    const { data: newBalance, error: incErr } = await supabase.rpc('increment_balance', {
+        p_login: login,
+        p_amount: realPrice
+    });
+    if (incErr) {
+        // предмет уже удалён, но баланс не начислен — вернём предмет обратно
+        await supabase.from('inventory').insert([deletedItems[0]]);
+        return res.status(500).json({ error: 'Ошибка начисления баланса' });
+    }
+
+    res.json({ success: true, balance: newBalance, soldPrice: realPrice });
 });
 
 app.post('/api/admin/give-stars', async (req, res) => {
@@ -89,7 +130,8 @@ app.post('/api/admin/give-stars', async (req, res) => {
     if (!admin || !admin.is_admin) return res.status(403).json({ error: 'Доступ запрещен' });
     const { data: user } = await supabase.from('users').select('balance').eq('login', targetLogin).single();
     if (!user) return res.status(404).json({ error: 'Игрок не найден' });
-    await supabase.from('users').update({ balance: user.balance + Number(amount) }).eq('login', targetLogin);
+    const { error: e } = await supabase.rpc('increment_balance', { p_login: targetLogin, p_amount: Number(amount) });
+    if (e) return res.status(500).json({ error: e.message });
     res.json({ success: true });
 });
 
