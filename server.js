@@ -17,46 +17,53 @@ async function logAction(admin, action, details) {
     await supabase.from('admin_logs').insert([{ admin_login: admin, action, details }]);
 }
 
-// КЕЙСЫ (ВШИТЫ В СЕРВЕР)
+// ВСЕ 11 КЕЙСОВ
 const GAME_CASES = [
-  { 
-    id: 'starter', name: 'Стартовый', icon: '📦', price: 50, 
-    items: [
-      {id:'bear',name:'Мишка',icon:'🧸',rarity:'common',price:15,chance:25},
-      {id:'gift',name:'Подарок',icon:'🎁',rarity:'common',price:25,chance:20},
-      {id:'heart',name:'Сердечко',icon:'💖',rarity:'common',price:15,chance:25},
-      {id:'rose',name:'Роза',icon:'🌹',rarity:'common',price:25,chance:20},
-      {id:'skull',name:'Череп',icon:'💀',rarity:'nft',price:50,chance:10}
-    ] 
-  },
-  { 
-    id: 'pro', name: 'Про', icon: '🎁', price: 500, 
-    items: [
-      {id:'cake',name:'Торт',icon:'🎂',rarity:'common',price:50,chance:40},
-      {id:'bouquet',name:'Букет',icon:'💐',rarity:'common',price:50,chance:30},
-      {id:'rocket',name:'Ракета',icon:'🚀',rarity:'common',price:50,chance:15},
-      {id:'cigarette',name:'Сигарета',icon:'🚬',rarity:'rare',price:500,chance:10},
-      {id:'socks',name:'Носки',icon:'🧦',rarity:'rare',price:1000,chance:5}
-    ] 
-  },
-  { 
-    id: 'elite', name: 'Элитный', icon: '💎', price: 8000, 
-    items: [
-      {id:'cup',name:'Кубок',icon:'🏆',rarity:'common',price:100,chance:30},
-      {id:'ring',name:'Кольцо',icon:'💍',rarity:'common',price:100,chance:30},
-      {id:'calendar',name:'Календарь',icon:'📅',rarity:'rare',price:1500,chance:20},
-      {id:'car',name:'Машина',icon:'🚗',rarity:'legendary',price:5000,chance:15},
-      {id:'pepe',name:'Плюш Пепе',icon:'🐸',rarity:'legendary',price:50000,chance:5}
-    ] 
-  },
-  { 
-    id: 'admin_secret', name: '👑 Кейс Владельца', icon: '👑', price: 10, 
-    items: [
-      {id:'pepe',name:'Плюш Пепе',icon:'🐸',rarity:'legendary',price:50000,chance:50},
-      {id:'car',name:'Машина',icon:'🚗',rarity:'legendary',price:5000,chance:30},
-      {id:'calendar',name:'Календарь',icon:'📅',rarity:'rare',price:1500,chance:20}
-    ] 
-  }
+  { id: 'starter', name: 'Стартовый', icon: '📦', price: 100, items: [
+      {id:'heart',name:'Сердечко',icon:'💖',rarity:'common',price:15,chance:60}, {id:'rose',name:'Роза',icon:'🌹',rarity:'common',price:25,chance:25},
+      {id:'bear',name:'Мишка',icon:'🧸',rarity:'common',price:15,chance:10}, {id:'skull',name:'Череп',icon:'💀',rarity:'nft',price:50,chance:4}, {id:'cigarette',name:'Сигарета',icon:'🚬',rarity:'rare',price:500,chance:1}
+  ]},
+  { id: 'pro', name: 'Про', icon: '🎁', price: 1000, items: [
+      {id:'gift',name:'Подарок',icon:'🎁',rarity:'common',price:25,chance:60}, {id:'cake',name:'Торт',icon:'🎂',rarity:'common',price:50,chance:20},
+      {id:'bouquet',name:'Букет',icon:'💐',rarity:'common',price:50,chance:10}, {id:'rocket',name:'Ракета',icon:'🚀',rarity:'common',price:50,chance:5},
+      {id:'cigarette',name:'Сигарета',icon:'🚬',rarity:'rare',price:500,chance:4}, {id:'socks',name:'Носки',icon:'🧦',rarity:'rare',price:1000,chance:0.9}, {id:'music_box',name:'Шкатулка',icon:'🎵',rarity:'rare',price:1000,chance:0.1}
+  ]},
+  { id: 'elite', name: 'Элитный', icon: '💎', price: 5000, items: [
+      {id:'cup',name:'Кубок',icon:'🏆',rarity:'common',price:100,chance:50}, {id:'ring',name:'Кольцо',icon:'💍',rarity:'common',price:100,chance:20},
+      {id:'calendar',name:'Календарь',icon:'📅',rarity:'rare',price:1500,chance:20}, {id:'potion',name:'Зелье',icon:'🧪',rarity:'rare',price:1000,chance:8},
+      {id:'car',name:'Машина',icon:'🚗',rarity:'legendary',price:5000,chance:1.9}, {id:'cap',name:'Кепка',icon:'🧢',rarity:'legendary',price:10000,chance:0.1}
+  ]},
+  { id: 'premium', name: 'Премиум', icon: '🔥', price: 15000, items: [
+      {id:'button',name:'Кнопка',icon:'🔘',rarity:'rare',price:500,chance:60}, {id:'calendar',name:'Календарь',icon:'📅',rarity:'rare',price:1500,chance:20},
+      {id:'car',name:'Машина',icon:'🚗',rarity:'legendary',price:5000,chance:15}, {id:'cap',name:'Кепка',icon:'🧢',rarity:'legendary',price:10000,chance:4.9}, {id:'pepe',name:'Плюш Пепе',icon:'🐸',rarity:'legendary',price:50000,chance:0.1}
+  ]},
+  { id: 'legend', name: 'Легенда', icon: '⚡', price: 30000, items: [
+      {id:'car',name:'Машина',icon:'🚗',rarity:'legendary',price:5000,chance:50}, {id:'cap',name:'Кепка',icon:'🧢',rarity:'legendary',price:10000,chance:30},
+      {id:'pepe',name:'Плюш Пепе',icon:'🐸',rarity:'legendary',price:50000,chance:18}, {id:'golden_cup',name:'Золотой Кубок',icon:'🏆',rarity:'legendary',price:100000,chance:2}
+  ]},
+  { id: 'mythic', name: 'Мифический', icon: '🔮', price: 50000, items: [
+      {id:'calendar',name:'Календарь',icon:'📅',rarity:'rare',price:1500,chance:60}, {id:'car',name:'Машина',icon:'🚗',rarity:'legendary',price:5000,chance:25},
+      {id:'cap',name:'Кепка',icon:'🧢',rarity:'legendary',price:10000,chance:10}, {id:'golden_cup',name:'Золотой Кубок',icon:'🏆',rarity:'legendary',price:100000,chance:4.9}, {id:'dragon',name:'Дракон',icon:'🐉',rarity:'legendary',price:250000,chance:0.1}
+  ]},
+  { id: 'exotic', name: 'Экзотический', icon: '🌴', price: 75000, items: [
+      {id:'car',name:'Машина',icon:'🚗',rarity:'legendary',price:5000,chance:70}, {id:'cap',name:'Кепка',icon:'🧢',rarity:'legendary',price:10000,chance:20},
+      {id:'golden_cup',name:'Золотой Кубок',icon:'🏆',rarity:'legendary',price:100000,chance:9}, {id:'dragon',name:'Дракон',icon:'🐉',rarity:'legendary',price:250000,chance:1}
+  ]},
+  { id: 'royal', name: 'Королевский', icon: '♔', price: 100000, items: [
+      {id:'cap',name:'Кепка',icon:'🧢',rarity:'legendary',price:10000,chance:65}, {id:'golden_cup',name:'Золотой Кубок',icon:'🏆',rarity:'legendary',price:100000,chance:25},
+      {id:'dragon',name:'Дракон',icon:'🐉',rarity:'legendary',price:250000,chance:9.9}, {id:'crown',name:'Корона',icon:'👑',rarity:'legendary',price:500000,chance:0.1}
+  ]},
+  { id: 'cosmic', name: 'Космический', icon: '🌌', price: 250000, items: [
+      {id:'golden_cup',name:'Золотой Кубок',icon:'🏆',rarity:'legendary',price:100000,chance:80}, {id:'dragon',name:'Дракон',icon:'🐉',rarity:'legendary',price:250000,chance:15},
+      {id:'crown',name:'Корона',icon:'👑',rarity:'legendary',price:500000,chance:4.9}, {id:'alien',name:'Пришелец',icon:'👽',rarity:'legendary',price:1000000,chance:0.1}
+  ]},
+  { id: 'infinity', name: 'Бесконечность', icon: '♾️', price: 500000, items: [
+      {id:'dragon',name:'Дракон',icon:'🐉',rarity:'legendary',price:250000,chance:75}, {id:'crown',name:'Корона',icon:'👑',rarity:'legendary',price:500000,chance:20},
+      {id:'alien',name:'Пришелец',icon:'👽',rarity:'legendary',price:1000000,chance:4.9}, {id:'galaxy',name:'Галактика',icon:'🌌',rarity:'legendary',price:2000000,chance:0.1}
+  ]},
+  { id: 'admin_secret', name: '👑 Кейс Владельца', icon: '👑', price: 10, items: [
+      {id:'pepe',name:'Плюш Пепе',icon:'🐸',rarity:'legendary',price:50000,chance:50}, {id:'car',name:'Машина',icon:'🚗',rarity:'legendary',price:5000,chance:30}, {id:'calendar',name:'Календарь',icon:'📅',rarity:'rare',price:1500,chance:20}
+  ]}
 ];
 
 // БАЗА
@@ -88,25 +95,12 @@ app.get('/api/user/:login', async (req, res) => {
     await supabase.from('users').update({ last_seen: new Date().toISOString() }).eq('login', req.params.login);
     const { data: user, error } = await supabase.from('users').select('*').eq('login', req.params.login).single();
     if (error || !user) return res.status(404).json({ error: 'Юзер не найден' });
-    
     const { data: inventory } = await supabase.from('inventory').select('*').eq('user_login', req.params.login);
     const { data: custom } = await supabase.from('user_customization').select('*').eq('user_login', req.params.login).single();
-    
     const totalItems = inventory ? inventory.length : 0;
     const totalValue = inventory ? inventory.reduce((sum, item) => sum + (Number(item.price) || 0), 0) : 0;
-    
-    res.json({ 
-        balance: user.balance, 
-        inventory: inventory || [], 
-        is_admin: user.is_admin || false, 
-        is_super_admin: user.is_super_admin || false, 
-        stats: { totalItems, totalValue },
-        avatar: custom ? custom.avatar : '👤',
-        frame: custom ? custom.frame : 'none'
-    });
-});
-
-// КЕЙСЫ
+    res.json({ balance: user.balance, inventory: inventory || [], is_admin: user.is_admin || false, is_super_admin: user.is_super_admin || false, stats: { totalItems, totalValue }, avatar: custom ? custom.avatar : '👤', frame: custom ? custom.frame : 'none' });
+});// КЕЙСЫ
 app.get('/api/cases', async (req, res) => {
     const { login } = req.query;
     let casesToSend = GAME_CASES.filter(c => c.id !== 'admin_secret');
@@ -121,17 +115,14 @@ app.post('/api/cases/open', async (req, res) => {
     const { login, caseId } = req.body;
     const box = GAME_CASES.find(c => c.id === caseId);
     if (!box) return res.status(400).json({ error: 'Кейс не найден' });
-
     if (caseId === 'admin_secret') {
         const { data: user } = await supabase.from('users').select('is_super_admin').eq('login', login).single();
         if (!user || !user.is_super_admin) return res.status(403).json({ error: 'Доступ запрещен' });
     }
-    
     const price = Number(box.price);
     const { data: newBalance, error: balError } = await supabase.rpc('spend_balance', { p_login: login, p_amount: price });
     if (balError) return res.status(500).json({ error: balError.message });
     if (newBalance === null) return res.status(400).json({ error: 'Недостаточно звёзд!' });
-
     const pool = box.items;
     let random = Math.random() * pool.reduce((sum, item) => sum + Number(item.chance), 0);
     let droppedItem = pool[0];
@@ -139,11 +130,9 @@ app.post('/api/cases/open', async (req, res) => {
         if (random < Number(item.chance)) { droppedItem = item; break; }
         random -= Number(item.chance);
     }
-
     const uid = Date.now() + '_' + Math.random().toString(36).slice(2);
     await supabase.from('inventory').insert([{ uid, user_login: login, item_id: droppedItem.id, name: droppedItem.name, icon: droppedItem.icon, rarity: droppedItem.rarity, price: droppedItem.price, status: 'inventory' }]);
     await supabase.from('drop_history').insert([{ user_login: login, item_name: droppedItem.name, item_icon: droppedItem.icon }]);
-    
     droppedItem.uid = uid;
     res.json({ success: true, balance: newBalance, item: droppedItem, pool: pool });
 });
@@ -203,31 +192,20 @@ app.post('/api/upgrade', async (req, res) => {
     const { login, myUid, targetItemId } = req.body;
     const { data: myItem } = await supabase.from('inventory').select('*').eq('user_login', login).eq('uid', myUid).single();
     if (!myItem) return res.status(404).json({ error: 'Ваш предмет не найден' });
-    
     let targetItem = null;
-    for (const box of GAME_CASES) {
-        targetItem = box.items.find(i => i.id === targetItemId);
-        if (targetItem) break;
-    }
+    for (const box of GAME_CASES) { targetItem = box.items.find(i => i.id === targetItemId); if (targetItem) break; }
     if (!targetItem) return res.status(400).json({ error: 'Целевой предмет не найден' });
-
     let winChance = (myItem.price / targetItem.price) * 50; 
     if (winChance > 50) winChance = 50;
     if (winChance < 1) winChance = 1;
-
     await supabase.from('inventory').delete().eq('uid', myUid);
     const isWin = Math.random() * 100 < winChance;
-    
     if (isWin) {
         const newUid = Date.now() + '_' + Math.random().toString(36).slice(2);
         await supabase.from('inventory').insert([{ uid: newUid, user_login: login, item_id: targetItem.id, name: targetItem.name, icon: targetItem.icon, rarity: targetItem.rarity, price: targetItem.price, status: 'inventory' }]);
         res.json({ success: true, win: true, item: targetItem, chance: winChance });
-    } else {
-        res.json({ success: true, win: false, item: myItem, chance: winChance });
-    }
-});
-
-// БОНУСЫ И ПРОМО
+    } else { res.json({ success: true, win: false, item: myItem, chance: winChance }); }
+});// БОНУСЫ И ПРОМО
 app.post('/api/bonus/claim', async (req, res) => {
     const { login } = req.body;
     const { data: user } = await supabase.from('users').select('last_bonus, balance').eq('login', login).single();
@@ -268,20 +246,9 @@ app.get('/api/admin/players', async (req, res) => {
     res.json(players);
 });
 
-app.get('/api/admin/withdraws', async (req, res) => {
-    const { data } = await supabase.from('withdraw_requests').select('*').eq('status', 'pending');
-    res.json(data || []);
-});
-
-app.get('/api/admin/deposits', async (req, res) => {
-    const { data } = await supabase.from('deposit_requests').select('*').eq('status', 'pending');
-    res.json(data || []);
-});
-
-app.get('/api/admin/logs', async (req, res) => {
-    const { data } = await supabase.from('admin_logs').select('*').order('created_at', { ascending: false }).limit(50);
-    res.json(data || []);
-});
+app.get('/api/admin/withdraws', async (req, res) => { const { data } = await supabase.from('withdraw_requests').select('*').eq('status', 'pending'); res.json(data || []); });
+app.get('/api/admin/deposits', async (req, res) => { const { data } = await supabase.from('deposit_requests').select('*').eq('status', 'pending'); res.json(data || []); });
+app.get('/api/admin/logs', async (req, res) => { const { data } = await supabase.from('admin_logs').select('*').order('created_at', { ascending: false }).limit(50); res.json(data || []); });
 
 app.post('/api/admin/deposit/accept', async (req, res) => {
     const { adminLogin, id } = req.body;
