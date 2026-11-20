@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Кейсы</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background: #0a0a0f;
+    background-image: radial-gradient(circle at 50% 0%, #1a1a2e 0%, #0a0a0f 70%);
+    color: #e2e2e2; min-height: 100vh; padding: 20px;
+  }
+  
+  /* ЭКРАН АВТОРИЗАЦИИ */
+  #authScreen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 90vh; }
+  .auth-box {
+    background: rgba(26, 26, 46, 0.6); backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 24px;
+    padding: 40px; width: 100%; max-width: 420px; box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+  }
+  .auth-box h1 { font-size: 32px; text-align: center; background: linear-gradient(90deg, #a855f7, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 10px; }
+  .auth-box .subtitle { color: #888; font-size: 14px; text-align: center; margin-bottom: 25px; }
+  .tabs { display: flex; background: #12121a; border-radius: 12px; padding: 4px; margin-bottom: 25px; }
+  .tab { flex: 1; padding: 12px; text-align: center; border-radius: 8px; cursor: pointer; font-weight: 600; color: #888; transition: 0.3s; }
+  .tab.active { background: #1a1a2e; color: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+  .input-group { margin-bottom: 18px; }
+  .input-group label { display: block; margin-bottom: 8px; font-size: 13px; color: #aaa; font-weight: 500; }
+  .input-group input { width: 100%; padding: 14px 16px; border-radius: 12px; border: 1px solid #2a2a4a; background: #12121a; color: #fff; font-size: 15px; outline: none; transition: 0.2s; }
+  .input-group input:focus { border-color: #a855f7; }
+  .btn-main { width: 100%; padding: 16px; border: none; border-radius: 12px; background: linear-gradient(90deg, #a855f7, #ec4899); color: #fff; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4); }
+  .btn-main:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(168, 85, 247, 0.6); }
+  
+  /* ГЛАВНЫЙ ЭКРАН */
+  #mainScreen { display: none; max-width: 1000px; margin: 0 auto; }
+  header { display: flex; justify-content: space-between; align-items: center; background: rgba(26, 26, 46, 0.8); backdrop-filter: blur(10px); padding: 15px 25px; border-radius: 16px; margin-bottom: 25px; border: 1px solid rgba(255, 255, 255, 0.05); }
+  .logo { font-size: 24px; font-weight: 800; background: linear-gradient(90deg, #a855f7, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .user-info { font-weight: 600; color: #ccc; cursor: pointer; transition: 0.2s; padding: 8px 16px; border-radius: 8px; background: #1a1a2e; border: 1px solid #2a2a4a; }
+  .user-info:hover { border-color: #a855f7; color: #fff; }
+  .balance-top { background: #12121a; padding: 8px 16px; border-radius: 20px; border: 1px solid #2a2a4a; font-weight: bold; color: #ffd700; }
+  
+  .tabs-nav { display: flex; gap: 10px; margin-bottom: 25px; overflow-x: auto; padding-bottom: 5px; }
+  .nav-btn { padding: 12px 24px; background: #1a1a2e; border: 1px solid #2a2a4a; border-radius: 12px; color: #888; cursor: pointer; font-weight: 600; transition: 0.2s; white-space: nowrap; }
+  .nav-btn:hover { color: #fff; border-color: #a855f7; }
+  .nav-btn.active { background: #a855f7; border-color: #a855f7; color: #fff; box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3); }
+  .content-section { display: none; animation: fadeIn 0.3s; }
+  .content-section.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* КЕЙСЫ */
+  .cases { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+  .case { background: #16162a; border: 1px solid #2a2a4a; border-radius: 16px; padding: 25px 20px; text-align: center; cursor: pointer; transition: 0.3s; position: relative; overflow: hidden; }
+  .case::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(90deg, #a855f7, #ec4899); opacity: 0; transition: 0.3s; }
+  .case:hover { transform: translateY(-5px); border-color: #a855f7; box-shadow: 0 10px 30px rgba(168, 85, 247, 0.15); }
+  .case:hover::before { opacity: 1; }
+  .case .icon { font-size: 50px; margin-bottom: 15px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5)); }
+  .case .name { font-weight: 700; font-size: 18px; margin-bottom: 5px; color: #fff; }
+  .case .price { color: #ffd700; font-size: 15px; font-weight: bold; }
+  .case .chance { color: #888; font-size: 12px; margin-top: 10px; }
+
+  /* ПРОФИЛЬ */
+  .profile-header { background: #16162a; border: 1px solid #2a2a4a; border-radius: 16px; padding: 25px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+  .profile-avatar { width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #a855f7, #ec4899); display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; color: #fff; }
+  .profile-info h2 { font-size: 20px; color: #fff; margin-bottom: 5px; }
+  .profile-info p { color: #888; font-size: 14px; }
+  .btn-deposit { padding: 12px 24px; background: #10b981; border: none; border-radius: 10px; color: #fff; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 14px; }
+  .btn-deposit:hover { background: #059669; }
+  .profile-section-title { font-size: 18px; font-weight: bold; margin: 25px 0 15px; color: #fff; border-bottom: 1px solid #2a2a4a; padding-bottom: 10px; }
+
+  /* ИНВЕНТАРЬ */
+  .inventory { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; }
+  .item { background: #16162a; border: 1px solid #2a2a4a; border-radius: 14px; padding: 15px; text-align: center; transition: 0.3s; }
+  .item:hover { border-color: #a855f7; transform: translateY(-2px); }
+  .item .icon { font-size: 40px; margin-bottom: 5px; }
+  .item .name { font-size: 14px; font-weight: 600; margin: 5px 0; color: #fff; }
+  .item .rarity { font-size: 11px; font-weight: bold; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .item .actions { display: flex; flex-direction: column; gap: 6px; }
+  .item button { width: 100%; padding: 8px; border: none; border-radius: 8px; color: #fff; cursor: pointer; font-size: 12px; font-weight: 600; transition: 0.2s; }
+  .btn-sell { background: #f59e0b; }
+  .btn-sell:hover { background: #d97706; }
+  .btn-withdraw { background: #ef4444; }
+  .btn-withdraw:hover { background: #dc2626; }
+  .empty { color: #555; font-style: italic; text-align: center; padding: 40px; grid-column: 1 / -1; }
+
+  /* ЦВЕТА РЕДКОСТЕЙ */
+  .rarity-common { color: #9ca3af; }
+  .rarity-nft { color: #10b981; } 
+  .rarity-rare { color: #3b82f6; }
+  .rarity-legendary { color: #f59e0b; }
+  
+  /* МОДАЛКИ */
+  .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); align-items: center; justify-content: center; z-index: 100; flex-direction: column; padding: 20px; }
+  .modal.show { display: flex; }
+  .modal .box { background: #16162a; border: 1px solid #2a2a4a; border-radius: 20px; padding: 30px; text-align: center; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+  .modal .box .icon { font-size: 80px; margin: 15px 0; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5)); }
+  .modal .box .result-name { font-size: 22px; font-weight: bold; margin: 10px 0; color: #fff; }
+  .modal .box button { margin-top: 25px; padding: 14px 24px; border: none; border-radius: 10px; background: #a855f7; color: #fff; cursor: pointer; font-size: 16px; font-weight: bold; width: 100%; transition: 0.2s; }
+  .modal .box button:hover { background: #9333ea; }
+  .modal .box .close-btn { background: transparent; border: 1px solid #2a2a4a; color: #888; margin-top: 10px; }
+  .modal .box .close-btn:hover { background: #1a1a2e; color: #fff; }
+  .case-items-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; margin-top: 20px; text-align: left; }
+  .case-item-preview { background: #0a0a0f; border: 1px solid #2a2a4a; border-radius: 10px; padding: 10px; text-align: center; }
+  .case-item-preview .c-icon { font-size: 28px; }
+  .case-item-preview .c-name { font-size: 12px; margin-top: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #ccc; }
+  .case-item-preview .c-rarity { font-size: 10px; font-weight: bold; margin-top: 4px; }
+</style>
+</head>
+<body>
+
+<!-- ЭКРАН ВХОДА/РЕГИСТРАЦИИ -->
+<div id="authScreen">
+  <div class="auth-box">
+    <h1>Кейсы</h1>
+    <div class="subtitle">Вход или регистрация. Бонус новичкам: +30 🌟</div>
+    <div class="tabs">
+      <div class="tab active" id="tab-login" onclick="switchAuthTab('login')">Вход</div>
+      <div class="tab" id="tab-register" onclick="switchAuthTab('register')">Регистрация</div>
+    </div>
+    <div class="input-group">
+      <label>Логин</label>
+      <input type="text" id="authLogin" placeholder="Ваш логин">
+    </div>
+    <div class="input-group">
+      <label>Пароль</label>
+      <input type="password" id="authPassword" placeholder="Пароль (мин. 6 символов)">
+    </div>
+    <button class="btn-main" id="authBtn" onclick="handleAuth()">Войти</button>
+  </div>
+</div>
+
+<!-- ГЛАВНЫЙ ЭКРАН -->
+<div id="mainScreen">
+  <header>
+    <div class="logo">Кейсы</div>
+    <div class="user-info" onclick="switchTab('profile', document.querySelectorAll('.nav-btn')[2])">👤 <span id="uiUsername"></span></div>
+    <div class="balance-top"><span id="uiBalanceTop">0</span> 🌟</div>
+  </header>
+
+  <div class="tabs-nav">
+    <button class="nav-btn active" onclick="switchTab('cases', this)">Кейсы</button>
+    <button class="nav-btn" onclick="switchTab('inventory', this)">Инвентарь</button>
+    <button class="nav-btn" onclick="switchTab('profile', this)">Профиль</button>
+    <button class="nav-btn" onclick="logout()" style="margin-left:auto; color:#ef4444; border-color: #3f1f1f;">Выйти</button>
+  </div>
+
+  <div id="section-cases" class="content-section active">
+    <div class="cases" id="cases"></div>
+  </div>
+
+  <div id="section-inventory" class="content-section">
+    <div class="inventory" id="inventory-global"><div class="empty">Пока пусто — открой кейс</div></div>
+  </div>
+
+  <div id="section-profile" class="content-section">
+    <div class="profile-header">
+      <div style="display: flex; align-items: center; gap: 15px;">
+        <div class="profile-avatar">U</div>
+        <div class="profile-info">
+          <h2 id="profileLogin">Игрок</h2>
+          <p>Баланс: <span id="uiBalanceProfile" style="color:#ffd700; font-weight:bold;">0</span> 🌟</p>
+        </div>
+      </div>
+      <div class="profile-actions">
+        <button class="btn-deposit" onclick="handleDeposit()">Пополнить 🌟</button>
+      </div>
+    </div>
+    <div class="profile-section-title">Мой инвентарь</div>
+    <div class="inventory" id="inventory-profile"><div class="empty">Пока пусто — открой кейс</div></div>
+  </div>
+</div>
+
+<!-- МОДАЛКИ -->
+<div class="modal" id="resultModal">
+  <div class="box">
+    <div style="color:#aaa; font-size:14px; text-transform:uppercase; letter-spacing:1px;">Вы получили</div>
+    <div class="icon" id="modalIcon">?</div>
+    <div class="result-name" id="modalName"></div>
+    <div class="rarity" id="modalRarity" style="font-weight:bold; font-size:14px; letter-spacing:1px;"></div>
+    <button onclick="closeResultModal()">Забрать в инвентарь</button>
+  </div>
+</div>
+
+<div class="modal" id="previewModal">
+  <div class="box">
+    <h2 id="prevCaseName" style="margin-bottom:5px;">Название</h2>
+    <p style="color:#888; font-size:14px;">Возможные предметы:</p>
+    <div class="case-items-grid" id="previewGrid"></div>
+    <button id="openCaseBtn">Открыть кейс</button>
+    <button class="close-btn" onclick="closePreviewModal()">Закрыть</button>
+  </div>
+</div>
+
+<script>
+// ==========================================
+// ⚙️ ДАННЫЕ (Должны совпадать с сервером)
+// ==========================================
+const RARITIES = [
+  { id: 'common',    name: 'Обычный',    color: '#9ca3af' },
+  { id: 'nft',       name: 'NFT',        color: '#10b981' },
+  { id: 'rare',      name: 'Редкий',     color: '#3b82f6' },
+  { id: 'legendary', name: 'Легендарный',color: '#f59e0b' },
+];
+
+const NFT_POOL = [
+  { id: 'bear', name: 'Мишка', icon: '🧸', rarity: 'common', price: 15 },
+  { id: 'gift', name: 'Подарок', icon: '🎁', rarity: 'common', price: 25 },
+  { id: 'heart', name: 'Сердечко', icon: '💖', rarity: 'common', price: 15 },
+  { id: 'rose', name: 'Роза', icon: '🌹', rarity: 'common', price: 25 },
+  { id: 'cake', name: 'Торт', icon: '🎂', rarity: 'common', price: 50 },
+  { id: 'bouquet', name: 'Букет', icon: '💐', rarity: 'common', price: 50 },
+  { id: 'rocket', name: 'Ракета', icon: '🚀', rarity: 'common', price: 50 },
+  { id: 'cup', name: 'Кубок', icon: '🏆', rarity: 'common', price: 100 },
+  { id: 'ring', name: 'Кольцо', icon: '💍', rarity: 'common', price: 100 },
+  { id: 'diamond', name: 'Алмаз', icon: '💎', rarity: 'common', price: 100 },
+  { id: 'skull', name: 'Череп', icon: '💀', rarity: 'nft', price: 50 },
+  { id: 'roses_bouquet', name: 'Розы', icon: '🌺', rarity: 'nft', price: 50 }, 
+  { id: 'cigarette', name: 'Сигарета', icon: '🚬', rarity: 'rare', price: 500 },
+  { id: 'cigar', name: 'Сигара', icon: '🚬', rarity: 'rare', price: 800 },
+  { id: 'socks', name: 'Носки', icon: '🧦', rarity: 'rare', price: 1000 },
+  { id: 'music_box', name: 'Шкатулка', icon: '🎵', rarity: 'rare', price: 1000 },
+  { id: 'potion', name: 'Зелье', icon: '🧪', rarity: 'rare', price: 1000 },
+  { id: 'calendar', name: 'Календарь', icon: '📅', rarity: 'rare', price: 1500 },
+  { id: 'button', name: 'Кнопка', icon: '🔘', rarity: 'rare', price: 500 },
+  { id: 'cap', name: 'Кепка', icon: '🧢', rarity: 'legendary', price: 10000 },
+  { id: 'car', name: 'Машина', icon: '🚗', rarity: 'legendary', price: 5000 },
+  { id: 'pepe', name: 'Плюш Пепе', icon: '🐸', rarity: 'legendary', price: 50000 },
+];
+
+const CASES = [
+  { id: 'starter', name: 'Стартовый', icon: '📦', price: 50, desc: 'Только до NFT', type: 'standard' },
+  { id: 'pro',     name: 'Про',       icon: '🎁', price: 500, desc: '80% об., 20% ред.', type: 'custom_pro' },
+  { id: 'elite',   name: 'Элитный',   icon: '💎', price: 8000, desc: '1% лег, 15% ред.', type: 'custom_elite' },
+];
+
+const ADMIN_USERNAME = '@tagen';
+let currentUser = null;
+let authMode = 'login';
+let playerData = { balance: 0, inventory: [] };
+
+// ==========================================
+// 🔐 АВТОРИЗАЦИЯ
+// ==========================================
+function switchAuthTab(mode) {
+  authMode = mode;
+  document.getElementById('tab-login').classList.toggle('active', mode === 'login');
+  document.getElementById('tab-register').classList.toggle('active', mode === 'register');
+  document.getElementById('authBtn').textContent = mode === 'login' ? 'Войти' : 'Зарегистрироваться';
+}
+
+async function handleAuth() {
+  const login = document.getElementById('authLogin').value.trim();
+  const pass = document.getElementById('authPassword').value;
+
+  if (!login) return alert('Введите логин!');
+  if (pass.length < 6) return alert('Пароль минимум 6 символов!');
+
+  const endpoint = authMode === 'register' ? '/api/register' : '/api/login';
+  const response = await fetch(endpoint, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ login, password: pass })
+  });
+  
+  const result = await response.json();
+  
+  if (!response.ok) {
+    return alert(result.error || 'Ошибка!');
+  }
+
+  currentUser = login;
+  if (authMode === 'register') alert('Регистрация успешна! Вам начислено 30 🌟');
+  
+  enterGame();
+}
+
+function enterGame() {
+  document.getElementById('authScreen').style.display = 'none';
+  document.getElementById('mainScreen').style.display = 'block';
+  document.getElementById('uiUsername').textContent = currentUser;
+  document.getElementById('profileLogin').textContent = currentUser;
+  loadPlayerData();
+  switchTab('cases', document.querySelector('.nav-btn'));
+}
+
+function logout() {
+  currentUser = null;
+  document.getElementById('mainScreen').style.display = 'none';
+  document.getElementById('authScreen').style.display = 'flex';
+  document.getElementById('authPassword').value = '';
+  switchAuthTab('login');
+}
+
+// ==========================================
+// 🎮 ДАННЫЕ ИГРОКА (ЗАПРОС К СЕРВЕРУ)
+// ==========================================
+async function loadPlayerData() {
+  if (!currentUser) return;
+  const response = await fetch(`/api/user/${currentUser}`);
+  if (response.ok) {
+    const data = await response.json();
+    playerData = data;
+    updateUI();
+  }
+}
+
+function updateUI() {
+  document.getElementById('uiBalanceTop').textContent = playerData.balance;
+  document.getElementById('uiBalanceProfile').textContent = playerData.balance;
+  renderInventory();
+}
+
+function switchTab(tabId, btnElement) {
+  document.querySelectorAll('.content-section').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById('section-' + tabId).classList.add('active');
+  if(btnElement) btnElement.classList.add('active');
+}
+
+function handleDeposit() {
+  navigator.clipboard.writeText(ADMIN_USERNAME).then(() => {
+    alert(`Юзернейм ${ADMIN_USERNAME} скопирован!\n\nНапишите мне в Хантерграмме для пополнения баланса.`);
+  });
+}
+
+// ==========================================
+// 📦 КЕЙСЫ
+// ==========================================
+function openPreview(caseObj) {
+  document.getElementById('prevCaseName').textContent = `${caseObj.icon} ${caseObj.name}`;
+  document.getElementById('openCaseBtn').textContent = `Открыть за ${caseObj.price} 🌟`;
+  document.getElementById('openCaseBtn').onclick = () => startOpening(caseObj);
+  
+  const grid = document.getElementById('previewGrid');
+  grid.innerHTML = '';
+  
+  let previewPool = NFT_POOL;
+  if (caseObj.id === 'starter') previewPool = NFT_POOL.filter(i => ['common', 'nft'].includes(i.rarity));
+  else if (caseObj.id === 'pro') previewPool = NFT_POOL.filter(i => ['common', 'rare'].includes(i.rarity));
+
+  const sortedPool = [...previewPool].sort((a, b) => {
+    const order = { 'legendary': 1, 'rare': 2, 'nft': 3, 'common': 4 };
+    return order[a.rarity] - order[b.rarity];
+  });
+
+  sortedPool.forEach(item => {
+    const rInfo = RARITIES.find(r => r.id === item.rarity);
+    const div = document.createElement('div');
+    div.className = 'case-item-preview';
+    div.style.borderColor = rInfo.color;
+    div.innerHTML = `<div class="c-icon">${item.icon}</div><div class="c-name">${item.name}</div><div class="c-rarity" style="color:${rInfo.color}">${rInfo.name}</div>`;
+    grid.appendChild(div);
+  });
+  document.getElementById('previewModal').classList.add('show');
+}
+
+function closePreviewModal() {
+  document.getElementById('previewModal').classList.remove('show');
+}
+
+async function startOpening(caseObj) {
+  if (playerData.balance < caseObj.price) return alert('Недостаточно средств!');
+  
+  const nft = getRandomItemForCase(caseObj);
+  const rInfo = RARITIES.find(r => r.id === nft.rarity);
+
+  closePreviewModal();
+  
+  document.getElementById('modalIcon').textContent = nft.icon;
+  document.getElementById('modalName').textContent = nft.name;
+  const rEl = document.getElementById('modalRarity');
+  rEl.textContent = rInfo.name;
+  rEl.style.color = rInfo.color;
+  document.getElementById('resultModal').classList.add('show');
+
+  // Отправляем на сервер (списание денег и выдача предмета)
+  await fetch('/api/inventory/add', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ 
+      login: currentUser, 
+      
