@@ -61,15 +61,21 @@
   .roulette-pointer { position: absolute; left: 50%; top: 0; bottom: 0; width: 4px; background: #ffd700; transform: translateX(-50%); z-index: 10; }
   .win-overlay { display: none; text-align: center; margin-top: 30px; background: #16162a; padding: 20px 40px; border-radius: 16px; border: 2px solid #a855f7; }
   .win-overlay.show { display: block; }
+  .drop-feed { position: fixed; bottom: 20px; left: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 50; pointer-events: none; }
+  .feed-item { background: #16162a; border: 1px solid #3b82f6; padding: 10px 20px; border-radius: 8px; font-size: 12px; color: #fff; opacity: 0.8; }
+  .toggle-fast { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 15px 0; color: #ccc; font-size: 14px; cursor: pointer; }
+  .toggle-fast input { width: 18px; height: 18px; cursor: pointer; }
 </style>
 </head>
-<body><div id="authScreen">
+<body>
+
+<audio id="soundSpin" src="https://assets.mixkit.co/active_storage/sfx/2003/2003-preview.mp3" preload="auto"></audio>
+<audio id="soundWin" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3" preload="auto"></audio>
+
+<div id="authScreen">
   <div class="auth-box">
     <h1>Кейсы</h1>
-    <div class="tabs">
-      <div class="tab active" id="tab-login">Вход</div>
-      <div class="tab" id="tab-register">Регистрация</div>
-    </div>
+    <div class="tabs"><div class="tab active" id="tab-login">Вход</div><div class="tab" id="tab-register">Регистрация</div></div>
     <div class="input-group"><input type="text" id="authLogin" placeholder="Логин"></div>
     <div class="input-group"><input type="password" id="authPassword" placeholder="Пароль"></div>
     <button type="button" class="btn-main" id="mainAuthBtn">Войти</button>
@@ -82,7 +88,6 @@
     <div class="user-info">👤 <span id="uiUsername"></span></div>
     <div class="balance-top" id="openPromoBtn"><span id="uiBalanceTop">0</span> 🌟</div>
   </header>
-  
   <div class="tabs-nav">
     <button class="nav-btn active" id="navProfileBtn">Профиль</button>
     <button class="nav-btn" id="navCasesBtn">Кейсы</button>
@@ -101,6 +106,7 @@
         <div class="stat-box"><div class="stat-value" id="profileNftCount">0</div><div class="stat-label">Предметов</div></div>
         <div class="stat-box"><div class="stat-value" id="profileNftValue">0 🌟</div><div class="stat-label">Стоимость NFT</div></div>
       </div>
+      <button class="btn-main" id="btnClaimBonus" style="margin-top:15px; background:#10b981;">Забрать ежедневный бонус +50 🌟</button>
     </div>
   </div>
 
@@ -117,7 +123,10 @@
       <div class="upgrade-arrow">➜</div>
       <div class="upgrade-slot" id="upgradeTargetSlot"><div style="font-size:50px;">?</div><div>Цель</div></div>
     </div>
-    <button class="upgrade-btn" id="btnDoUpgrade">Улучшить (Шанс 50%)</button>
+    <div class="toggle-fast" id="fastUpgradeToggleWrap">
+      <input type="checkbox" id="fastUpgradeToggle"> Быстрый апгрейд (без анимации)
+    </div>
+    <button class="upgrade-btn" id="btnDoUpgrade">Улучшить</button>
   </div>
 
   <div id="section-admin" class="content-section" style="text-align:center;">
@@ -126,7 +135,19 @@
   </div>
 </div>
 
-<div class="modal" id="previewModal"><div class="box"><h2 id="prevCaseName">...</h2><button class="btn-main" id="openCaseBtn" style="margin-top:15px;">Открыть</button><button class="btn-main" id="closePreviewBtn" style="background:#444; margin-top:10px;">Закрыть</button></div></div>
+<div class="drop-feed" id="dropFeed"></div>
+
+<div class="modal" id="previewModal">
+  <div class="box">
+    <h2 id="prevCaseName">...</h2>
+    <div class="toggle-fast">
+      <input type="checkbox" id="fastCaseToggle"> Быстрое открытие (без анимации)
+    </div>
+    <button class="btn-main" id="openCaseBtn" style="margin-top:15px;">Открыть</button>
+    <button class="btn-main" id="closePreviewBtn" style="background:#444; margin-top:10px;">Закрыть</button>
+  </div>
+</div>
+
 <div class="modal" id="promoModal"><div class="box"><h2>Промокод</h2><input type="text" id="promoInput" style="width:100%; padding:14px; margin:15px 0; border-radius:10px; border:1px solid #444; background:#12121a; color:#fff;"><button class="btn-main" id="btnActivatePromo">Активировать</button><button class="btn-main" id="closePromoBtn" style="background:#444; margin-top:10px;">Закрыть</button></div></div>
 
 <div class="modal" id="selectItemModal">
@@ -145,8 +166,7 @@
       <button class="btn-main" id="closeAnimBtn" style="background:#10b981; width:auto; padding:10px 20px;">Забрать</button>
       <button class="btn-main" id="btnSellWonItem" style="background:#f59e0b; width:auto; padding:10px 20px;">Продать</button>
     </div>
-  </div>
-</div><script>
+  </div><script>
 document.addEventListener('DOMContentLoaded', function() {
   var currentUser = null, authMode = 'login', playerData = { balance: 0, inventory: [], stats: { totalItems: 0, totalValue: 0 } };
   var isOpening = false, sellingItems = {}, upgradeSelectedMine = null, upgradeSelectedTarget = null;
@@ -156,6 +176,7 @@ document.addEventListener('DOMContentLoaded', function() {
     { id: 'elite', name: 'Элитный', icon: '💎', price: 8000 }
   ];
   var el = function(id) { return document.getElementById(id); };
+  var spinSound = el('soundSpin'), winSound = el('soundWin');
 
   el('tab-login').onclick = function() { authMode='login'; this.classList.add('active'); el('tab-register').classList.remove('active'); el('mainAuthBtn').textContent='Войти'; };
   el('tab-register').onclick = function() { authMode='register'; this.classList.add('active'); el('tab-login').classList.remove('active'); el('mainAuthBtn').textContent='Зарегистрироваться'; };
@@ -177,6 +198,7 @@ document.addEventListener('DOMContentLoaded', function() {
     el('uiUsername').textContent = currentUser; el('profileName').textContent = currentUser;
     localStorage.setItem('saved_user', currentUser);
     renderCases();
+    loadDropFeed();
     var res = await fetch('/api/user/' + encodeURIComponent(currentUser));
     if (res.ok) { var data = await res.json(); if (data.is_admin) el('adminTabBtn').style.display = 'block'; playerData = data; updateUI(); }
   }
@@ -219,26 +241,43 @@ document.addEventListener('DOMContentLoaded', function() {
 
   async function startOpening(c) {
     if (isOpening) return; isOpening = true; el('openCaseBtn').disabled = true;
+    var isFast = el('fastCaseToggle').checked;
     try {
       var res = await fetch('/api/cases/open', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ login: currentUser, caseId: c.id }) });
       var data = await res.json();
       if (!res.ok) { alert(data.error); isOpening = false; el('openCaseBtn').disabled = false; return; }
-      el('previewModal').classList.remove('show'); el('animationModal').classList.add('show'); el('winOverlay').classList.remove('show');
-      var stripHtml = '', stripItems = [];
-      for (var i = 0; i < 50; i++) stripItems.push(data.pool[Math.floor(Math.random() * data.pool.length)]);
-      stripItems.splice(45, 1, data.item);
-      stripItems.forEach(i => stripHtml += `<div class="roulette-item"><div class="r-icon">${i.icon}</div><div class="r-name">${i.name}</div></div>`);
-      var strip = el('rouletteStrip'); strip.innerHTML = stripHtml; strip.style.transition = 'none'; strip.style.transform = 'translateX(0)';
-      setTimeout(() => {
-        var w = 121, cw = document.querySelector('.roulette-container').offsetWidth;
-        strip.style.transition = 'transform 5s cubic-bezier(0.1, 0.7, 0.1, 1)'; strip.style.transform = `translateX(-${(45 * w) - ((cw / 2) - (w / 2))}px)`;
-      }, 100);
-      setTimeout(async () => {
-        await enterGame();
+      el('previewModal').classList.remove('show');
+      
+      if (!isFast) {
+        el('animationModal').classList.add('show'); el('winOverlay').classList.remove('show');
+        if (spinSound) { spinSound.currentTime = 0; spinSound.play().catch(e=>{}); }
+        
+        var stripHtml = '', stripItems = [];
+        for (var i = 0; i < 50; i++) stripItems.push(data.pool[Math.floor(Math.random() * data.pool.length)]);
+        stripItems.splice(45, 1, data.item);
+        stripItems.forEach(i => stripHtml += `<div class="roulette-item"><div class="r-icon">${i.icon}</div><div class="r-name">${i.name}</div></div>`);
+        var strip = el('rouletteStrip'); strip.innerHTML = stripHtml; strip.style.transition = 'none'; strip.style.transform = 'translateX(0)';
+        setTimeout(() => {
+          var w = 121, cw = document.querySelector('.roulette-container').offsetWidth;
+          strip.style.transition = 'transform 5s cubic-bezier(0.1, 0.7, 0.1, 1)'; strip.style.transform = `translateX(-${(45 * w) - ((cw / 2) - (w / 2))}px)`;
+        }, 100);
+        
+        setTimeout(async () => {
+          if (winSound) { winSound.play().catch(e=>{}); }
+          await enterGame(); loadDropFeed();
+          el('winIcon').textContent = data.item.icon; el('winName').textContent = data.item.name; el('winRarity').textContent = data.item.rarity.toUpperCase();
+          el('winButtons').style.display = 'flex'; el('winOverlay').classList.add('show'); isOpening = false; el('openCaseBtn').disabled = false;
+          el('btnSellWonItem').onclick = () => { el('animationModal').classList.remove('show'); sellItem(data.item.uid, data.item.price, null); };
+        }, 5100);
+      } else {
+        // БЫСТРЫЙ РЕЖИМ
+        if (winSound) { winSound.play().catch(e=>{}); }
+        await enterGame(); loadDropFeed();
+        el('animationModal').classList.add('show'); el('winOverlay').classList.add('show');
         el('winIcon').textContent = data.item.icon; el('winName').textContent = data.item.name; el('winRarity').textContent = data.item.rarity.toUpperCase();
-        el('winButtons').style.display = 'flex'; el('winOverlay').classList.add('show'); isOpening = false; el('openCaseBtn').disabled = false;
+        el('winButtons').style.display = 'flex'; isOpening = false; el('openCaseBtn').disabled = false;
         el('btnSellWonItem').onclick = () => { el('animationModal').classList.remove('show'); sellItem(data.item.uid, data.item.price, null); };
-      }, 5100);
+      }
     } catch (e) { alert('Ошибка сети'); isOpening = false; el('openCaseBtn').disabled = false; }
   }
 
@@ -272,8 +311,27 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!confirm('Продать ВСЁ?')) return;
     var res = await fetch('/api/inventory/sell-all', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ login: currentUser }) });
     var data = await res.json(); if (res.ok) { alert('+' + data.earned + '🌟'); await enterGame(); } else alert(data.error);
-  };  // ==========================================
-  // АПГРЕЙД (С УДОБНЫМ ВЫБОРОМ)
+  };
+
+  el('btnClaimBonus').onclick = async () => {
+    var res = await fetch('/api/bonus/claim', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ login: currentUser }) });
+    var data = await res.json();
+    if (res.ok) { alert('Бонус получен!'); await enterGame(); } else alert(data.error);
+  };
+
+  async function loadDropFeed() {
+    try {
+      var res = await fetch('/api/cases/drops');
+      var data = await res.json();
+      var feed = el('dropFeed'); feed.innerHTML = '';
+      data.forEach(d => {
+        var div = document.createElement('div'); div.className = 'feed-item';
+        div.innerHTML = `👤 ${d.user_login} выбил ${d.item_icon} ${d.item_name}`;
+        feed.appendChild(div);
+      });
+    } catch(e) {}
+  }  // ==========================================
+  // АПГРЕЙД (С УМНЫМИ ПРОЦЕНТАМИ И БЫСТРЫМ РЕЖИМОМ)
   // ==========================================
   function renderUpgradeTab() {
     el('upgradeMySlot').onclick = () => {
@@ -281,10 +339,12 @@ document.addEventListener('DOMContentLoaded', function() {
       openSelectItemModal(playerData.inventory, (selected) => {
         upgradeSelectedMine = selected;
         el('upgradeMySlot').innerHTML = `<div style="font-size:50px;">${selected.icon}</div><div>${selected.name}</div>`;
+        updateUpgradeBtn();
       });
     };
 
     el('upgradeTargetSlot').onclick = () => {
+      // Собираем все предметы из игры для цели
       var pool = [
         { id: 'calendar', name: 'Календарь', icon: '📅', price: 1500 },
         { id: 'car', name: 'Машина', icon: '🚗', price: 5000 },
@@ -293,8 +353,22 @@ document.addEventListener('DOMContentLoaded', function() {
       openSelectItemModal(pool, (selected) => {
         upgradeSelectedTarget = selected;
         el('upgradeTargetSlot').innerHTML = `<div style="font-size:50px;">${selected.icon}</div><div>${selected.name}</div>`;
+        updateUpgradeBtn();
       });
     };
+  }
+
+  function updateUpgradeBtn() {
+    var btn = el('btnDoUpgrade');
+    if (upgradeSelectedMine && upgradeSelectedTarget) {
+      // Формула та же, что и на сервере (для отображения)
+      let chance = (upgradeSelectedMine.price / upgradeSelectedTarget.price) * 50;
+      if (chance > 50) chance = 50;
+      if (chance < 1) chance = 1;
+      btn.textContent = 'Улучшить (Шанс ' + chance.toFixed(1) + '%)';
+    } else {
+      btn.textContent = 'Выберите предметы';
+    }
   }
 
   function openSelectItemModal(items, onSelect) {
@@ -320,16 +394,37 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!upgradeSelectedMine || !upgradeSelectedTarget) return alert('Выберите оба предмета');
     if (upgradeSelectedMine.price >= upgradeSelectedTarget.price) return alert('Целевой предмет должен быть дороже!');
     
+    var isFast = el('fastUpgradeToggle').checked;
+    var btn = el('btnDoUpgrade');
+    btn.disabled = true;
+
     var res = await fetch('/api/upgrade', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ login: currentUser, myUid: upgradeSelectedMine.uid, targetItemId: upgradeSelectedTarget.id }) });
     var data = await res.json();
-    if (res.ok) { 
-        alert(data.win ? 'УСПЕХ! Вы получили ' + data.item.name : 'НЕУДАЧА. Предмет сгорел.'); 
-        upgradeSelectedMine = null; upgradeSelectedTarget = null;
-        el('upgradeMySlot').innerHTML = '<div style="font-size:50px;">?</div><div>Ваш NFT</div>';
-        el('upgradeTargetSlot').innerHTML = '<div style="font-size:50px;">?</div><div>Цель</div>';
-        await enterGame(); 
-    } else alert(data.error);
+    
+    if (!res.ok) { alert(data.error); btn.disabled = false; return; }
+
+    if (!isFast) {
+      // Здесь можно было бы сделать анимацию крутилки для апгрейда, 
+      // но для простоты используем таймаут, чтобы было ощущение прокрутки.
+      if (spinSound) { spinSound.currentTime = 0; spinSound.play().catch(e=>{}); }
+      btn.textContent = 'Крутим...';
+      setTimeout(() => { finishUpgrade(data, btn); }, 2500);
+    } else {
+      if (winSound) { winSound.play().catch(e=>{}); }
+      finishUpgrade(data, btn);
+    }
   };
+
+  async function finishUpgrade(data, btn) {
+    btn.disabled = false;
+    alert(data.win ? 'УСПЕХ! Вы получили ' + data.item.name : 'НЕУДАЧА. Предмет сгорел.');
+    
+    upgradeSelectedMine = null; upgradeSelectedTarget = null;
+    el('upgradeMySlot').innerHTML = '<div style="font-size:50px;">?</div><div>Ваш NFT</div>';
+    el('upgradeTargetSlot').innerHTML = '<div style="font-size:50px;">?</div><div>Цель</div>';
+    updateUpgradeBtn();
+    await enterGame();
+  }
 
   // ==========================================
   // ПРОМОКОДЫ
@@ -391,3 +486,4 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 </body>
 </html>
+</div>
