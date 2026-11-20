@@ -7,16 +7,14 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Указываем серверу, где искать файлы сайта (папка public)
+// Эта строка очень важна! Она говорит серверу искать файлы сайта в папке public
 app.use(express.static(path.join(__dirname, 'public')));
 
-// ТВОИ КЛЮЧИ
 const SUPABASE_URL = 'https://jmbnfxlnrdapcblipcqx.supabase.co'; 
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImptYm5meGxucmRhcGNibGlwY3F4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUxODQ5OTgsImV4cCI6MjExMDc2MDk5OH0.HBvYC5M_HKqIfGuZ7-8Vuqwd3oH4BcrsTpMbaROaJTs'; 
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// ... (Остальной код API)
 app.post('/api/register', async (req, res) => {
     const { login, password } = req.body;
     if (!login || !password) return res.status(400).json({ error: 'Введите логин и пароль' });
@@ -83,8 +81,5 @@ app.post('/api/admin/remove-admin', async (req, res) => {
     res.json({ success: true });
 });
 
-// ЗАПУСК
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log('Сервер запущен на порту ' + PORT);
-});
+app.listen(PORT, () => console.log('Server started'));
