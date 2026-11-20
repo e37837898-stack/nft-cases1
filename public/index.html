@@ -16,7 +16,6 @@
   .input-group { margin-bottom: 18px; }
   .input-group input { width: 100%; padding: 14px 16px; border-radius: 12px; border: 1px solid #2a2a4a; background: #12121a; color: #fff; font-size: 16px; }
   .btn-main { width: 100%; padding: 16px; border: none; border-radius: 12px; background: #a855f7; color: #fff; font-size: 16px; font-weight: bold; cursor: pointer; }
-  .btn-main:disabled { opacity: 0.5; }
   #mainScreen { display: none; max-width: 1000px; margin: 0 auto; }
   header { display: flex; justify-content: space-between; align-items: center; background: #16162a; padding: 15px 25px; border-radius: 16px; margin-bottom: 25px; }
   .logo { font-size: 24px; font-weight: 800; color: #a855f7; }
@@ -40,8 +39,7 @@
   .inventory { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; }
   .item { background: #16162a; border: 1px solid #2a2a4a; border-radius: 14px; padding: 15px; text-align: center; }
   .item button { width: 100%; padding: 8px; border: none; border-radius: 8px; color: #fff; font-weight: bold; margin-top: 5px; cursor: pointer; }
-  .btn-sell { background: #f59e0b; }
-  .btn-withdraw { background: #3b82f6; }
+  .btn-sell { background: #f59e0b; } .btn-withdraw { background: #3b82f6; }
   .btn-sell-all { background: #ef4444; width: 100%; padding: 15px; margin-bottom: 20px; border: none; border-radius: 12px; color: #fff; font-weight: bold; cursor: pointer; display: none; }
   .upgrade-container { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; background: #16162a; padding: 30px; border-radius: 16px; }
   .upgrade-slot { width: 150px; height: 180px; border: 2px dashed #444; border-radius: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; }
@@ -65,9 +63,7 @@
   .win-overlay.show { display: block; }
 </style>
 </head>
-<body>
-
-<div id="authScreen">
+<body><div id="authScreen">
   <div class="auth-box">
     <h1>Кейсы</h1>
     <div class="tabs">
@@ -78,7 +74,9 @@
     <div class="input-group"><input type="password" id="authPassword" placeholder="Пароль"></div>
     <button type="button" class="btn-main" id="mainAuthBtn">Войти</button>
   </div>
-</div><div id="mainScreen">
+</div>
+
+<div id="mainScreen">
   <header>
     <div class="logo">Кейсы</div>
     <div class="user-info">👤 <span id="uiUsername"></span></div>
@@ -130,6 +128,15 @@
 
 <div class="modal" id="previewModal"><div class="box"><h2 id="prevCaseName">...</h2><button class="btn-main" id="openCaseBtn" style="margin-top:15px;">Открыть</button><button class="btn-main" id="closePreviewBtn" style="background:#444; margin-top:10px;">Закрыть</button></div></div>
 <div class="modal" id="promoModal"><div class="box"><h2>Промокод</h2><input type="text" id="promoInput" style="width:100%; padding:14px; margin:15px 0; border-radius:10px; border:1px solid #444; background:#12121a; color:#fff;"><button class="btn-main" id="btnActivatePromo">Активировать</button><button class="btn-main" id="closePromoBtn" style="background:#444; margin-top:10px;">Закрыть</button></div></div>
+
+<div class="modal" id="selectItemModal">
+  <div class="box" style="text-align: left;">
+    <h2 style="margin-bottom:15px; text-align: center;">Выберите предмет</h2>
+    <div id="selectItemList" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; max-height: 50vh; overflow-y: auto;"></div>
+    <button class="btn-main" id="closeSelectItemBtn" style="background:#444; margin-top: 15px;">Отмена</button>
+  </div>
+</div>
+
 <div id="animationModal">
   <div class="roulette-container"><div class="roulette-pointer"></div><div class="roulette-strip" id="rouletteStrip"></div></div>
   <div class="win-overlay" id="winOverlay">
@@ -144,11 +151,10 @@ document.addEventListener('DOMContentLoaded', function() {
   var currentUser = null, authMode = 'login', playerData = { balance: 0, inventory: [], stats: { totalItems: 0, totalValue: 0 } };
   var isOpening = false, sellingItems = {}, upgradeSelectedMine = null, upgradeSelectedTarget = null;
   var CASES = [
-    { id: 'starter', name: 'Стартовый', icon: '📦', price: 50, desc: 'Шанс на NFT' },
-    { id: 'pro', name: 'Про', icon: '🎁', price: 500, desc: 'Обычные и Редкие' },
-    { id: 'elite', name: 'Элитный', icon: '💎', price: 8000, desc: 'Шанс на Легендарку' }
+    { id: 'starter', name: 'Стартовый', icon: '📦', price: 50 },
+    { id: 'pro', name: 'Про', icon: '🎁', price: 500 },
+    { id: 'elite', name: 'Элитный', icon: '💎', price: 8000 }
   ];
-
   var el = function(id) { return document.getElementById(id); };
 
   el('tab-login').onclick = function() { authMode='login'; this.classList.add('active'); el('tab-register').classList.remove('active'); el('mainAuthBtn').textContent='Войти'; };
@@ -159,8 +165,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!login || pass.length < 6) return alert('Введите логин и пароль (мин. 6 символов)');
     var btn = el('mainAuthBtn'); btn.disabled = true;
     try {
-      var url = authMode === 'register' ? '/api/register' : '/api/login';
-      var res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ login: login, password: pass }) });
+      var res = await fetch(authMode === 'register' ? '/api/register' : '/api/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ login: login, password: pass }) });
       var data = await res.json();
       if (!res.ok) { alert(data.error || 'Ошибка'); btn.disabled = false; return; }
       currentUser = login; enterGame();
@@ -203,7 +208,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var c = el('cases'); c.innerHTML = '';
     CASES.forEach(cs => {
       var d = document.createElement('div'); d.className = 'case';
-      d.innerHTML = `<div class="icon">${cs.icon}</div><div class="name">${cs.name}</div><div class="desc">${cs.desc}</div><div class="price">${cs.price} 🌟</div>`;
+      d.innerHTML = `<div class="icon">${cs.icon}</div><div class="name">${cs.name}</div><div class="price">${cs.price} 🌟</div>`;
       d.onclick = () => { el('prevCaseName').textContent = cs.icon + ' ' + cs.name; el('openCaseBtn').onclick = () => startOpening(cs); el('previewModal').classList.add('show'); };
       c.appendChild(d);
     });
@@ -235,7 +240,8 @@ document.addEventListener('DOMContentLoaded', function() {
         el('btnSellWonItem').onclick = () => { el('animationModal').classList.remove('show'); sellItem(data.item.uid, data.item.price, null); };
       }, 5100);
     } catch (e) { alert('Ошибка сети'); isOpening = false; el('openCaseBtn').disabled = false; }
-  }  // ИНВЕНТАРЬ
+  }
+
   function renderInventory() {
     var c = el('inventory'); c.innerHTML = '';
     if (!playerData.inventory.length) { c.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:#888;">Пусто</div>'; el('btnSellAll').style.display='none'; return; }
@@ -266,29 +272,68 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!confirm('Продать ВСЁ?')) return;
     var res = await fetch('/api/inventory/sell-all', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ login: currentUser }) });
     var data = await res.json(); if (res.ok) { alert('+' + data.earned + '🌟'); await enterGame(); } else alert(data.error);
-  };
-
-  // АПГРЕЙД
+  };  // ==========================================
+  // АПГРЕЙД (С УДОБНЫМ ВЫБОРОМ)
+  // ==========================================
   function renderUpgradeTab() {
     el('upgradeMySlot').onclick = () => {
-      var choice = prompt('Введите название предмета из инвентаря');
-      if (choice) { var f = playerData.inventory.find(i => i.name.toLowerCase() === choice.toLowerCase()); if (f) { upgradeSelectedMine = f; el('upgradeMySlot').innerHTML = `<div style="font-size:50px;">${f.icon}</div><div>${f.name}</div>`; } }
+      if (!playerData.inventory.length) return alert('Инвентарь пуст');
+      openSelectItemModal(playerData.inventory, (selected) => {
+        upgradeSelectedMine = selected;
+        el('upgradeMySlot').innerHTML = `<div style="font-size:50px;">${selected.icon}</div><div>${selected.name}</div>`;
+      });
     };
+
     el('upgradeTargetSlot').onclick = () => {
-      var choice = prompt('Введите ID (pepe, car, calendar)');
-      var pool = { 'pepe': { name: 'Плюш Пепе', icon: '🐸', price: 50000 }, 'car': { name: 'Машина', icon: '🚗', price: 5000 }, 'calendar': { name: 'Календарь', icon: '📅', price: 1500 } };
-      if (choice && pool[choice]) { upgradeSelectedTarget = { ...pool[choice], id: choice }; el('upgradeTargetSlot').innerHTML = `<div style="font-size:50px;">${pool[choice].icon}</div><div>${pool[choice].name}</div>`; }
+      var pool = [
+        { id: 'calendar', name: 'Календарь', icon: '📅', price: 1500 },
+        { id: 'car', name: 'Машина', icon: '🚗', price: 5000 },
+        { id: 'pepe', name: 'Плюш Пепе', icon: '🐸', price: 50000 }
+      ];
+      openSelectItemModal(pool, (selected) => {
+        upgradeSelectedTarget = selected;
+        el('upgradeTargetSlot').innerHTML = `<div style="font-size:50px;">${selected.icon}</div><div>${selected.name}</div>`;
+      });
     };
   }
 
+  function openSelectItemModal(items, onSelect) {
+    var list = el('selectItemList'); list.innerHTML = '';
+    if (!items.length) { list.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:#888;">Нет предметов</div>'; }
+    
+    items.forEach(item => {
+      var div = document.createElement('div');
+      div.style.cssText = 'background:#12121a; border:1px solid #444; border-radius:10px; padding:10px; text-align:center; cursor:pointer;';
+      div.innerHTML = `<div style="font-size:30px;">${item.icon}</div><div style="font-size:12px; color:#fff;">${item.name}</div><div style="font-size:10px; color:#ffd700;">${item.price} 🌟</div>`;
+      div.onclick = () => {
+        onSelect(item);
+        el('selectItemModal').classList.remove('show');
+      };
+      list.appendChild(div);
+    });
+    
+    el('selectItemModal').classList.add('show');
+    el('closeSelectItemBtn').onclick = () => el('selectItemModal').classList.remove('show');
+  }
+
   el('btnDoUpgrade').onclick = async () => {
-    if (!upgradeSelectedMine || !upgradeSelectedTarget) return alert('Выберите предметы');
+    if (!upgradeSelectedMine || !upgradeSelectedTarget) return alert('Выберите оба предмета');
+    if (upgradeSelectedMine.price >= upgradeSelectedTarget.price) return alert('Целевой предмет должен быть дороже!');
+    
     var res = await fetch('/api/upgrade', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ login: currentUser, myUid: upgradeSelectedMine.uid, targetItemId: upgradeSelectedTarget.id }) });
     var data = await res.json();
-    if (res.ok) { alert(data.win ? 'УСПЕХ!' : 'СГОРЕЛ'); await enterGame(); } else alert(data.error);
+    if (res.ok) { 
+        alert(data.win ? 'УСПЕХ! Вы получили ' + data.item.name : 'НЕУДАЧА. Предмет сгорел.'); 
+        upgradeSelectedMine = null; upgradeSelectedTarget = null;
+        el('upgradeMySlot').innerHTML = '<div style="font-size:50px;">?</div><div>Ваш NFT</div>';
+        el('upgradeTargetSlot').innerHTML = '<div style="font-size:50px;">?</div><div>Цель</div>';
+        await enterGame(); 
+    } else alert(data.error);
   };
 
-  // ПРОМОКОД
+  // ==========================================
+  // ПРОМОКОДЫ
+  // ==========================================
   el('openPromoBtn').onclick = () => el('promoModal').classList.add('show');
   el('closePromoBtn').onclick = () => el('promoModal').classList.remove('show');
   el('btnActivatePromo').onclick = async () => {
@@ -298,7 +343,9 @@ document.addEventListener('DOMContentLoaded', function() {
     if (res.ok) { alert('+' + data.stars + '🌟'); el('promoModal').classList.remove('show'); await enterGame(); } else alert(data.error);
   };
 
+  // ==========================================
   // АДМИНКА
+  // ==========================================
   function renderAdminUI() {
     var c = el('adminContent'); if (c.innerHTML !== '') return;
     c.innerHTML = `<div class="admin-box"><table style="width:100%; color:#fff;" id="adminTable"></table></div>
@@ -335,6 +382,9 @@ document.addEventListener('DOMContentLoaded', function() {
     if (res.ok) alert('Создан'); else alert('Ошибка');
   };
 
+  // ==========================================
+  // ИНИЦИАЛИЗАЦИЯ
+  // ==========================================
   var saved = localStorage.getItem('saved_user');
   if (saved) { currentUser = saved; enterGame(); }
 });
