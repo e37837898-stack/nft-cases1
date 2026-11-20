@@ -6,14 +6,14 @@
 <title>Кейсы</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Segoe UI', Roboto, sans-serif; background: #0a0a0f; color: #e2e2e2; min-height: 100vh; padding: 20px; overflow-x: hidden;}
+  body { font-family: 'Segoe UI', Roboto, sans-serif; background: #0a0a0f; color: #e2e2e2; min-height: 100vh; padding: 20px; overflow-x: hidden; }
   
   #authScreen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 90vh; }
   .auth-box { background: #16162a; border: 1px solid #2a2a4a; border-radius: 24px; padding: 40px; width: 100%; max-width: 420px; }
   .auth-box h1 { font-size: 32px; text-align: center; color: #a855f7; margin-bottom: 10px; }
   .auth-box .subtitle { color: #888; font-size: 14px; text-align: center; margin-bottom: 25px; }
   .tabs { display: flex; background: #12121a; border-radius: 12px; padding: 4px; margin-bottom: 25px; }
-  .tab { flex: 1; padding: 12px; text-align: center; border-radius: 8px; cursor: pointer; font-weight: 600; color: #888; }
+  .tab { flex: 1; padding: 12px; text-align: center; border-radius: 8px; cursor: pointer; font-weight: 600; color: #888; user-select: none; }
   .tab.active { background: #1a1a2e; color: #fff; }
   .input-group { margin-bottom: 18px; }
   .input-group label { display: block; margin-bottom: 8px; font-size: 13px; color: #aaa; }
@@ -84,7 +84,7 @@
     </div>
     <div class="input-group"><label>Логин</label><input type="text" id="authLogin" placeholder="Ваш логин"></div>
     <div class="input-group"><label>Пароль</label><input type="password" id="authPassword" placeholder="Пароль (мин. 6 символов)"></div>
-    <button class="btn-main" id="mainAuthBtn">Войти</button>
+    <button type="button" class="btn-main" id="mainAuthBtn">Войти</button>
   </div>
 </div>
 
@@ -95,10 +95,10 @@
     <div class="balance-top"><span id="uiBalanceTop">0</span> 🌟</div>
   </header>
   <div class="tabs-nav">
-    <button class="nav-btn active" id="navCasesBtn">Кейсы</button>
-    <button class="nav-btn" id="navInventoryBtn">Инвентарь</button>
-    <button class="nav-btn" id="adminTabBtn" style="display:none; background:#ef4444; border-color:#ef4444; color:#fff;">Админка</button>
-    <button class="nav-btn" id="logoutBtn" style="margin-left:auto; color:#ef4444;">Выйти</button>
+    <button type="button" class="nav-btn active" id="nav-cases">Кейсы</button>
+    <button type="button" class="nav-btn" id="nav-inventory">Инвентарь</button>
+    <button type="button" class="nav-btn" id="adminTabBtn" style="display:none; background:#ef4444; border-color:#ef4444; color:#fff;">Админка</button>
+    <button type="button" class="nav-btn" id="logoutBtn" style="margin-left:auto; color:#ef4444;">Выйти</button>
   </div>
   <div id="section-cases" class="content-section active"><div class="cases" id="cases"></div></div>
   <div id="section-inventory" class="content-section"><div class="inventory" id="inventory"></div></div>
@@ -108,13 +108,13 @@
       <h3 style="margin-bottom:10px;">Выдать звезды</h3>
       <input type="text" id="adminTarget" placeholder="Логин игрока">
       <input type="number" id="adminAmount" placeholder="Сумма" value="1000">
-      <button id="adminGiveBtn" style="background:#10b981; color:#fff;">Выдать звезды</button>
+      <button type="button" id="giveStarsBtn" style="background:#10b981; color:#fff;">Выдать звезды</button>
     </div>
     <div class="admin-box" id="superAdminBox" style="display: none; border: 1px solid #ef4444;">
       <h3 style="margin-bottom:10px; color:#ef4444;">Управление Админами</h3>
       <input type="text" id="newAdminLogin" placeholder="Логин нового админа">
-      <button id="makeAdminBtn" style="background:#a855f7; color:#fff;">Назначить Админом</button>
-      <button id="removeAdminBtn" style="background:#374151; color:#fff;">Снять права</button>
+      <button type="button" id="makeAdminBtn" style="background:#a855f7; color:#fff;">Назначить Админом</button>
+      <button type="button" id="removeAdminBtn" style="background:#374151; color:#fff;">Снять права</button>
     </div>
   </div>
 </div>
@@ -123,8 +123,8 @@
   <div class="box">
     <h2 id="prevCaseName" style="margin-bottom:15px;">Название</h2>
     <div class="case-items-grid" id="previewGrid"></div>
-    <button id="openCaseBtn" style="margin-top:20px; padding:14px; width:100%; background:#a855f7; color:#fff; border:none; border-radius:10px; font-weight:bold; font-size:16px; cursor:pointer;">Открыть кейс</button>
-    <button id="closePreviewBtn" style="background:transparent; border:1px solid #444; color:#aaa; margin-top:10px; padding:10px; width:100%; border-radius:10px; cursor:pointer;">Закрыть</button>
+    <button type="button" id="openCaseBtn" style="margin-top:20px; padding:14px; width:100%; background:#a855f7; color:#fff; border:none; border-radius:10px; font-weight:bold; font-size:16px; cursor:pointer;">Открыть кейс</button>
+    <button type="button" id="closePreviewBtn" style="background:transparent; border:1px solid #444; color:#aaa; margin-top:10px; padding:10px; width:100%; border-radius:10px; cursor:pointer;">Закрыть</button>
   </div>
 </div>
 
@@ -137,272 +137,245 @@
     <div style="font-size: 60px;" id="winIcon">?</div>
     <h2 style="color: #fff; margin: 10px 0;" id="winName"></h2>
     <div id="winRarity" style="font-weight: bold; margin-bottom: 15px;"></div>
-    <button class="btn-main" id="closeWinBtn" style="padding: 12px 30px; font-size: 16px; width: auto;">Забрать в инвентарь</button>
+    <button type="button" class="btn-main" id="closeAnimBtn" style="padding: 12px 30px; font-size: 16px; width: auto;">Забрать в инвентарь</button>
   </div>
 </div>
 
 <script>
-let currentUser = null;
-let authMode = 'login';
-let playerData = { balance: 0, inventory: [] };
-let isSuperAdmin = false;
-let isOpening = false;
-const sellingItems = new Set();
+document.addEventListener('DOMContentLoaded', function() {
+  var currentUser = null;
+  var authMode = 'login';
+  var playerData = { balance: 0, inventory: [] };
+  var isSuperAdmin = false;
+  var isOpening = false;
+  var sellingItems = {};
 
-const RARITIES = {
-  common: { name: 'Обычный', color: '#9ca3af' },
-  nft: { name: 'NFT', color: '#10b981' },
-  rare: { name: 'Редкий', color: '#3b82f6' },
-  legendary: { name: 'Легендарный', color: '#f59e0b' }
-};
+  var RARITIES = {
+    'common': { name: 'Обычный', color: '#9ca3af' },
+    'nft': { name: 'NFT', color: '#10b981' },
+    'rare': { name: 'Редкий', color: '#3b82f6' },
+    'legendary': { name: 'Легендарный', color: '#f59e0b' }
+  };
 
-const NFT_POOL = [
-  { id: 'bear', name: 'Мишка', icon: '🧸', rarity: 'common', price: 15 },
-  { id: 'gift', name: 'Подарок', icon: '🎁', rarity: 'common', price: 25 },
-  { id: 'heart', name: 'Сердечко', icon: '💖', rarity: 'common', price: 15 },
-  { id: 'rose', name: 'Роза', icon: '🌹', rarity: 'common', price: 25 },
-  { id: 'cake', name: 'Торт', icon: '🎂', rarity: 'common', price: 50 },
-  { id: 'bouquet', name: 'Букет', icon: '💐', rarity: 'common', price: 50 },
-  { id: 'rocket', name: 'Ракета', icon: '🚀', rarity: 'common', price: 50 },
-  { id: 'cup', name: 'Кубок', icon: '🏆', rarity: 'common', price: 100 },
-  { id: 'ring', name: 'Кольцо', icon: '💍', rarity: 'common', price: 100 },
-  { id: 'diamond', name: 'Алмаз', icon: '💎', rarity: 'common', price: 100 },
-  { id: 'skull', name: 'Череп', icon: '💀', rarity: 'nft', price: 50 },
-  { id: 'roses_bouquet', name: 'Розы', icon: '🌺', rarity: 'nft', price: 50 },
-  { id: 'cigarette', name: 'Сигарета', icon: '🚬', rarity: 'rare', price: 500 },
-  { id: 'cigar', name: 'Сигара', icon: '🚬', rarity: 'rare', price: 800 },
-  { id: 'socks', name: 'Носки', icon: '🧦', rarity: 'rare', price: 1000 },
-  { id: 'music_box', name: 'Шкатулка', icon: '🎵', rarity: 'rare', price: 1000 },
-  { id: 'potion', name: 'Зелье', icon: '🧪', rarity: 'rare', price: 1000 },
-  { id: 'calendar', name: 'Календарь', icon: '📅', rarity: 'rare', price: 1500 },
-  { id: 'button', name: 'Кнопка', icon: '🔘', rarity: 'rare', price: 500 },
-  { id: 'cap', name: 'Кепка', icon: '🧢', rarity: 'legendary', price: 10000 },
-  { id: 'car', name: 'Машина', icon: '🚗', rarity: 'legendary', price: 5000 },
-  { id: 'pepe', name: 'Плюш Пепе', icon: '🐸', rarity: 'legendary', price: 50000 }
-];
+  var NFT_POOL = [
+    { id: 'bear', name: 'Мишка', icon: '🧸', rarity: 'common', price: 15 },
+    { id: 'gift', name: 'Подарок', icon: '🎁', rarity: 'common', price: 25 },
+    { id: 'heart', name: 'Сердечко', icon: '💖', rarity: 'common', price: 15 },
+    { id: 'rose', name: 'Роза', icon: '🌹', rarity: 'common', price: 25 },
+    { id: 'cake', name: 'Торт', icon: '🎂', rarity: 'common', price: 50 },
+    { id: 'bouquet', name: 'Букет', icon: '💐', rarity: 'common', price: 50 },
+    { id: 'rocket', name: 'Ракета', icon: '🚀', rarity: 'common', price: 50 },
+    { id: 'cup', name: 'Кубок', icon: '🏆', rarity: 'common', price: 100 },
+    { id: 'ring', name: 'Кольцо', icon: '💍', rarity: 'common', price: 100 },
+    { id: 'diamond', name: 'Алмаз', icon: '💎', rarity: 'common', price: 100 },
+    { id: 'skull', name: 'Череп', icon: '💀', rarity: 'nft', price: 50 },
+    { id: 'roses_bouquet', name: 'Розы', icon: '🌺', rarity: 'nft', price: 50 },
+    { id: 'cigarette', name: 'Сигарета', icon: '🚬', rarity: 'rare', price: 500 },
+    { id: 'cigar', name: 'Сигара', icon: '🚬', rarity: 'rare', price: 800 },
+    { id: 'socks', name: 'Носки', icon: '🧦', rarity: 'rare', price: 1000 },
+    { id: 'music_box', name: 'Шкатулка', icon: '🎵', rarity: 'rare', price: 1000 },
+    { id: 'potion', name: 'Зелье', icon: '🧪', rarity: 'rare', price: 1000 },
+    { id: 'calendar', name: 'Календарь', icon: '📅', rarity: 'rare', price: 1500 },
+    { id: 'button', name: 'Кнопка', icon: '🔘', rarity: 'rare', price: 500 },
+    { id: 'cap', name: 'Кепка', icon: '🧢', rarity: 'legendary', price: 10000 },
+    { id: 'car', name: 'Машина', icon: '🚗', rarity: 'legendary', price: 5000 },
+    { id: 'pepe', name: 'Плюш Пепе', icon: '🐸', rarity: 'legendary', price: 50000 }
+  ];
 
-const CASES = [
-  { id: 'starter', name: 'Стартовый', icon: '📦', price: 50, desc: 'Только до NFT' },
-  { id: 'pro', name: 'Про', icon: '🎁', price: 500, desc: 'Обычные и Редкие' },
-  { id: 'elite', name: 'Элитный', icon: '💎', price: 8000, desc: 'Всё, включая Легендарки' }
-];
+  var CASES = [
+    { id: 'starter', name: 'Стартовый', icon: '📦', price: 50, desc: 'Только до NFT' },
+    { id: 'pro', name: 'Про', icon: '🎁', price: 500, desc: 'Обычные и Редкие' },
+    { id: 'elite', name: 'Элитный', icon: '💎', price: 8000, desc: 'Всё, включая Легендарки' }
+  ];
 
-function switchAuthTab(mode) {
-  authMode = mode;
-  document.getElementById('tab-login').classList.toggle('active', mode === 'login');
-  document.getElementById('tab-register').classList.toggle('active', mode === 'register');
-  document.getElementById('mainAuthBtn').textContent = mode === 'login' ? 'Войти' : 'Зарегистрироваться';
-}
-
-async function handleAuth() {
-  const login = document.getElementById('authLogin').value.trim();
-  const pass = document.getElementById('authPassword').value;
-  if (!login) return alert('Введите логин!');
-  if (pass.length < 6) return alert('Пароль минимум 6 символов!');
-
-  const btn = document.getElementById('mainAuthBtn');
-  btn.disabled = true;
-
-  const url = authMode === 'register' ? '/api/register' : '/api/login';
-  try {
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ login, password: pass })
-    });
-    const data = await res.json();
-    if (!res.ok) return alert(data.error || 'Ошибка');
-
-    currentUser = login;
-    if (authMode === 'register') alert('Успешно! +30 🌟');
-    enterGame();
-  } catch (e) {
-    alert('Нет связи с сервером');
-  } finally {
-    btn.disabled = false;
+  function switchAuthTab(mode) {
+    authMode = mode;
+    document.getElementById('tab-login').classList.toggle('active', mode === 'login');
+    document.getElementById('tab-register').classList.toggle('active', mode === 'register');
+    document.getElementById('mainAuthBtn').textContent = mode === 'login' ? 'Войти' : 'Зарегистрироваться';
   }
-}
 
-async function enterGame() {
-  document.getElementById('authScreen').style.display = 'none';
-  document.getElementById('mainScreen').style.display = 'block';
-  document.getElementById('uiUsername').textContent = currentUser;
-  localStorage.setItem('saved_user', currentUser);
-  renderCases();
+  document.getElementById('tab-login').addEventListener('click', function() { switchAuthTab('login'); });
+  document.getElementById('tab-register').addEventListener('click', function() { switchAuthTab('register'); });
 
-  const res = await fetch('/api/user/' + encodeURIComponent(currentUser));
-  if (res.ok) {
-    const data = await res.json();
-    isSuperAdmin = data.is_super_admin;
-    if (data.is_admin) {
-      document.getElementById('adminTabBtn').style.display = 'block';
-      document.getElementById('superAdminBox').style.display = data.is_super_admin ? 'block' : 'none';
-    } else {
-      document.getElementById('adminTabBtn').style.display = 'none';
+  document.getElementById('mainAuthBtn').addEventListener('click', async function() {
+    var login = document.getElementById('authLogin').value.trim();
+    var pass = document.getElementById('authPassword').value;
+    if (!login) return alert('Введите логин!');
+    if (pass.length < 6) return alert('Пароль минимум 6 символов!');
+
+    var btn = document.getElementById('mainAuthBtn');
+    btn.disabled = true;
+
+    var url = authMode === 'register' ? '/api/register' : '/api/login';
+    try {
+      var res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ login: login, password: pass })
+      });
+      var data = await res.json();
+      if (!res.ok) {
+        alert(data.error || 'Ошибка сервера');
+        return;
+      }
+      currentUser = login;
+      if (authMode === 'register') alert('Успешно! +30 🌟');
+      enterGame();
+    } catch (e) {
+      alert('Нет связи с сервером: ' + e.message);
+    } finally {
+      btn.disabled = false;
     }
-    playerData = data;
-    updateUI();
-  }
-}
-
-function logout() {
-  currentUser = null;
-  isSuperAdmin = false;
-  localStorage.removeItem('saved_user');
-  document.getElementById('mainScreen').style.display = 'none';
-  document.getElementById('authScreen').style.display = 'flex';
-  document.getElementById('authPassword').value = '';
-}
-
-async function loadPlayerData() {
-  if (!currentUser) return;
-  const res = await fetch('/api/user/' + encodeURIComponent(currentUser));
-  if (res.ok) {
-    playerData = await res.json();
-    updateUI();
-  }
-}
-
-function updateUI() {
-  document.getElementById('uiBalanceTop').textContent = playerData.balance;
-  renderInventory();
-}
-
-function renderCases() {
-  const container = document.getElementById('cases');
-  container.innerHTML = '';
-  CASES.forEach(c => {
-    const div = document.createElement('div');
-    div.className = 'case';
-    div.addEventListener('click', () => openPreview(c));
-    div.innerHTML = `<div class="icon">${c.icon}</div><div class="name">${c.name}</div><div class="desc">${c.desc}</div><div class="price">${c.price} 🌟</div>`;
-    container.appendChild(div);
-  });
-}
-
-function renderInventory() {
-  const container = document.getElementById('inventory');
-  container.innerHTML = '';
-  if (!playerData.inventory || playerData.inventory.length === 0) {
-    container.innerHTML = '<div style="color:#888; grid-column: 1/-1; text-align:center; padding: 30px;">Инвентарь пуст</div>';
-    return;
-  }
-  playerData.inventory.forEach(item => {
-    const r = RARITIES[item.rarity] || RARITIES.common;
-    const div = document.createElement('div');
-    div.className = 'item';
-    div.style.borderColor = r.color;
-
-    const btn = document.createElement('button');
-    const isSelling = sellingItems.has(item.uid);
-    btn.disabled = isSelling;
-    btn.textContent = isSelling ? 'Продажа...' : 'Продать за ' + item.price + ' 🌟';
-    btn.addEventListener('click', () => sellItem(item.uid, item.price, btn));
-
-    div.innerHTML = `<div class="icon">${item.icon}</div><div class="name">${item.name}</div><div style="font-size:11px; color:${r.color}; margin-bottom:6px;">${r.name}</div>`;
-    div.appendChild(btn);
-    container.appendChild(div);
-  });
-}
-
-function switchTab(id, btn) {
-  document.querySelectorAll('.content-section').forEach(el => el.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
-  document.getElementById('section-' + id).classList.add('active');
-  btn.classList.add('active');
-}
-
-function openPreview(c) {
-  document.getElementById('prevCaseName').textContent = c.icon + ' ' + c.name;
-  const openBtn = document.getElementById('openCaseBtn');
-  openBtn.textContent = 'Открыть за ' + c.price + ' 🌟';
-  openBtn.disabled = false;
-  openBtn.onclick = () => startOpening(c);
-
-  const grid = document.getElementById('previewGrid');
-  grid.innerHTML = '';
-  let pool = NFT_POOL;
-  if (c.id === 'starter') pool = NFT_POOL.filter(i => i.rarity === 'common' || i.rarity === 'nft');
-  if (c.id === 'pro') pool = NFT_POOL.filter(i => i.rarity === 'common' || i.rarity === 'rare');
-
-  pool.forEach(item => {
-    const r = RARITIES[item.rarity];
-    const div = document.createElement('div');
-    div.className = 'case-item-preview';
-    div.style.borderColor = r.color;
-    div.innerHTML = `<div style="font-size:28px">${item.icon}</div><div style="font-size:12px; color:#ccc">${item.name}</div><div style="font-size:10px; color:${r.color}">${r.name}</div>`;
-    grid.appendChild(div);
   });
 
-  document.getElementById('previewModal').classList.add('show');
-}
+  async function enterGame() {
+    document.getElementById('authScreen').style.display = 'none';
+    document.getElementById('mainScreen').style.display = 'block';
+    document.getElementById('uiUsername').textContent = currentUser;
+    localStorage.setItem('saved_user', currentUser);
+    renderCases();
 
-async function startOpening(c) {
-  if (isOpening) return;
-  if (playerData.balance < c.price) return alert('Мало звезд!');
+    try {
+      var res = await fetch('/api/user/' + encodeURIComponent(currentUser));
+      if (res.ok) {
+        var data = await res.json();
+        isSuperAdmin = data.is_super_admin;
+        if (data.is_admin) {
+          document.getElementById('adminTabBtn').style.display = 'block';
+          document.getElementById('superAdminBox').style.display = data.is_super_admin ? 'block' : 'none';
+        } else {
+          document.getElementById('adminTabBtn').style.display = 'none';
+        }
+        playerData = data;
+        updateUI();
+      }
+    } catch (e) {}
+  }
 
-  isOpening = true;
-  const openBtn = document.getElementById('openCaseBtn');
-  openBtn.disabled = true;
+  document.getElementById('logoutBtn').addEventListener('click', function() {
+    currentUser = null;
+    isSuperAdmin = false;
+    localStorage.removeItem('saved_user');
+    document.getElementById('mainScreen').style.display = 'none';
+    document.getElementById('authScreen').style.display = 'flex';
+    document.getElementById('authPassword').value = '';
+  });
 
-  const nft = getRandomItem(c.id);
-  const r = RARITIES[nft.rarity];
+  async function loadPlayerData() {
+    if (!currentUser) return;
+    var res = await fetch('/api/user/' + encodeURIComponent(currentUser));
+    if (res.ok) {
+      playerData = await res.json();
+      updateUI();
+    }
+  }
 
-  try {
-    const res = await fetch('/api/inventory/add', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        login: currentUser,
-        casePrice: c.price,
-        itemId: nft.id,
-        name: nft.name,
-        icon: nft.icon,
-        rarity: nft.rarity,
-        price: nft.price
-      })
+  function updateUI() {
+    document.getElementById('uiBalanceTop').textContent = playerData.balance;
+    renderInventory();
+  }
+
+  function renderCases() {
+    var container = document.getElementById('cases');
+    container.innerHTML = '';
+    CASES.forEach(function(c) {
+      var div = document.createElement('div');
+      div.className = 'case';
+      div.innerHTML = '<div class="icon">' + c.icon + '</div><div class="name">' + c.name + '</div><div class="desc">' + c.desc + '</div><div class="price">' + c.price + ' 🌟</div>';
+      div.addEventListener('click', function() { openPreview(c); });
+      container.appendChild(div);
     });
+  }
 
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      alert(err.error || 'Недостаточно звёзд!');
-      isOpening = false;
-      openBtn.disabled = false;
+  function renderInventory() {
+    var container = document.getElementById('inventory');
+    container.innerHTML = '';
+    if (!playerData.inventory || playerData.inventory.length === 0) {
+      container.innerHTML = '<div style="color:#888; grid-column: 1/-1; text-align:center; padding: 30px;">Инвентарь пуст</div>';
       return;
     }
+    playerData.inventory.forEach(function(item) {
+      var r = RARITIES[item.rarity] || RARITIES.common;
+      var div = document.createElement('div');
+      div.className = 'item';
+      div.style.borderColor = r.color;
 
-    playerData.balance -= c.price;
-    document.getElementById('uiBalanceTop').textContent = playerData.balance;
+      var iconDiv = document.createElement('div');
+      iconDiv.className = 'icon';
+      iconDiv.textContent = item.icon;
 
+      var nameDiv = document.createElement('div');
+      nameDiv.className = 'name';
+      nameDiv.textContent = item.name;
+
+      var rarDiv = document.createElement('div');
+      rarDiv.style.fontSize = '11px';
+      rarDiv.style.color = r.color;
+      rarDiv.style.marginBottom = '6px';
+      rarDiv.textContent = r.name;
+
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      if (sellingItems[item.uid]) {
+        btn.disabled = true;
+        btn.textContent = 'Продажа...';
+      } else {
+        btn.textContent = 'Продать за ' + item.price + ' 🌟';
+      }
+      btn.addEventListener('click', function() {
+        sellItem(item.uid, item.price, btn);
+      });
+
+      div.appendChild(iconDiv);
+      div.appendChild(nameDiv);
+      div.appendChild(rarDiv);
+      div.appendChild(btn);
+      container.appendChild(div);
+    });
+  }
+
+  function switchTab(id, btn) {
+    document.querySelectorAll('.content-section').forEach(function(el) { el.classList.remove('active'); });
+    document.querySelectorAll('.nav-btn').forEach(function(el) { el.classList.remove('active'); });
+    document.getElementById('section-' + id).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  document.getElementById('nav-cases').addEventListener('click', function() { switchTab('cases', this); });
+  document.getElementById('nav-inventory').addEventListener('click', function() { switchTab('inventory', this); });
+  document.getElementById('adminTabBtn').addEventListener('click', function() { switchTab('admin', this); });
+  document.getElementById('closePreviewBtn').addEventListener('click', function() {
     document.getElementById('previewModal').classList.remove('show');
-    document.getElementById('animationModal').classList.add('show');
+  });
+  document.getElementById('closeAnimBtn').addEventListener('click', function() {
+    document.getElementById('animationModal').classList.remove('show');
     document.getElementById('winOverlay').classList.remove('show');
+  });
 
-    let stripHtml = '';
-    const stripItems = [];
-    for (let i = 0; i < 50; i++) {
-      let pool = NFT_POOL;
-      if (c.id === 'starter') pool = NFT_POOL.filter(x => x.rarity === 'common' || x.rarity === 'nft');
-      if (c.id === 'pro') pool = NFT_POOL.filter(x => x.rarity === 'common' || x.rarity === 'rare');
-      const randItem = pool[Math.floor(Math.random() * pool.length)];
-      stripItems.push(randItem);
-    }
+  function openPreview(c) {
+    document.getElementById('prevCaseName').textContent = c.icon + ' ' + c.name;
+    var openBtn = document.getElementById('openCaseBtn');
+    openBtn.textContent = 'Открыть за ' + c.price + ' 🌟';
+    openBtn.disabled = false;
+    openBtn.onclick = function() { startOpening(c); };
 
-    stripItems[45] = nft;
+    var grid = document.getElementById('previewGrid');
+    grid.innerHTML = '';
+    var pool = NFT_POOL;
+    if (c.id === 'starter') pool = NFT_POOL.filter(function(i) { return i.rarity === 'common' || i.rarity === 'nft'; });
+    if (c.id === 'pro') pool = NFT_POOL.filter(function(i) { return i.rarity === 'common' || i.rarity === 'rare'; });
 
-    stripItems.forEach(item => {
-      stripHtml += `<div class="roulette-item"><div class="r-icon">${item.icon}</div><div class="r-name">${item.name}</div></div>`;
+    pool.forEach(function(item) {
+      var r = RARITIES[item.rarity];
+      var div = document.createElement('div');
+      div.className = 'case-item-preview';
+      div.style.borderColor = r.color;
+      div.innerHTML = '<div style="font-size:28px">' + item.icon + '</div><div style="font-size:12px; color:#ccc">' + item.name + '</div><div style="font-size:10px; color:' + r.color + '">' + r.name + '</div>';
+      grid.appendChild(div);
     });
 
-    const strip = document.getElementById('rouletteStrip');
-    strip.innerHTML = stripHtml;
-    strip.style.transition = 'none';
-    strip.style.transform = 'translateX(0)';
+    document.getElementById('previewModal').classList.add('show');
+  }
 
-    setTimeout(() => {
-      const itemWidth = 121;
-      const containerWidth = document.querySelector('.roulette-container').offsetWidth;
-      const centerOffset = (containerWidth / 2) - (itemWidth / 2);
-      const targetPosition = (45 * itemWidth) - centerOffset;
-
-      strip.style.tra
+  functio
