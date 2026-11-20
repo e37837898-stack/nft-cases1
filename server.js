@@ -140,7 +140,6 @@ app.post('/api/upgrade', async (req, res) => {
     const { data: myItem } = await supabase.from('inventory').select('*').eq('user_login', login).eq('uid', myUid).single();
     if (!myItem) return res.status(404).json({ error: 'Ваш предмет не найден' });
     
-    // Ищем целевой предмет во всех пулах
     let targetItem = null;
     for (const pool of Object.values(CASE_POOLS)) {
         targetItem = pool.find(i => i.id === targetItemId);
@@ -148,10 +147,10 @@ app.post('/api/upgrade', async (req, res) => {
     }
     if (!targetItem) return res.status(400).json({ error: 'Целевой предмет не найден' });
 
-    // Считаем шанс по формуле: (цена моей вещи / цена целевой) * 100, но не более 50%
+    // Формула шанса: (цена моей вещи / цена целевой) * 50. Максимум 50%, минимум 1%.
     let winChance = (myItem.price / targetItem.price) * 50; 
-    if (winChance > 50) winChance = 50; // Максимальный шанс 50%
-    if (winChance < 1) winChance = 1; // Минимальный шанс 1%
+    if (winChance > 50) winChance = 50;
+    if (winChance < 1) winChance = 1;
 
     await supabase.from('inventory').delete().eq('uid', myUid);
     const isWin = Math.random() * 100 < winChance;
@@ -170,7 +169,7 @@ app.post('/api/upgrade', async (req, res) => {
 // ==========================================
 app.post('/api/bonus/claim', async (req, res) => {
     const { login } = req.body;
-    const { data: user } = await supabase.from('users').select('last_bonus').eq('login', login).single();
+    const { data: user } = await supabase.from('users').select('last_bonus, balance').eq('login', login).single();
     const now = new Date();
     if (user.last_bonus) {
         const last = new Date(user.last_bonus);
@@ -181,6 +180,9 @@ app.post('/api/bonus/claim', async (req, res) => {
     res.json({ success: true, balance: updatedUser.balance });
 });
 
+// ==========================================
+// ПРОМОКОДЫ
+// ==========================================
 app.post('/api/promo/activate', async (req, res) => {
     const { login, code } = req.body;
     const { data: promo } = await supabase.from('promocodes').select('*').eq('code', code).single();
