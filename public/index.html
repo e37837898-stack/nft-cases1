@@ -41,10 +41,25 @@
   .item button { width: 100%; padding: 8px; border: none; border-radius: 8px; color: #fff; font-weight: bold; margin-top: 5px; cursor: pointer; }
   .btn-sell { background: #f59e0b; } .btn-withdraw { background: #3b82f6; }
   .btn-sell-all { background: #ef4444; width: 100%; padding: 15px; margin-bottom: 20px; border: none; border-radius: 12px; color: #fff; font-weight: bold; cursor: pointer; display: none; }
-  .upgrade-container { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; background: #16162a; padding: 30px; border-radius: 16px; }
-  .upgrade-slot { width: 150px; height: 180px; border: 2px dashed #444; border-radius: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; }
-  .upgrade-arrow { font-size: 30px; color: #a855f7; }
-  .upgrade-btn { background: #a855f7; color: #fff; border: none; padding: 15px; border-radius: 12px; font-weight: bold; cursor: pointer; margin-top: 20px; width: 100%; max-width: 300px; }
+  
+  /* Стили для Апгрейда */
+  .upgrade-wrapper { display: flex; flex-direction: column; align-items: center; justify-content: center; background: #16162a; padding: 30px; border-radius: 16px; border: 1px solid #2a2a4a; }
+  .upgrade-slots { display: flex; justify-content: space-between; width: 100%; max-width: 600px; gap: 20px; margin-bottom: 20px; }
+  .upgrade-slot { flex: 1; height: 160px; border: 2px dashed #444; border-radius: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; background: #12121a; transition: 0.2s; }
+  .upgrade-slot:hover { border-color: #a855f7; }
+  .upgrade-slot .icon { font-size: 40px; }
+  .upgrade-slot .name { font-size: 12px; color: #ccc; margin-top: 5px; text-align: center; }
+  
+  /* Круглая рулетка (спидометр) */
+  .speedometer { position: relative; width: 300px; height: 150px; overflow: hidden; margin: 20px 0; }
+  .dial { width: 300px; height: 300px; border-radius: 50%; background: conic-gradient(from 180deg, #ef4444 0%, #f59e0b 25%, #10b981 50%, #10b981 75%, #10b981 100%); position: absolute; top: 0; left: 0; transform: rotate(-90deg); display: flex; align-items: flex-start; justify-content: center; }
+  .dial::after { content: ''; position: absolute; top: 20px; left: 20px; right: 20px; bottom: 20px; background: #16162a; border-radius: 50%; }
+  .needle-container { position: absolute; bottom: 0; left: 50%; width: 4px; height: 140px; background: #ffd700; transform-origin: bottom center; transform: translateX(-50%) rotate(-90deg); z-index: 10; transition: transform 2s cubic-bezier(0.1, 0.7, 0.1, 1); box-shadow: 0 0 10px #ffd700; }
+  .chance-text { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); font-size: 24px; font-weight: bold; color: #fff; z-index: 11; }
+  
+  .upgrade-btn { background: #a855f7; color: #fff; border: none; padding: 15px; border-radius: 12px; font-weight: bold; cursor: pointer; margin-top: 20px; width: 100%; max-width: 300px; font-size: 16px;}
+  .toggle-fast { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 15px 0; color: #ccc; font-size: 14px; cursor: pointer; }
+  
   .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; z-index: 100; padding: 20px; }
   .modal.show { display: flex; }
   .modal .box { background: #16162a; border-radius: 20px; padding: 30px; text-align: center; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; }
@@ -63,8 +78,6 @@
   .win-overlay.show { display: block; }
   .drop-feed { position: fixed; bottom: 20px; left: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 50; pointer-events: none; }
   .feed-item { background: #16162a; border: 1px solid #3b82f6; padding: 10px 20px; border-radius: 8px; font-size: 12px; color: #fff; opacity: 0.8; }
-  .toggle-fast { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 15px 0; color: #ccc; font-size: 14px; cursor: pointer; }
-  .toggle-fast input { width: 18px; height: 18px; cursor: pointer; }
 </style>
 </head>
 <body>
@@ -106,7 +119,10 @@
         <div class="stat-box"><div class="stat-value" id="profileNftCount">0</div><div class="stat-label">Предметов</div></div>
         <div class="stat-box"><div class="stat-value" id="profileNftValue">0 🌟</div><div class="stat-label">Стоимость NFT</div></div>
       </div>
-      <button class="btn-main" id="btnClaimBonus" style="margin-top:15px; background:#10b981;">Забрать ежедневный бонус +50 🌟</button>
+      <div style="display:flex; gap:10px; margin-top:15px; flex-wrap:wrap;">
+        <button class="btn-main" id="btnClaimBonus" style="background:#10b981; flex:1;">Бонус +50 🌟</button>
+        <button class="btn-main" id="btnProfilePromo" style="background:#3b82f6; flex:1;">Ввести промокод</button>
+      </div>
     </div>
   </div>
 
@@ -117,16 +133,24 @@
     <div class="inventory" id="inventory"></div>
   </div>
 
-  <div id="section-upgrade" class="content-section" style="text-align:center;">
-    <div class="upgrade-container">
-      <div class="upgrade-slot" id="upgradeMySlot"><div style="font-size:50px;">?</div><div>Ваш NFT</div></div>
-      <div class="upgrade-arrow">➜</div>
-      <div class="upgrade-slot" id="upgradeTargetSlot"><div style="font-size:50px;">?</div><div>Цель</div></div>
+  <div id="section-upgrade" class="content-section">
+    <div class="upgrade-wrapper">
+      <div class="upgrade-slots">
+        <div class="upgrade-slot" id="upgradeMySlot"><div class="icon">?</div><div class="name">Ваш предмет</div></div>
+        <div class="upgrade-slot" id="upgradeTargetSlot"><div class="icon">?</div><div class="name">Цель</div></div>
+      </div>
+      
+      <div class="speedometer">
+        <div class="dial"></div>
+        <div class="needle-container" id="upgradeNeedle"></div>
+        <div class="chance-text" id="upgradeChanceText">0%</div>
+      </div>
+
+      <div class="toggle-fast">
+        <input type="checkbox" id="fastUpgradeToggle"> Быстрый апгрейд
+      </div>
+      <button class="upgrade-btn" id="btnDoUpgrade">Выберите предметы</button>
     </div>
-    <div class="toggle-fast" id="fastUpgradeToggleWrap">
-      <input type="checkbox" id="fastUpgradeToggle"> Быстрый апгрейд (без анимации)
-    </div>
-    <button class="upgrade-btn" id="btnDoUpgrade">Улучшить</button>
   </div>
 
   <div id="section-admin" class="content-section" style="text-align:center;">
@@ -137,17 +161,7 @@
 
 <div class="drop-feed" id="dropFeed"></div>
 
-<div class="modal" id="previewModal">
-  <div class="box">
-    <h2 id="prevCaseName">...</h2>
-    <div class="toggle-fast">
-      <input type="checkbox" id="fastCaseToggle"> Быстрое открытие (без анимации)
-    </div>
-    <button class="btn-main" id="openCaseBtn" style="margin-top:15px;">Открыть</button>
-    <button class="btn-main" id="closePreviewBtn" style="background:#444; margin-top:10px;">Закрыть</button>
-  </div>
-</div>
-
+<div class="modal" id="previewModal"><div class="box"><h2 id="prevCaseName">...</h2><div class="toggle-fast"><input type="checkbox" id="fastCaseToggle"> Быстрое открытие</div><button class="btn-main" id="openCaseBtn" style="margin-top:15px;">Открыть</button><button class="btn-main" id="closePreviewBtn" style="background:#444; margin-top:10px;">Закрыть</button></div></div>
 <div class="modal" id="promoModal"><div class="box"><h2>Промокод</h2><input type="text" id="promoInput" style="width:100%; padding:14px; margin:15px 0; border-radius:10px; border:1px solid #444; background:#12121a; color:#fff;"><button class="btn-main" id="btnActivatePromo">Активировать</button><button class="btn-main" id="closePromoBtn" style="background:#444; margin-top:10px;">Закрыть</button></div></div>
 
 <div class="modal" id="selectItemModal">
@@ -166,7 +180,8 @@
       <button class="btn-main" id="closeAnimBtn" style="background:#10b981; width:auto; padding:10px 20px;">Забрать</button>
       <button class="btn-main" id="btnSellWonItem" style="background:#f59e0b; width:auto; padding:10px 20px;">Продать</button>
     </div>
-  </div><script>
+  </div>
+</div><script>
 document.addEventListener('DOMContentLoaded', function() {
   var currentUser = null, authMode = 'login', playerData = { balance: 0, inventory: [], stats: { totalItems: 0, totalValue: 0 } };
   var isOpening = false, sellingItems = {}, upgradeSelectedMine = null, upgradeSelectedTarget = null;
@@ -251,7 +266,6 @@ document.addEventListener('DOMContentLoaded', function() {
       if (!isFast) {
         el('animationModal').classList.add('show'); el('winOverlay').classList.remove('show');
         if (spinSound) { spinSound.currentTime = 0; spinSound.play().catch(e=>{}); }
-        
         var stripHtml = '', stripItems = [];
         for (var i = 0; i < 50; i++) stripItems.push(data.pool[Math.floor(Math.random() * data.pool.length)]);
         stripItems.splice(45, 1, data.item);
@@ -261,7 +275,6 @@ document.addEventListener('DOMContentLoaded', function() {
           var w = 121, cw = document.querySelector('.roulette-container').offsetWidth;
           strip.style.transition = 'transform 5s cubic-bezier(0.1, 0.7, 0.1, 1)'; strip.style.transform = `translateX(-${(45 * w) - ((cw / 2) - (w / 2))}px)`;
         }, 100);
-        
         setTimeout(async () => {
           if (winSound) { winSound.play().catch(e=>{}); }
           await enterGame(); loadDropFeed();
@@ -270,7 +283,6 @@ document.addEventListener('DOMContentLoaded', function() {
           el('btnSellWonItem').onclick = () => { el('animationModal').classList.remove('show'); sellItem(data.item.uid, data.item.price, null); };
         }, 5100);
       } else {
-        // БЫСТРЫЙ РЕЖИМ
         if (winSound) { winSound.play().catch(e=>{}); }
         await enterGame(); loadDropFeed();
         el('animationModal').classList.add('show'); el('winOverlay').classList.add('show');
@@ -330,21 +342,33 @@ document.addEventListener('DOMContentLoaded', function() {
         feed.appendChild(div);
       });
     } catch(e) {}
-  }  // ==========================================
-  // АПГРЕЙД (С УМНЫМИ ПРОЦЕНТАМИ И БЫСТРЫМ РЕЖИМОМ)
+  }
+
+  // ==========================================
+  // ПРОМОКОД (ИЗ ПРОФИЛЯ)
+  // ==========================================
+  el('openPromoBtn').onclick = () => el('promoModal').classList.add('show');
+  el('btnProfilePromo').onclick = () => el('promoModal').classList.add('show');
+  el('closePromoBtn').onclick = () => el('promoModal').classList.remove('show');
+  el('btnActivatePromo').onclick = async () => {
+    var code = el('promoInput').value.trim().toUpperCase(); if (!code) return;
+    var res = await fetch('/api/promo/activate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ login: currentUser, code }) });
+    var data = await res.json();
+    if (res.ok) { alert('+' + data.stars + '🌟'); el('promoModal').classList.remove('show'); await enterGame(); } else alert(data.error);
+  };  // ==========================================
+  // АПГРЕЙД (КРАСИВАЯ РУЛЕТКА)
   // ==========================================
   function renderUpgradeTab() {
     el('upgradeMySlot').onclick = () => {
       if (!playerData.inventory.length) return alert('Инвентарь пуст');
       openSelectItemModal(playerData.inventory, (selected) => {
         upgradeSelectedMine = selected;
-        el('upgradeMySlot').innerHTML = `<div style="font-size:50px;">${selected.icon}</div><div>${selected.name}</div>`;
-        updateUpgradeBtn();
+        el('upgradeMySlot').innerHTML = `<div class="icon">${selected.icon}</div><div class="name">${selected.name}</div>`;
+        updateUpgradeUI();
       });
     };
 
     el('upgradeTargetSlot').onclick = () => {
-      // Собираем все предметы из игры для цели
       var pool = [
         { id: 'calendar', name: 'Календарь', icon: '📅', price: 1500 },
         { id: 'car', name: 'Машина', icon: '🚗', price: 5000 },
@@ -352,22 +376,33 @@ document.addEventListener('DOMContentLoaded', function() {
       ];
       openSelectItemModal(pool, (selected) => {
         upgradeSelectedTarget = selected;
-        el('upgradeTargetSlot').innerHTML = `<div style="font-size:50px;">${selected.icon}</div><div>${selected.name}</div>`;
-        updateUpgradeBtn();
+        el('upgradeTargetSlot').innerHTML = `<div class="icon">${selected.icon}</div><div class="name">${selected.name}</div>`;
+        updateUpgradeUI();
       });
     };
   }
 
-  function updateUpgradeBtn() {
+  function updateUpgradeUI() {
     var btn = el('btnDoUpgrade');
+    var needle = el('upgradeNeedle');
+    var chanceText = el('upgradeChanceText');
+
     if (upgradeSelectedMine && upgradeSelectedTarget) {
-      // Формула та же, что и на сервере (для отображения)
       let chance = (upgradeSelectedMine.price / upgradeSelectedTarget.price) * 50;
       if (chance > 50) chance = 50;
       if (chance < 1) chance = 1;
+      
       btn.textContent = 'Улучшить (Шанс ' + chance.toFixed(1) + '%)';
+      chanceText.textContent = chance.toFixed(1) + '%';
+      
+      // Стрелка отклоняется от -90 (0%) до +90 (100%). 
+      // У нас шанс макс 50%, поэтому стрелка ходит от -90 до 0 градусов.
+      var angle = -90 + (chance / 100) * 180; 
+      needle.style.transform = `translateX(-50%) rotate(${angle}deg)`;
     } else {
       btn.textContent = 'Выберите предметы';
+      chanceText.textContent = '0%';
+      needle.style.transform = `translateX(-50%) rotate(-90deg)`;
     }
   }
 
@@ -397,6 +432,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var isFast = el('fastUpgradeToggle').checked;
     var btn = el('btnDoUpgrade');
     btn.disabled = true;
+    var needle = el('upgradeNeedle');
 
     var res = await fetch('/api/upgrade', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ login: currentUser, myUid: upgradeSelectedMine.uid, targetItemId: upgradeSelectedTarget.id }) });
     var data = await res.json();
@@ -404,11 +440,21 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!res.ok) { alert(data.error); btn.disabled = false; return; }
 
     if (!isFast) {
-      // Здесь можно было бы сделать анимацию крутилки для апгрейда, 
-      // но для простоты используем таймаут, чтобы было ощущение прокрутки.
       if (spinSound) { spinSound.currentTime = 0; spinSound.play().catch(e=>{}); }
       btn.textContent = 'Крутим...';
-      setTimeout(() => { finishUpgrade(data, btn); }, 2500);
+      // Анимация кручения (случайные колебания)
+      var startAngle = -90, currentAngle = startAngle;
+      var spinInterval = setInterval(() => {
+        currentAngle += 30;
+        needle.style.transform = `translateX(-50%) rotate(${currentAngle}deg)`;
+      }, 100);
+
+      setTimeout(() => {
+        clearInterval(spinInterval);
+        var finalAngle = -90 + (data.chance / 100) * 180;
+        needle.style.transform = `translateX(-50%) rotate(${finalAngle}deg)`;
+        finishUpgrade(data, btn);
+      }, 2500);
     } else {
       if (winSound) { winSound.play().catch(e=>{}); }
       finishUpgrade(data, btn);
@@ -420,23 +466,11 @@ document.addEventListener('DOMContentLoaded', function() {
     alert(data.win ? 'УСПЕХ! Вы получили ' + data.item.name : 'НЕУДАЧА. Предмет сгорел.');
     
     upgradeSelectedMine = null; upgradeSelectedTarget = null;
-    el('upgradeMySlot').innerHTML = '<div style="font-size:50px;">?</div><div>Ваш NFT</div>';
-    el('upgradeTargetSlot').innerHTML = '<div style="font-size:50px;">?</div><div>Цель</div>';
-    updateUpgradeBtn();
+    el('upgradeMySlot').innerHTML = '<div class="icon">?</div><div class="name">Ваш предмет</div>';
+    el('upgradeTargetSlot').innerHTML = '<div class="icon">?</div><div class="name">Цель</div>';
+    updateUpgradeUI();
     await enterGame();
   }
-
-  // ==========================================
-  // ПРОМОКОДЫ
-  // ==========================================
-  el('openPromoBtn').onclick = () => el('promoModal').classList.add('show');
-  el('closePromoBtn').onclick = () => el('promoModal').classList.remove('show');
-  el('btnActivatePromo').onclick = async () => {
-    var code = el('promoInput').value.trim().toUpperCase(); if (!code) return;
-    var res = await fetch('/api/promo/activate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ login: currentUser, code }) });
-    var data = await res.json();
-    if (res.ok) { alert('+' + data.stars + '🌟'); el('promoModal').classList.remove('show'); await enterGame(); } else alert(data.error);
-  };
 
   // ==========================================
   // АДМИНКА
@@ -486,4 +520,3 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 </body>
 </html>
-</div>
