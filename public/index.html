@@ -788,36 +788,36 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script><script>
 window.addEventListener('load', function() {
-  setTimeout(async function() {
-    try {
-      var supaRes = await fetch('https://jmbnfxlnrdapcblipcqx.supabase.co/rest/v1/cases?select=*', { 
-        headers: { 
-          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImptYm5meGxucmRhcGNibGlwY3F4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUxODQ5OTgsImV4cCI6MjExMDc2MDk5OH0.HBvYC5M_HKqIfGuZ7-8Vuqwd3oH4BcrsTpMbaROaJTs', 
-          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImptYm5meGxucmRhcGNibGlwY3F4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUxODQ5OTgsImV4cCI6MjExMDc2MDk5OH0.HBvYC5M_HKqIfGuZ7-8Vuqwd3oH4BcrsTpMbaROaJTs' 
-        } 
+  setTimeout(function() {
+    var HARDCODED_CASES = [
+      { id: 'starter', name: 'Стартовый', icon: '📦', price: 50, items: [{id:'bear',name:'Мишка',icon:'🧸',rarity:'common',price:15,chance:25},{id:'gift',name:'Подарок',icon:'🎁',rarity:'common',price:25,chance:20},{id:'heart',name:'Сердечко',icon:'💖',rarity:'common',price:15,chance:25},{id:'rose',name:'Роза',icon:'🌹',rarity:'common',price:25,chance:20},{id:'skull',name:'Череп',icon:'💀',rarity:'nft',price:50,chance:10}] },
+      { id: 'pro', name: 'Про', icon: '🎁', price: 500, items: [{id:'cake',name:'Торт',icon:'🎂',rarity:'common',price:50,chance:40},{id:'bouquet',name:'Букет',icon:'💐',rarity:'common',price:50,chance:30},{id:'rocket',name:'Ракета',icon:'🚀',rarity:'common',price:50,chance:15},{id:'cigarette',name:'Сигарета',icon:'🚬',rarity:'rare',price:500,chance:10},{id:'socks',name:'Носки',icon:'🧦',rarity:'rare',price:1000,chance:5}] },
+      { id: 'elite', name: 'Элитный', icon: '💎', price: 8000, items: [{id:'cup',name:'Кубок',icon:'🏆',rarity:'common',price:100,chance:30},{id:'ring',name:'Кольцо',icon:'💍',rarity:'common',price:100,chance:30},{id:'calendar',name:'Календарь',icon:'📅',rarity:'rare',price:1500,chance:20},{id:'car',name:'Машина',icon:'🚗',rarity:'legendary',price:5000,chance:15},{id:'pepe',name:'Плюш Пепе',icon:'🐸',rarity:'legendary',price:50000,chance:5}] }
+    ];
+
+    var casesContainer = document.getElementById('cases');
+    if (casesContainer) {
+      casesContainer.innerHTML = '';
+      HARDCODED_CASES.forEach(function(cs) {
+        var d = document.createElement('div'); 
+        d.className = 'case';
+        d.innerHTML = '<div class="icon">' + cs.icon + '</div><div class="name">' + cs.name + '</div><div class="price">' + cs.price + ' 🌟</div>';
+        d.onclick = function() { 
+          document.getElementById('prevCaseName').textContent = cs.icon + ' ' + cs.name; 
+          document.getElementById('openCaseBtn').onclick = function() { 
+            if (typeof startOpening === 'function') {
+                startOpening(cs); 
+            } else {
+                alert('Ошибка: функция открытия не найдена. Сервер не обновлен.');
+            }
+          }; 
+          document.getElementById('previewModal').classList.add('show'); 
+        };
+        casesContainer.appendChild(d);
       });
-      
-      if (supaRes.ok) {
-        var data = await supaRes.json();
-        var casesContainer = document.getElementById('cases');
-        if (casesContainer && data.length > 0) {
-          casesContainer.innerHTML = '';
-          data.forEach(function(cs) {
-            var d = document.createElement('div'); 
-            d.className = 'case';
-            d.innerHTML = '<div class="icon">' + cs.icon + '</div><div class="name">' + cs.name + '</div><div class="price">' + cs.price + ' 🌟</div>';
-            d.onclick = function() { 
-              document.getElementById('prevCaseName').textContent = cs.icon + ' ' + cs.name; 
-              document.getElementById('openCaseBtn').onclick = function() { startOpening(cs); }; 
-              document.getElementById('previewModal').classList.add('show'); 
-            };
-            casesContainer.appendChild(d);
-          });
-        }
-      }
-    } catch(e) {}
-  }, 2000); // Ждем 2 секунды, чтобы сайт точно загрузился
+    }
+  }, 1000); // Ждем 1 секунду
 });
 </script>
-</body>
+</body><
 </html>
