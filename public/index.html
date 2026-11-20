@@ -74,7 +74,7 @@
     </div>
     <div class="input-group"><label>Логин</label><input type="text" id="authLogin" placeholder="Ваш логин"></div>
     <div class="input-group"><label>Пароль</label><input type="password" id="authPassword" placeholder="Пароль (мин. 6 символов)"></div>
-    <button class="btn-main" onclick="handleAuth()">Войти</button>
+    <button class="btn-main" id="loginBtn" onclick="handleAuth()">Войти</button>
   </div>
 </div>
 <div id="mainScreen">
@@ -148,32 +148,71 @@ const CASES = [
   { id: 'pro', name: 'Про', icon: '🎁', price: 500, desc: 'Обычные и Редкие' },
   { id: 'elite', name: 'Элитный', icon: '💎', price: 8000, desc: 'Всё, включая Легендарки' },
 ];
-function switchAuthTab(mode) { authMode = mode; document.getElementById('tab-login').classList.toggle('active', mode === 'login'); document.getElementById('tab-register').classList.toggle('active', mode === 'register'); }
+
+// --- ФУНКЦИИ АВТОРИЗАЦИИ ---
+function switchAuthTab(mode) {
+  authMode = mode;
+  document.getElementById('tab-login').classList.toggle('active', mode === 'login');
+  document.getElementById('tab-register').classList.toggle('active', mode === 'register');
+}
+
 async function handleAuth() {
-  const login = document.getElementById('authLogin').value.trim(); const pass = document.getElementById('authPassword').value;
-  if (!login) return alert('Введите логин!'); if (pass.length < 6) return alert('Пароль минимум 6 символов!');
+  const login = document.getElementById('authLogin').value.trim();
+  const pass = document.getElementById('authPassword').value;
+  if (!login) return alert('Введите логин!');
+  if (pass.length < 6) return alert('Пароль минимум 6 символов!');
+  
   const endpoint = authMode === 'register' ? '/api/register' : '/api/login';
   try {
-    const response = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ login, password: pass }) });
-    const result = await response.json(); if (!response.ok) return alert(result.error || 'Ошибка!');
-    currentUser = login; if (authMode === 'register') alert('Регистрация успешна! Вам начислено 30 🌟'); enterGame();
-  } catch (e) { alert('Ошибка сети. Сервер недоступен.'); }
+    const response = await fetch(endpoint, { 
+      method: 'POST', 
+      headers: { 'Content-Type': 'application/json' }, 
+      body: JSON.stringify({ login, password: pass }) 
+    });
+    const result = await response.json();
+    if (!response.ok) return alert(result.error || 'Ошибка!');
+    
+    currentUser = login;
+    if (authMode === 'register') alert('Регистрация успешна! Вам начислено 30 🌟');
+    enterGame();
+  } catch (e) { 
+    alert('Ошибка сети. Сервер недоступен.'); 
+  }
 }
+
 async function enterGame() {
-  document.getElementById('authScreen').style.display = 'none'; document.getElementById('mainScreen').style.display = 'block';
-  document.getElementById('uiUsername').textContent = currentUser; localStorage.setItem('saved_user', currentUser);
+  document.getElementById('authScreen').style.display = 'none';
+  document.getElementById('mainScreen').style.display = 'block';
+  document.getElementById('uiUsername').textContent = currentUser;
+  localStorage.setItem('saved_user', currentUser);
+  
   const response = await fetch('/api/user/' + currentUser);
   if (response.ok) {
-    const data = await response.json(); isSuperAdmin = data.is_super_admin;
-    if (data.is_admin) { document.getElementById('adminTabBtn').style.display = 'block'; document.getElementById('superAdminBox').style.display = data.is_super_admin ? 'block' : 'none'; } 
-    else { document.getElementById('adminTabBtn').style.display = 'none'; }
+    const data = await response.json();
+    isSuperAdmin = data.is_super_admin;
+    if (data.is_admin) {
+      document.getElementById('adminTabBtn').style.display = 'block';
+      document.getElementById('superAdminBox').style.display = data.is_super_admin ? 'block' : 'none';
+    } else {
+      document.getElementById('adminTabBtn').style.display = 'none';
+    }
   }
   loadPlayerData();
 }
-function logout() { currentUser = null; isSuperAdmin = false; localStorage.removeItem('saved_user'); document.getElementById('mainScreen').style.display = 'none'; document.getElementById('authScreen').style.display = 'flex'; document.getElementById('authPassword').value = ''; }
+
+function logout() {
+  currentUser = null; isSuperAdmin = false;
+  localStorage.removeItem('saved_user');
+  document.getElementById('mainScreen').style.display = 'none';
+  document.getElementById('authScreen').style.display = 'flex';
+  document.getElementById('authPassword').value = '';
+}
+
+// --- ОСТАЛЬНАЯ ЛОГИКА ---
 async function loadPlayerData() { if (!currentUser) return; try { const response = await fetch('/api/user/' + currentUser); if (response.ok) { playerData = await response.json(); updateUI(); } } catch (e) { console.log(e); } }
 function updateUI() { document.getElementById('uiBalanceTop').textContent = playerData.balance; renderInventory(); }
 function switchTab(tabId, btn) { document.querySelectorAll('.content-section').forEach(el => el.classList.remove('active')); document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active')); document.getElementById('section-' + tabId).classList.add('active'); btn.classList.add('active'); }
+
 function openPreview(caseObj) {
   document.getElementById('prevCaseName').textContent = caseObj.icon + ' ' + caseObj.name;
   document.getElementById('openCaseBtn').textContent = 'Открыть за ' + caseObj.price + ' 🌟';
@@ -186,7 +225,9 @@ function openPreview(caseObj) {
   sortedPool.forEach(item => { const rInfo = RARITIES[item.rarity]; const div = document.createElement('div'); div.className = 'case-item-preview'; div.style.borderColor = rInfo.color; div.innerHTML = '<div class="c-icon">' + item.icon + '</div><div class="c-name">' + item.name + '</div><div class="c-rarity" style="color:' + rInfo.color + '">' + rInfo.name + '</div>'; grid.appendChild(div); });
   document.getElementById('previewModal').classList.add('show');
 }
+
 function closePreviewModal() { document.getElementById('previewModal').classList.remove('show'); }
+
 async function startOpening(caseObj) {
   if (playerData.balance < caseObj.price) return alert('Недостаточно средств!');
   const nft = getRandomItem(caseObj.id); const rInfo = RARITIES[nft.rarity]; closePreviewModal();
@@ -196,12 +237,16 @@ async function startOpening(caseObj) {
   await fetch('/api/inventory/add', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ login: currentUser, itemId: nft.id, name: nft.name, icon: nft.icon, rarity: nft.rarity, price: nft.price }) });
   await loadPlayerData();
 }
+
 function getRandomItem(caseId) { let pool = NFT_POOL; if (caseId === 'starter') pool = NFT_POOL.filter(i => ['common', 'nft'].includes(i.rarity)); if (caseId === 'pro') pool = NFT_POOL.filter(i => ['common', 'rare'].includes(i.rarity)); return pool[Math.floor(Math.random() * pool.length)]; }
 function closeResultModal() { document.getElementById('resultModal').classList.remove('show'); }
+
 async function sellItem(uid, price) { if (confirm('Продать за ' + price + ' 🌟?')) { await fetch('/api/inventory/sell', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ login: currentUser, uid, price }) }); await loadPlayerData(); } }
+
 async function adminGiveStars() { const target = document.getElementById('adminTarget').value.trim(); const amount = parseInt(document.getElementById('adminAmount').value); if (!target || !amount) return alert('Заполните поля!'); const response = await fetch('/api/admin/give-stars', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ adminLogin: currentUser, targetLogin: target, amount: amount }) }); const result = await response.json(); if (response.ok) alert('Успешно выдано ' + amount + ' 🌟 игроку ' + target + '!'); else alert(result.error); }
 async function makeAdmin() { const target = document.getElementById('newAdminLogin').value.trim(); if (!target) return alert('Введите логин!'); const response = await fetch('/api/admin/make-admin', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ superAdminLogin: currentUser, targetLogin: target }) }); const result = await response.json(); if (response.ok) alert('Игрок ' + target + ' теперь Админ!'); else alert(result.error); }
 async function removeAdmin() { const target = document.getElementById('newAdminLogin').value.trim(); if (!target) return alert('Введите логин!'); const response = await fetch('/api/admin/remove-admin', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ superAdminLogin: currentUser, targetLogin: target }) }); const result = await response.json(); if (response.ok) alert('С игрока ' + target + ' сняты права Админа!'); else alert(result.error); }
+
 function renderCases() { const el = document.getElementById('cases'); el.innerHTML = ''; CASES.forEach(c => { const div = document.createElement('div'); div.className = 'case'; div.innerHTML = '<div class="icon">' + c.icon + '</div><div class="name">' + c.name + '</div><div class="price">' + c.price + ' 🌟</div><div class="desc">' + c.desc + '</div>'; div.onclick = () => openPreview(c); el.appendChild(div); }); }
-function renderInventory() { const el = document.getElementById('inventory'); if (!playerData.inventory || playerData.inventory.length === 0) { el.innerHTML = '<div style="color:#555; text-align:center; padding:20px; grid-column: 1/-1;">Пусто</div>'; return; } el.innerHTML = ''; playerData.inventory.forEach(item => { const rInfo = RARITIES[item.rarity]; const div = document.createElement('div'); div.className = 'item'; div.innerHTML = '<div class="icon">' + item.icon + '</div><div class="name">' + item.name + '</div><div style="font-size:11px; font-weight:bold; color:' + rInfo.color + '; margin-bottom:8px;">' + rInfo.name + '</div><button onclick="sellItem(\'' + item.uid + '\', ' + item.price + ')">Продать (' + item.price + ' 🌟)</button>'; el.appendChild(div); }); }
-window.addEventListener('load', async () => { const savedUser = localStorage.getItem('saved_user
+
+function renderInventory() { const el = document.getElementById('inventory'); if (!playerData.inventory || playerData.inventory.length === 0) { el.innerHTML = '<div style="color:#555; text-align:center; padding:20px; grid-column: 1/-1;">Пусто</div>'; return; } el.innerHTML = ''; playerData.inventory.forEach(item => { const rInfo = RARITIES[item.rarity]; const div = document.createElement('div'); div.className = 'item'; div.innerHTML = '<div class="icon">' + item.icon + '</div><div class="name">' + item.name + '</div><div style="font-size:11px; font-weight:bold; color:' + rInfo.color + '; margin-bottom:8px;">' + rInfo.name + '</div><button onclick="sellItem(\'' + item.uid + 
