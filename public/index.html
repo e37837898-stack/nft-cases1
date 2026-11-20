@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Кейсы</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Roboto, sans-serif; background: #0a0a0f; color: #e2e2e2; min-height: 100vh; padding: 20px; overflow-x: hidden;}
+  #authScreen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 90vh; }
+  .auth-box { background: #16162a; border: 1px solid #2a2a4a; border-radius: 24px; padding: 40px; width: 100%; max-width: 420px; }
+  .auth-box h1 { font-size: 32px; text-align: center; color: #a855f7; margin-bottom: 10px; }
+  .auth-box .subtitle { color: #888; font-size: 14px; text-align: center; margin-bottom: 25px; }
+  .tabs { display: flex; background: #12121a; border-radius: 12px; padding: 4px; margin-bottom: 25px; }
+  .tab { flex: 1; padding: 12px; text-align: center; border-radius: 8px; cursor: pointer; font-weight: 600; color: #888; }
+  .tab.active { background: #1a1a2e; color: #fff; }
+  .input-group { margin-bottom: 18px; }
+  .input-group label { display: block; margin-bottom: 8px; font-size: 13px; color: #aaa; }
+  .input-group input { width: 100%; padding: 14px 16px; border-radius: 12px; border: 1px solid #2a2a4a; background: #12121a; color: #fff; font-size: 15px; outline: none; }
+  .btn-main { width: 100%; padding: 16px; border: none; border-radius: 12px; background: #a855f7; color: #fff; font-size: 16px; font-weight: bold; cursor: pointer; }
+  #mainScreen { display: none; max-width: 1000px; margin: 0 auto; }
+  header { display: flex; justify-content: space-between; align-items: center; background: #16162a; padding: 15px 25px; border-radius: 16px; margin-bottom: 25px; }
+  .logo { font-size: 24px; font-weight: 800; color: #a855f7; }
+  .user-info { font-weight: 600; color: #ccc; }
+  .balance-top { background: #12121a; padding: 8px 16px; border-radius: 20px; font-weight: bold; color: #ffd700; }
+  .tabs-nav { display: flex; gap: 10px; margin-bottom: 25px; }
+  .nav-btn { padding: 12px 24px; background: #1a1a2e; border: 1px solid #2a2a4a; border-radius: 12px; color: #888; cursor: pointer; font-weight: 600; }
+  .nav-btn.active { background: #a855f7; border-color: #a855f7; color: #fff; }
+  .content-section { display: none; }
+  .content-section.active { display: block; }
+  .cases { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+  .case { background: #16162a; border: 1px solid #2a2a4a; border-radius: 16px; padding: 25px 20px; text-align: center; cursor: pointer; transition: 0.3s; }
+  .case:hover { border-color: #a855f7; transform: translateY(-5px); }
+  .case .icon { font-size: 50px; margin-bottom: 15px; }
+  .case .name { font-weight: 700; font-size: 18px; color: #fff; }
+  .case .price { color: #ffd700; font-size: 15px; font-weight: bold; }
+  .inventory { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; }
+  .item { background: #16162a; border: 1px solid #2a2a4a; border-radius: 14px; padding: 15px; text-align: center; }
+  .item .icon { font-size: 40px; }
+  .item .name { font-size: 14px; font-weight: 600; color: #fff; margin: 5px 0; }
+  .item button { width: 100%; padding: 8px; border: none; border-radius: 8px; background: #f59e0b; color: #fff; cursor: pointer; margin-top: 5px; font-weight: bold; }
+  .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; z-index: 100; padding: 20px; }
+  .modal.show { display: flex; }
+  .modal .box { background: #16162a; border-radius: 20px; padding: 30px; text-align: center; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; }
+  .case-items-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; margin-top: 20px; text-align: left; }
+  .case-item-preview { background: #0a0a0f; border: 1px solid #2a2a4a; border-radius: 10px; padding: 10px; text-align: center; }
+  .admin-box { background: #16162a; padding: 20px; border-radius: 16px; max-width: 400px; margin: 20px auto; text-align: left; }
+  .admin-box input { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 8px; border: none; background: #0a0a0f; color: #fff; }
+  .admin-box button { width: 100%; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; margin-bottom: 10px; }
+
+  /* СТИЛИ АНИМАЦИИ */
+  #animationModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); align-items: center; justify-content: center; z-index: 200; flex-direction: column; overflow: hidden; }
+  #animationModal.show { display: flex; }
+  .roulette-container { width: 100%; max-width: 800px; height: 150px; background: #12121a; border-top: 2px solid #2a2a4a; border-bottom: 2px solid #2a2a4a; position: relative; overflow: hidden; display: flex; align-items: center; }
+  .roulette-strip { display: flex; position: absolute; left: 0; }
+  .roulette-item { width: 120px; height: 146px; display: flex; flex-direction: column; align-items: center; justify-content: center; border-right: 1px solid #2a2a4a; flex-shrink: 0; background: #16162a; }
+  .roulette-item .r-icon { font-size: 50px; }
+  .roulette-item .r-name { font-size: 10px; color: #aaa; margin-top: 5px; text-align: center; padding: 0 5px;}
+  .roulette-pointer { position: absolute; left: 50%; top: 0; bottom: 0; width: 4px; background: #ffd700; transform: translateX(-50%); z-index: 10; box-shadow: 0 0 15px #ffd700; }
+  .win-overlay { display: none; text-align: center; margin-top: 30px; background: #16162a; padding: 20px 40px; border-radius: 16px; border: 2px solid #a855f7; box-shadow: 0 0 30px rgba(168,85,247,0.5);}
+  .win-overlay.show { display: block; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+  @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+</style>
+</head>
+<body>
+<div id="authScreen">
+  <div class="auth-box">
+    <h1>Кейсы</h1>
+    <div class="subtitle">Вход или регистрация. Бонус: +30 🌟</div>
+    <div class="tabs">
+      <div class="tab active" id="tab-login" onclick="switchAuthTab('login')">Вход</div>
+      <div class="tab" id="tab-register" onclick="switchAuthTab('register')">Регистрация</div>
+    </div>
+    <div class="input-group"><label>Логин</label><input type="text" id="authLogin" placeholder="Ваш логин"></div>
+    <div class="input-group"><label>Пароль</label><input type="password" id="authPassword" placeholder="Пароль (мин. 6 символов)"></div>
+    <button class="btn-main" onclick="handleAuth()">Войти</button>
+  </div>
+</div>
+<div id="mainScreen">
+  <header>
+    <div class="logo">Кейсы</div>
+    <div class="user-info">👤 <span id="uiUsername"></span></div>
+    <div class="balance-top"><span id="uiBalanceTop">0</span> 🌟</div>
+  </header>
+  <div class="tabs-nav">
+    <button class="nav-btn active" onclick="switchTab('cases', this)">Кейсы</button>
+    <button class="nav-btn" onclick="switchTab('inventory', this)">Инвентарь</button>
+    <button class="nav-btn" id="adminTabBtn" onclick="switchTab('admin', this)" style="display:none; background:#ef4444; border-color:#ef4444; color:#fff;">Админка</button>
+    <button class="nav-btn" onclick="logout()" style="margin-left:auto; color:#ef4444;">Выйти</button>
+  </div>
+  <div id="section-cases" class="content-section active"><div class="cases" id="cases"></div></div>
+  <div id="section-inventory" class="content-section"><div class="inventory" id="inventory"></div></div>
+  <div id="section-admin" class="content-section" style="text-align: center;">
+    <h2>Панель Администратора</h2>
+    <div class="admin-box">
+      <h3 style="margin-bottom:10px;">Выдать звезды</h3>
+      <input type="text" id="adminTarget" placeholder="Логин игрока">
+      <input type="number" id="adminAmount" placeholder="Сумма" value="1000">
+      <button onclick="adminGiveStars()" style="background:#10b981; color:#fff;">Выдать звезды</button>
+    </div>
+    <div class="admin-box" id="superAdminBox" style="display: none; border: 1px solid #ef4444;">
+      <h3 style="margin-bottom:10px; color:#ef4444;">Управление Админами</h3>
+      <input type="text" id="newAdminLogin" placeholder="Логин нового админа">
+      <button onclick="makeAdmin()" style="background:#a855f7; color:#fff;">Назначить Админом</button>
+      <button onclick="removeAdmin()" style="background:#374151; color:#fff;">Снять права</button>
+    </div>
+  </div>
+</div>
+
+<!-- МОДАЛКА ПРОСМОТРА КЕЙСА -->
+<div class="modal" id="previewModal">
+  <div class="box">
+    <h2 id="prevCaseName" style="margin-bottom:15px;">Название</h2>
+    <div class="case-items-grid" id="previewGrid"></div>
+    <button id="openCaseBtn" style="margin-top:20px; padding:14px; width:100%; background:#a855f7; color:#fff; border:none; border-radius:10px; font-weight:bold; font-size:16px; cursor:pointer;">Открыть кейс</button>
+    <button style="background:transparent; border:1px solid #444; color:#aaa; margin-top:10px; padding:10px; width:100%; border-radius:10px; cursor:pointer;" onclick="document.getElementById('previewModal').classList.remove('show')">Закрыть</button>
+  </div>
+</div>
+
+<!-- МОДАЛКА АНИМАЦИИ -->
+<div id="animationModal">
+  <div class="roulette-container">
+    <div class="roulette-pointer"></div>
+    <div class="roulette-strip" id="rouletteStrip"></div>
+  </div>
+  <div class="win-overlay" id="winOverlay">
+    <div style="font-size: 60px;" id="winIcon">?</div>
+    <h2 style="color: #fff; margin: 10px 0;" id="winName"></h2>
+    <div id="winRarity" style="font-weight: bold; margin-bottom: 15px;"></div>
+    <button class="btn-main" onclick="closeAnimation()" style="padding: 12px 30px; font-size: 16px; width: auto;">Забрать в инвентарь</button>
+  </div>
+</div>
+
+<script>
+let currentUser = null, authMode = 'login';
+let playerData = { balance: 0, inventory: [] };
+let isSuperAdmin = false;
+
+const RARITIES = {'common':{name:'Обычный',color:'#9ca3af'},'nft':{name:'NFT',color:'#10b981'},'rare':{name:'Редкий',color:'#3b82f6'},'legendary':{name:'Легендарный',color:'#f59e0b'}};
+const NFT_POOL = [
+  { id: 'bear', name: 'Мишка', icon: '🧸', rarity: 'common', price: 15 }, { id: 'gift', name: 'Подарок', icon: '🎁', rarity: 'common', price: 25 },
+  { id: 'heart', name: 'Сердечко', icon: '💖', rarity: 'common', price: 15 }, { id: 'rose', name: 'Роза', icon: '🌹', rarity: 'common', price: 25 },
+  { id: 'cake', name: 'Торт', icon: '🎂', rarity: 'common', price: 50 }, { id: 'bouquet', name: 'Букет', icon: '💐', rarity: 'common', price: 50 },
+  { id: 'rocket', name: 'Ракета', icon: '🚀', rarity: 'common', price: 50 }, { id: 'cup', name: 'Кубок', icon: '🏆', rarity: 'common', price: 100 },
+  { id: 'ring', name: 'Кольцо', icon: '💍', rarity: 'common', price: 100 }, { id: 'diamond', name: 'Алмаз', icon: '💎', rarity: 'common', price: 100 },
+  { id: 'skull', name: 'Череп', icon: '💀', rarity: 'nft', price: 50 }, { id: 'roses_bouquet', name: 'Розы', icon: '🌺', rarity: 'nft', price: 50 }, 
+  { id: 'cigarette', name: 'Сигарета', icon: '🚬', rarity: 'rare', price: 500 }, { id: 'cigar', name: 'Сигара', icon: '🚬', rarity: 'rare', price: 800 },
+  { id: 'socks', name: 'Носки', icon: '🧦', rarity: 'rare', price: 1000 }, { id: 'music_box', name: 'Шкатулка', icon: '🎵', rarity: 'rare', price: 1000 },
+  { id: 'potion', name: 'Зелье', icon: '🧪', rarity: 'rare', price: 1000 }, { id: 'calendar', name: 'Календарь', icon: '📅', rarity: 'rare', price: 1500 },
+  { id: 'button', name: 'Кнопка', icon: '🔘', rarity: 'rare', price: 500 }, { id: 'cap', name: 'Кепка', icon: '🧢', rarity: 'legendary', price: 10000 },
+  { id: 'car', name: 'Машина', icon: '🚗', rarity: 'legendary', price: 5000 }, { id: 'pepe', name: 'Плюш Пепе', icon: '🐸', rarity: 'legendary', price: 50000 },
+];
+const CASES = [
+  { id: 'starter', name: 'Стартовый', icon: '📦', price: 50, desc: 'Только до NFT' },
+  { id: 'pro', name: 'Про', icon: '🎁', price: 500, desc: 'Обычные и Редкие' },
+  { id: 'elite', name: 'Элитный', icon: '💎', price: 8000, desc: 'Всё, включая Легендарки' },
+];
+
+function switchAuthTab(mode) {
+  authMode = mode;
+  document.getElementById('tab-login').classList.toggle('active', mode === 'login');
+  document.getElementById('tab-register').classList.toggle('active', mode === 'register');
+}
+
+async function handleAuth() {
+  const login = document.getElementById('authLogin').value.trim();
+  const pass = document.getElementById('authPassword').value;
+  if (!login) return alert('Введите логин!');
+  if (pass.length < 6) return alert('Пароль минимум 6 символов!');
+  
+  const url = authMode === 'register' ? '/api/register' : '/api/login';
+  try {
+    const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ login, password: pass }) });
+    const data = await res.json();
+    if (!res.ok) return alert(data.error || 'Ошибка');
+    
+    currentUser = login;
+    if (authMode === 'register') alert('Успешно! +30 🌟');
+    enterGame();
+  } catch (e) { alert('Нет связи с сервером'); }
+}
+
+async function enterGame() {
+  document.getElementById('authScreen').style.display = 'none';
+  document.getElementById('mainScreen').style.display = 'block';
+  document.getElementById('uiUsername').textContent = currentUser;
+  localStorage.setItem('saved_user', currentUser);
+  
+  const res = await fetch('/api/user/' + currentUser);
+  if (res.ok) {
+    const data = await res.json();
+    isSuperAdmin = data.is_super_admin;
+    if (data.is_admin) {
+      document.getElementById('adminTabBtn').style.display = 'block';
+      document.getElementById('superAdminBox').style.display = data.is_super_admin ? 'block' : 'none';
+    } else {
+      document.getElementById('adminTabBtn').style.display = 'none';
+    }
+  }
+  loadPlayerData();
+}
+
+function logout() {
+  currentUser = null; isSuperAdmin = false;
+  localStorage.removeItem('saved_user');
+  document.getElementById('mainScreen').style.display = 'none';
+  document.getElementById('authScreen').style.display = 'flex';
+  document.getElementById('authPassword').value = '';
+}
+
+async function loadPlayerData() {
+  if (!currentUser) return;
+  const res = await fetch('/api/user/' + currentUser);
+  if (res.ok) { playerData = await res.json(); updateUI(); }
+}
+
+function updateUI() {
+  document.getElementById('uiBalanceTop').textContent = playerData.balance;
+  renderInventory();
+}
+
+function switchTab(id, btn) {
+  document.querySelectorAll('.content-section').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById('section-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function openPreview(c) {
+  document.getElementById('prevCaseName').textContent = c.icon + ' ' + c.name;
+  document.getElementById('openCaseBtn').textContent = 'Открыть за ' + c.price + ' 🌟';
+  document.getElementById('openCaseBtn').onclick = () => startOpening(c);
+  
+  const grid = document.getElementById('previewGrid'); grid.innerHTML = '';
+  let pool = NFT_POOL;
+  if (c.id === 'starter') pool = NFT_POOL.filter(i => i.rarity === 'common' || i.rarity === 'nft');
+  if (c.id === 'pro') pool = NFT_POOL.filter(i => i.rarity === 'common' || i.rarity === 'rare');
+  
+  pool.forEach(item => {
+    const r = RARITIES[item.rarity];
+    const div = document.createElement('div');
+    div.className = 'case-item-preview';
+    div.style.borderColor = r.color;
+    div.innerHTML = `<div style="font-size:28px">${item.icon}</div><div style="font-size:12px; color:#ccc">${item.name}</div><div style="font-size:10px; color:${r.color}">${r.name}</div>`;
+    grid.appendChild(div);
+  });
+  
+  document.getElementById('previewModal').classList.add('show');
+}
+
+async function startOpening(c) {
+  if (playerData.balance < c.price) return alert('Мало звезд!');
+  
+  const nft = getRandomItem(c.id); 
+  const r = RARITIES[nft.rarity];
+
+  document.getElementById('previewModal').classList.remove('show');
+  document.getElementById('animationModal').classList.add('show');
+  document.getElementById('winOverlay').classList.remove('show');
+
+  let stripHtml = '';
+  const stripItems = [];
+  for (let i = 0; i < 50; i++) {
+    let pool = NFT_POOL;
+    if (c.id === 'starter') pool = NFT_POOL.filter(x => x.rarity === 'common' || x.rarity === 'nft');
+    if (c.id === 'pro') pool = NFT_POOL.filter(x => x.rarity === 'common' || x.rarity === 'rare');
+    const randItem = pool[Math.floor(Math.random() * pool.length)];
+    stripItems.push(randItem);
+  }
+
+  // Вставляем выигрыш на 45-ю позицию
+  stripItems[45] = nft;
+  
+  stripItems.forEach(item => {
+    stripHtml += `<div class="roulette-item"><div class="r-icon">${item.icon}</div><div class="r-name">${item.name}</div></div>`;
+  });
+
+  const strip = document.getElementById('rouletteStrip');
+  strip.innerHTML = stripHtml;
+  strip.style.transition = 'none';
+  strip.style.transform = 'translateX(0)';
+
+  setTimeout(() => {
+    const itemWidth = 121; 
+    const containerWidth = document.querySelector('.roulette-container').offsetWidth;
+    const centerOffset = (containerWidth / 2) - (itemWidth / 2);
+    const targetPosition = (45 * itemWidth) - centerOffset;
+    
+    strip.style.transition = 'transform 5s cubic-bezier(0.1, 0.7, 0.1, 1)';
+    strip.style.transform = `translateX(-${targetPosition}px)`;
+  }, 100);
+
+  await fetch('/api/inventory/add', { 
+    method: 'POST', headers: { 'Content-Type': 'application/json' }, 
+    body: JSON.stringify({ login: currentUser, itemId: nft.id, name: nft.name, icon: nft.icon, rarity: nft.rarity, price: nft.price }) 
+  });
+  await loadPlayerData();
+
+  setTimeout(() => {
+    document.getElementById('winIcon').textContent = nft.icon;
+    document.getElementById('winName').textContent = nft.name;
+    const rEl = document.getElementById('winRarity');
+    rEl.textContent = r.name;
+    rEl.style.color = r.color;
+    document.getElementById('winOverlay').classList.add('show');
+  }, 5100);
+}
+
+function closeAnimation() {
+  document.getElementById('animationModal').classList.remove('show');
+  document.getElementById('winOverlay').classList.remove('show');
+}
+
+function getRandomItem(id) {
+  let pool = NFT_POOL;
+  if (id === 'starter') pool = NFT_POOL.filter(i => i.rarity === 'common' || i.rarity === 'nft');
+  if (id === 'pro') pool = NFT_POOL.filter(i => i.rarity === 'common' || i.rarity === 'rare');
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
+async function sellItem(uid, price) {
+  if (confirm('Продать за ' + price + ' 🌟?')) {
+    await fetch('/api/inventory/sell', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ login: currentUser, uid, price }) });
+    await loadPlayerData();
+  }
+}
+
+async function adminGiveStars() {
+  const t = document.getElementById('adminTarget').value.trim(); const a = parseInt(document.getElementById('adminAmount').value);
+  if (!t || !a) return alert('Заполните поля');
+  const res = await fetch('/api/admin/give-stars', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ adminLogin: currentUser, targetLogin: t, amount: a }) });
+  if (res.ok) alert('Выдано ' + a + ' 🌟'); else alert('Ошибка');
+}
+
+async function makeAdmin() {
+  const t = document.getElementById('newAdminLogin').value.trim();
+  const res = await fetch('/api/admin/make-admin', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ superAdminLogin: currentUser, targetLogin: t }) });
+  if (res.ok) alert('Теперь Админ!'); else alert('Ошибка');
+}
+
+async function removeAdmin() {
+  const t = document.getElementById('newAdminLogin').value.trim();
+  const res = await fetch('/api/admin/remove-admin', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ superAdminLogin: currentUser, targetLogin: t }) });
+  if (res.ok) alert('Права сняты!'); else alert('Ошибка');
+}
+
+function renderCases() {
+  const el =
