@@ -1,120 +1,123 @@
 <!DOCTYPE html>
 <html lang="ru">
-<head>
+<голова>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Кейсы</title>
-<style>
+<title>КотоКейсы 🐾</title>
+<стиль>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Segoe UI', Roboto, sans-serif; background: #0a0a0f; color: #e2e2e2; min-height: 100vh; padding: 20px; overflow-x: hidden;}
+  body { font-family: 'Segoe UI', Roboto, sans-serif; background: #0d0b14; color: #f3f0ff; min-height: 100vh; padding: 20px; overflow-x: hidden; }
   
   #authScreen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 90vh; }
-  .auth-box { background: #16162a; border: 1px solid #2a2a4a; border-radius: 24px; padding: 40px; width: 100%; max-width: 420px; }
-  .auth-box h1 { font-size: 32px; text-align: center; color: #a855f7; margin-bottom: 10px; }
-  .auth-box .subtitle { color: #888; font-size: 14px; text-align: center; margin-bottom: 25px; }
-  .tabs { display: flex; background: #12121a; border-radius: 12px; padding: 4px; margin-bottom: 25px; }
-  .tab { flex: 1; padding: 12px; text-align: center; border-radius: 8px; cursor: pointer; font-weight: 600; color: #888; }
-  .tab.active { background: #1a1a2e; color: #fff; }
+  .auth-box { background: #191528; border: 1px solid #352b54; border-radius: 24px; padding: 40px; width: 100%; max-width: 420px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+  .auth-box h1 { font-size: 32px; text-align: center; color: #f472b6; margin-bottom: 10px; }
+  .auth-box .subtitle { color: #a59ec2; font-size: 14px; text-align: center; margin-bottom: 25px; }
+  .tabs { display: flex; background: #110e1c; border-radius: 12px; padding: 4px; margin-bottom: 25px; }
+  .tab { flex: 1; padding: 12px; text-align: center; border-radius: 8px; cursor: pointer; font-weight: 600; color: #8c82b0; transition: 0.2s; }
+  .tab.active { background: #261f3d; color: #fff; }
   .input-group { margin-bottom: 18px; }
-  .input-group label { display: block; margin-bottom: 8px; font-size: 13px; color: #aaa; }
-  .input-group input { width: 100%; padding: 14px 16px; border-radius: 12px; border: 1px solid #2a2a4a; background: #12121a; color: #fff; font-size: 15px; outline: none; }
-  .btn-main { width: 100%; padding: 16px; border: none; border-radius: 12px; background: #a855f7; color: #fff; font-size: 16px; font-weight: bold; cursor: pointer; }
+  .input-group label { display: block; margin-bottom: 8px; font-size: 13px; color: #b8b0d4; }
+  .input-group input { width: 100%; padding: 14px 16px; border-radius: 12px; border: 1px solid #352b54; background: #110e1c; color: #fff; font-size: 15px; outline: none; }
+  .input-group input:focus { border-color: #f472b6; }
+  .btn-main { width: 100%; padding: 16px; border: none; border-radius: 12px; background: linear-gradient(135deg, #ec4899, #a855f7); color: #fff; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+  .btn-main:hover { opacity: 0.9; }
   .btn-main:disabled { opacity: 0.5; cursor: not-allowed; }
   
   #mainScreen { display: none; max-width: 1000px; margin: 0 auto; }
-  header { display: flex; justify-content: space-between; align-items: center; background: #16162a; padding: 15px 25px; border-radius: 16px; margin-bottom: 25px; }
-  .logo { font-size: 24px; font-weight: 800; color: #a855f7; }
-  .user-info { font-weight: 600; color: #ccc; }
-  .balance-top { background: #12121a; padding: 8px 16px; border-radius: 20px; font-weight: bold; color: #ffd700; }
+  header { display: flex; justify-content: space-between; align-items: center; background: #191528; border: 1px solid #352b54; padding: 15px 25px; border-radius: 16px; margin-bottom: 25px; flex-wrap: wrap; gap: 10px; }
+  .logo { font-size: 24px; font-weight: 800; color: #f472b6; }
+  .user-info { font-weight: 600; color: #d8d2f0; }
+  .balance-top { background: #110e1c; border: 1px solid #352b54; padding: 8px 16px; border-radius: 20px; font-weight: bold; color: #fbbf24; }
   .tabs-nav { display: flex; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; }
-  .nav-btn { padding: 12px 24px; background: #1a1a2e; border: 1px solid #2a2a4a; border-radius: 12px; color: #888; cursor: pointer; font-weight: 600; }
-  .nav-btn.active { background: #a855f7; border-color: #a855f7; color: #fff; }
+  .nav-btn { padding: 12px 24px; background: #191528; border: 1px solid #352b54; border-radius: 12px; color: #a59ec2; cursor: pointer; font-weight: 600; transition: 0.2s; }
+  .nav-btn.active { background: #ec4899; border-color: #ec4899; color: #fff; }
   
   .content-section { display: none; }
   .content-section.active { display: block; }
   
   .cases { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
-  .case { background: #16162a; border: 1px solid #2a2a4a; border-radius: 16px; padding: 25px 20px; text-align: center; cursor: pointer; transition: 0.3s; }
-  .case:hover { border-color: #a855f7; transform: translateY(-5px); }
-  .case .icon { font-size: 50px; margin-bottom: 15px; }
+  .case { background: #191528; border: 1px solid #352b54; border-radius: 18px; padding: 25px 20px; text-align: center; cursor: pointer; transition: 0.3s; }
+  .case:hover { border-color: #f472b6; transform: translateY(-5px); box-shadow: 0 8px 25px rgba(244, 114, 182, 0.2); }
+  .case .icon { font-size: 54px; margin-bottom: 12px; }
   .case .name { font-weight: 700; font-size: 18px; color: #fff; }
-  .case .desc { font-size: 12px; color: #888; margin: 6px 0 12px; }
-  .case .price { color: #ffd700; font-size: 15px; font-weight: bold; }
+  .case .desc { font-size: 12px; color: #a59ec2; margin: 6px 0 12px; }
+  .case .price { color: #fbbf24; font-size: 16px; font-weight: bold; }
   
-  .inventory { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; }
-  .item { background: #16162a; border: 1px solid #2a2a4a; border-radius: 14px; padding: 15px; text-align: center; }
-  .item .icon { font-size: 40px; }
-  .item .name { font-size: 14px; font-weight: 600; color: #fff; margin: 5px 0; }
+  .inventory { display: grid; grid-template-columns: repeat(auto-fill, minmax(165px, 1fr)); gap: 15px; }
+  .item { background: #191528; border: 1px solid #352b54; border-radius: 16px; padding: 15px; text-align: center; }
+  .item .icon { font-size: 44px; }
+  .item .name { font-size: 14px; font-weight: 700; color: #fff; margin: 6px 0; }
   .item .rarity { font-size: 11px; font-weight: bold; margin-bottom: 8px; }
-  .item button { width: 100%; padding: 8px; border: none; border-radius: 8px; background: #f59e0b; color: #fff; cursor: pointer; margin-top: 5px; font-weight: bold; }
-  .item button:disabled { background: #555; cursor: not-allowed; }
+  .item button { width: 100%; padding: 9px; border: none; border-radius: 10px; background: #f59e0b; color: #fff; cursor: pointer; margin-top: 5px; font-weight: bold; transition: 0.2s; }
+  .item button:hover { background: #d97706; }
+  .item button:disabled { background: #4b5563; cursor: not-allowed; }
   
   .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; z-index: 100; padding: 20px; }
   .modal.show { display: flex; }
-  .modal .box { background: #16162a; border-radius: 20px; padding: 30px; text-align: center; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; }
+  .modal .box { background: #191528; border: 1px solid #352b54; border-radius: 22px; padding: 30px; text-align: center; width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto; }
   
-  .case-items-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; margin-top: 20px; text-align: left; }
-  .case-item-preview { background: #0a0a0f; border: 1px solid #2a2a4a; border-radius: 10px; padding: 10px; text-align: center; }
+  .case-items-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(105px, 1fr)); gap: 10px; margin-top: 20px; text-align: left; }
+  .case-item-preview { background: #110e1c; border: 1px solid #352b54; border-radius: 12px; padding: 10px; text-align: center; }
   
-  .admin-box { background: #16162a; padding: 20px; border-radius: 16px; max-width: 400px; margin: 20px auto; text-align: left; }
-  .admin-box input { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 8px; border: none; background: #0a0a0f; color: #fff; }
-  .admin-box button { width: 100%; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; margin-bottom: 10px; }
+  .admin-box { background: #191528; border: 1px solid #352b54; padding: 20px; border-radius: 16px; max-width: 400px; margin: 20px auto; text-align: left; }
+  .admin-box input { width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 10px; border: 1px solid #352b54; background: #110e1c; color: #fff; }
+  .admin-box button { width: 100%; padding: 12px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; margin-bottom: 10px; }
 
-  #animationModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); align-items: center; justify-content: center; z-index: 200; flex-direction: column; overflow: hidden; }
+  #animationModal { display: none; position: fixed; inset: 0; background: rgba(13,11,20,0.96); align-items: center; justify-content: center; z-index: 200; flex-direction: column; overflow: hidden; }
   #animationModal.show { display: flex; }
-  .roulette-container { width: 100%; max-width: 800px; height: 150px; background: #12121a; border-top: 2px solid #2a2a4a; border-bottom: 2px solid #2a2a4a; position: relative; overflow: hidden; display: flex; align-items: center; }
+  .roulette-container { width: 100%; max-width: 800px; height: 155px; background: #110e1c; border-top: 2px solid #ec4899; border-bottom: 2px solid #ec4899; position: relative; overflow: hidden; display: flex; align-items: center; }
   .roulette-strip { display: flex; position: absolute; left: 0; }
-  .roulette-item { width: 120px; height: 146px; display: flex; flex-direction: column; align-items: center; justify-content: center; border-right: 1px solid #2a2a4a; flex-shrink: 0; background: #16162a; }
-  .roulette-item .r-icon { font-size: 50px; }
-  .roulette-item .r-name { font-size: 10px; color: #aaa; margin-top: 5px; text-align: center; padding: 0 5px;}
-  .roulette-pointer { position: absolute; left: 50%; top: 0; bottom: 0; width: 4px; background: #ffd700; transform: translateX(-50%); z-index: 10; box-shadow: 0 0 15px #ffd700; }
-  .win-overlay { display: none; text-align: center; margin-top: 30px; background: #16162a; padding: 20px 40px; border-radius: 16px; border: 2px solid #a855f7; box-shadow: 0 0 30px rgba(168,85,247,0.5);}
+  .roulette-item { width: 120px; height: 151px; display: flex; flex-direction: column; align-items: center; justify-content: center; border-right: 1px solid #261f3d; flex-shrink: 0; background: #191528; }
+  .roulette-item .r-icon { font-size: 52px; }
+  .roulette-item .r-name { font-size: 11px; color: #d8d2f0; margin-top: 6px; text-align: center; padding: 0 5px; }
+  .roulette-pointer { position: absolute; left: 50%; top: 0; bottom: 0; width: 4px; background: #fbbf24; transform: translateX(-50%); z-index: 10; box-shadow: 0 0 15px #fbbf24; }
+  .win-overlay { display: none; text-align: center; margin-top: 30px; background: #191528; padding: 25px 40px; border-radius: 20px; border: 2px solid #f472b6; box-shadow: 0 0 35px rgba(244,114,182,0.4); }
   .win-overlay.show { display: block; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
   @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 </style>
 </head>
-<body>
+<тело>
 
 <div id="authScreen">
   <div class="auth-box">
-    <h1>Кейсы</h1>
-    <div class="subtitle">Вход или регистрация. Бонус: +30 🌟</div>
+    <h1>🐱 КотоКейсы</h1>
+    <div class="subtitle">Вход или регистрация. Бонус новичкам: +50 🐟</div>
     <div class="tabs">
       <div class="tab active" id="tab-login" onclick="switchAuthTab('login')">Вход</div>
       <div class="tab" id="tab-register" onclick="switchAuthTab('register')">Регистрация</div>
     </div>
     <div class="input-group"><label>Логин</label><input type="text" id="authLogin" placeholder="Ваш логин"></div>
-    <div class="input-group"><label>Пароль</label><input type="password" id="authPassword" placeholder="Пароль (мин. 6 символов)"></div>
+    <div class="input-group"><label>Пароль</label><input type="password" id="authPassword" Placeholder="Пароль (мин. 6 символов)"></div>
     <button class="btn-main" id="mainAuthBtn" onclick="handleAuth()">Войти</button>
   </div>
 </div>
 
 <div id="mainScreen">
-  <header>
-    <div class="logo">Кейсы</div>
-    <div class="user-info">👤 <span id="uiUsername"></span></div>
-    <div class="balance-top"><span id="uiBalanceTop">0</span> 🌟</div>
+  <заголовок>
+    <div class="logo">🐾 КотоКейсы</div>
+    <div class="user-info">😻 <span id="uiUsername"></span></div>
+    <div class="balance-top"><span id="uiBalanceTop">0</span> 🐟</div>
   </header>
   <div class="tabs-nav">
-    <button class="nav-btn active" onclick="switchTab('cases', this)">Кейсы</button>
-    <button class="nav-btn" onclick="switchTab('inventory', this)">Инвентарь</button>
+    <button class="nav-btn active" onclick="switchTab('cases', this)">Кото-кейсы</button>
+    <button class="nav-btn" onclick="switchTab('inventory', this)">Мои котики</button>
     <button class="nav-btn" id="adminTabBtn" onclick="switchTab('admin', this)" style="display:none; background:#ef4444; border-color:#ef4444; color:#fff;">Админка</button>
-    <button class="nav-btn" onclick="logout()" style="margin-left:auto; color:#ef4444;">Выйти</button>
+    <button class="nav-btn" onclick="logout()" style="margin-left:auto; color:#f87171;">Выйти</button>
   </div>
   <div id="section-cases" class="content-section active"><div class="cases" id="cases"></div></div>
   <div id="section-inventory" class="content-section"><div class="inventory" id="inventory"></div></div>
   <div id="section-admin" class="content-section" style="text-align: center;">
-    <h2>Панель Администратора</h2>
+    <h2>Панель Администратора 👑</h2>
     <div class="admin-box">
-      <h3 style="margin-bottom:10px;">Выдать звезды</h3>
-      <input type="text" id="adminTarget" placeholder="Логин игрока">
+      <h3 style="margin-bottom:10px;">Выдать рыбки (🐟)</h3>
+      <input type="text" id="adminTarget" Placeholder="Логин игрока">
       <input type="number" id="adminAmount" placeholder="Сумма" value="1000">
-      <button onclick="adminGiveStars()" style="background:#10b981; color:#fff;">Выдать звезды</button>
+      <button onclick="adminGiveStars()" style="background:#10b981; color:#fff;">Выдать рыбки</button>
     </div>
     <div class="admin-box" id="superAdminBox" style="display: none; border: 1px solid #ef4444;">
       <h3 style="margin-bottom:10px; color:#ef4444;">Управление Админами</h3>
-      <input type="text" id="newAdminLogin" placeholder="Логин нового админа">
-      <button onclick="makeAdmin()" style="background:#a855f7; color:#fff;">Назначить Админом</button>
+      <input type="text" id="newAdminLogin" Placeholder="Логин нового админа">
+      <button onclick="makeAdmin()" style="background:#ec4899; color:#fff;">Назначить Админом</button>
       <button onclick="removeAdmin()" style="background:#374151; color:#fff;">Снять права</button>
     </div>
   </div>
@@ -124,8 +127,8 @@
   <div class="box">
     <h2 id="prevCaseName" style="margin-bottom:15px;">Название</h2>
     <div class="case-items-grid" id="previewGrid"></div>
-    <button id="openCaseBtn" style="margin-top:20px; padding:14px; width:100%; background:#a855f7; color:#fff; border:none; border-radius:10px; font-weight:bold; font-size:16px; cursor:pointer;">Открыть кейс</button>
-    <button style="background:transparent; border:1px solid #444; color:#aaa; margin-top:10px; padding:10px; width:100%; border-radius:10px; cursor:pointer;" onclick="document.getElementById('previewModal').classList.remove('show')">Закрыть</button>
+    <button id="openCaseBtn" style="margin-top:20px; padding:14px; width:100%; background:linear-gradient(135deg, #ec4899, #a855f7); color:#fff; border:none; border-radius:12px; font-weight:bold; font-size:16px; cursor:pointer;">Открыть кейс</button>
+    <button style="background:transparent; border:1px solid #4c3f75; color:#a59ec2; margin-top:10px; padding:10px; width:100%; border-radius:12px; cursor:pointer;" onclick="document.getElementById('previewModal').classList.remove('show')">Закрыть</button>
   </div>
 </div>
 
@@ -135,7 +138,256 @@
     <div class="roulette-strip" id="rouletteStrip"></div>
   </div>
   <div class="win-overlay" id="winOverlay">
-    <div style="font-size: 60px;" id="winIcon">?</div>
+    <div style="font-size: 64px;" id="winIcon">🐱</div>
     <h2 style="color: #fff; margin: 10px 0;" id="winName"></h2>
     <div id="winRarity" style="font-weight: bold; margin-bottom: 15px;"></div>
+    <button class="btn-main" onclick="closeAnimation()" style="padding: 12px 30px; font-size: 16px; width: auto;">Забрать котики</button>
+  </div>
+</div>
+
+<script>
+let currentUser = null, authMode = 'login';
+let playerData = { balance: 0, inventory: [] };
+let isSuperAdmin = false;
+let isOpening = false;
+const sellingItems = new Set();
+
+const RARITIES = {
+  'common': { name: 'Дворовый', цвет: '#9ca3af' },
+  'cute': { name: 'Милашка', цвет: '#10b981' },
+  'rare': { name: 'Породистый', цвет: '#3b82f6' },
+  'легендарный': { name: 'Кото-Бог', цвет: '#f59e0b' }
+};
+
+const CAT_POOL = [
+  { id: 'cat_gray', имя: 'Серый Барсик', иконка: '🐱', редкость: 'common', цена: 15 },
+  { id: 'cat_orange', name: 'Рыжик', icon: '🐈', rarity: 'common', price: 25 },
+  { id: 'cat_black', name: 'Уголёк', icon: '🐈‍⬛', rarity: 'common', price: 30 },
+  { id: 'cat_smile', name: 'Улыбкака', icon: '😺', rarity: 'common', price: 40 },
+  { id: 'cat_grin', имя: 'Весельчак', иконка: '😸', редкость: 'common', цена: 50 },
+  { id: 'cat_joy', name: 'Хохотун', icon: '😹', rarity: 'cute', price: 80 },
+  { id: 'cat_heart', имя: 'Влюблённый Мурзик', иконка: '😻', редкость: 'милый', цена: 120 },
+  { id: 'cat_smirk', имя: 'Хитрый Пушок', иконка: '😼', редкость: 'милый', цена: 150 },
+  { id: 'cat_kiss', имя: 'Целовашка', значок: '😽', редкость: 'милый', цена: 200 },
+  { id: 'cat_shock', name: 'Шокированный Кот', значок: '🙀', редкость: 'rare', цена: 500 },
+  { id: 'cat_cry', имя: 'Грустный Котик', иконка: '😿', редкость: 'rare', цена: 650 },
+  { id: 'cat_pout', name: 'Сердитый Бублик', значок: '😾', редкость: 'rare', цена: 800 },
+  { id: 'tiger_cub', name: 'Тигрёнок', icon: '🐯', rarity: 'rare', price: 1200 },
+  { id: 'lion_cub', имя: 'Львёнок Симба', иконка: '🦁', редкость: 'легендарный', цена: 5000 },
+  { id: 'leopard', name: 'Снежный Барс', иконка: '🐆', редкость: 'легендарный', цена: 12000 },
+  { id: 'nyan_king', имя: 'Император Котов', иконка: '👑', редкость: 'легендарный', цена: 50000 }
+];
+
+const CASES = [
+  { id: 'box_cardboard', name: 'Картонная коробка', icon: '📦', цена: 50, desc: 'Дворовые и Милашки' },
+  { id: 'box_basket', name: 'Уютная лежанка', icon: '🧶', цена: 400, desc: 'Милашки и Породистые' },
+  { id: 'box_palace', name: 'Королевский дворец', icon: '🏰', цена: 4000, desc: 'Шанс на Кото-Богов' }
+];
+
+function switchAuthTab(mode) {
+  authMode = mode;
+  document.getElementById('tab-login').classList.toggle('active', mode === 'login');
+  document.getElementById('tab-register').classList.toggle('active', mode === 'register');
+  document.getElementById('mainAuthBtn').textContent = режим === 'вход'? 'Войти' : 'Зарегистрироваться';
+}
+
+асинхронная функция handleAuth() {
+  const login = document.getElementById('authLogin').value.trim();
+  const pass = document.getElementById('authPassword').value;
+  if (!login) return alert('Введите вход!');
+  if (pass.length < 6) return alert('Пароль минимум 6 символов!');
+  
+  const btn = document.getElementById('mainAuthBtn');
+  btn.disabled = true;
+
+  const url = authMode === 'register' ? '/api/register' : '/api/login';
+  пытаться {
+    const res = await fetch(url, {
+      метод: 'POST',
+      заголовки: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ login, password: pass })
+    });
+    const data = await res.json();
+    if (!res.ok) return alert(data.error || 'Ошибка входа');
     
+    currentUser = login;
+    if (authMode === 'register') alert('Мяу! Успех успешен: +50 🐟');
+    enterGame();
+  } catch (e) {
+    alert('Нет-связь с сервером');
+  } окончательно {
+    btn.disabled = false;
+  }
+}
+
+асинхронная функция enterGame() {
+  document.getElementById('authScreen').style.display = 'none';
+  document.getElementById('mainScreen').style.display = 'block';
+  document.getElementById('uiUsername').textContent = currentUser;
+  localStorage.setItem('saved_cat_user', currentUser);
+  
+  renderCases();
+
+  const res = await fetch('/api/user/' + currentUser);
+  if (res.ok) {
+    const data = await res.json();
+    isSuperAdmin = data.is_super_admin;
+    if (data.is_admin) {
+      document.getElementById('adminTabBtn').style.display = 'block';
+      document.getElementById('superAdminBox').style.display = data.is_super_admin ? 'block' : 'none';
+    } еще {
+      document.getElementById('adminTabBtn').style.display = 'none';
+    }
+    playerData = data;
+    updateUI();
+  }
+}
+
+функция logout() {
+  текущийПользователь = ноль; isSuperAdmin = ложь;
+  localStorage.removeItem('saved_cat_user');
+  document.getElementById('mainScreen').style.display = 'none';
+  document.getElementById('authScreen').style.display = 'flex';
+  document.getElementById('authPassword').value = '';
+}
+
+асинхронная функция loadPlayerData() {
+  if (!currentUser) return;
+  const res = await fetch('/api/user/' + currentUser);
+  if (res.ok) {
+    playerData = await res.json();
+    updateUI();
+  }
+}
+
+функция updateUI() {
+  document.getElementById('uiBalanceTop').textContent = playerData.balance;
+  renderInventory();
+}
+
+function renderCases() {
+  const container = document.getElementById('cases');
+  container.innerHTML = '';
+  CASES.forEach(c => {
+    const div = document.createElement('div');
+    div.className = 'case';
+    div.onclick = () => openPreview(c);
+    div.innerHTML = `
+      <div class="icon">${c.icon}</div>
+      <div class="name">${c.name}</div>
+      <div class="desc">${c.desc}</div>
+      <div class="price">${c.price} 🐟</div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function renderInventory() {
+  const container = document.getElementById('inventory');
+  container.innerHTML = '';
+  if (!playerData.inventory || playerData.inventory.length === 0) {
+    Container.innerHTML = '<div style="color:#a59ec2;grid-column: 1/-1; text-align:center;padding: 40px;">У вас пока нет котиков 😿 откройте коробку!</div>';
+    возвращаться;
+  }
+
+  playerData.inventory.forEach(item => {
+    const r = RARITIES[item.rarity] || RARITIES.common;
+    const div = document.createElement('div');
+    div.className = 'item';
+    div.style.borderColor = r.color;
+    
+    const isSelling = sellingItems.has(item.uid);
+    div.innerHTML = `
+      <div class="icon">${item.icon}</div>
+      <div class="name">${item.name}</div>
+      <div class="rarity" style="color:${r.color}">${r.name}</div>
+      <button ${isSelling ? 'disabled' : ''} onclick="sellItem('${item.uid}', ${item.price}, this)">
+        ${isSelling ? 'Обмен...' : 'Обменять на ' + item.price + ' 🐟'}
+      </button>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function switchTab(id, btn) {
+  document.querySelectorAll('.content-section').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById('section-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function getPoolByCase(caseId) {
+  if (caseId === 'box_cardboard') return CAT_POOL.filter(i => i.rarity === 'common' || i.rarity === 'cute');
+  if (caseId === 'box_basket') return CAT_POOL.filter(i => i.rarity === 'cute' || i.rarity === 'rare');
+  return CAT_POOL;
+}
+
+function openPreview(c) {
+  document.getElementById('prevCaseName').textContent = c.icon + ' ' + c.name;
+  const openBtn = document.getElementById('openCaseBtn');
+  openBtn.textContent = 'Открыть за' + c.price + ' 🐟';
+  openBtn.disabled = false;
+  openBtn.onclick = () => startOpening(c);
+  
+  const grid = document.getElementById('previewGrid');
+  grid.innerHTML = '';
+  const pool = getPoolByCase(c.id);
+  
+  pool.forEach(item => {
+    const r = RARITIES[item.rarity];
+    const div = document.createElement('div');
+    div.className = 'case-item-preview';
+    div.style.borderColor = r.color;
+    div.innerHTML = `<div style="font-size:30px">${item.icon}</div><div style="font-size:12px; color:#f3f0ff">${item.name}</div><div style="font-size:10px; color:${r.color}">${r.name}</div>`;
+    grid.appendChild(div);
+  });
+  
+  document.getElementById('previewModal').classList.add('show');
+}
+
+асинхронная функция startOpening(c) {
+  if (isOpening) return;
+  if (playerData.balance < c.price) return alert('Не хватает рыбок! 🐟');
+
+  isOpening = true;
+  const openBtn = document.getElementById('openCaseBtn');
+  openBtn.disabled = true;
+
+  пытаться {
+    const res = await fetch('/api/cases/open', {
+      метод: 'POST',
+      заголовки: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ login: currentUser, caseId: c.id })
+    });
+
+    const data = await res.json();
+    if (!res.ok) {
+      alert(data.error || 'Не хватает рыбок или ошибка сервера!');
+      isOpening = false;
+      openBtn.disabled = false;
+      возвращаться;
+    }
+
+    const cat = data.item;
+    const r = RARITIES[cat.rarity] || RARITIES.common;
+
+    playerData.balance = data.balance;
+    document.getElementById('uiBalanceTop').textContent = playerData.balance;
+
+    document.getElementById('previewModal').classList.remove('show');
+    document.getElementById('animationModal').classList.add('show');
+    document.getElementById('winOverlay').classList.remove('show');
+
+    let stripHtml = '';
+    const stripItems = [];
+    const pool = getPoolByCase(c.id);
+    for (let i = 0; i < 50; i++) {
+      const randItem = pool[Math.floor(Math.random() * pool.length)];
+      stripItems.push(randItem);
+    }
+
+    stripItems[45] = cat;
+    
+    stripItems.forEach(item => {
+      stripHtml += `<div class="roulette-item"><div class="r-icon">${item.icon}</div><div class="r-name">${item.name}</div></div>`;
+    });
