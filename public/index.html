@@ -6,8 +6,9 @@
 <title>Кейсы</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Segoe UI', Roboto, sans-serif; background: #0a0a0f; color: #e2e2e2; min-height: 100vh; padding: 20px; overflow-x: hidden;}
+  body { font-family: 'Segoe UI', Roboto, sans-serif; background: #0a0a0f; color: #e2e2e2; min-height: 100vh; padding: 20px; overflow-x: hidden; }
   
+  /* Экраны входа */
   #authScreen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 90vh; }
   .auth-box { background: #16162a; border: 1px solid #2a2a4a; border-radius: 24px; padding: 40px; width: 100%; max-width: 420px; }
   .auth-box h1 { font-size: 32px; text-align: center; color: #a855f7; margin-bottom: 10px; }
@@ -21,44 +22,70 @@
   .btn-main { width: 100%; padding: 16px; border: none; border-radius: 12px; background: #a855f7; color: #fff; font-size: 16px; font-weight: bold; cursor: pointer; }
   .btn-main:disabled { opacity: 0.5; cursor: not-allowed; }
   
+  /* Главный экран */
   #mainScreen { display: none; max-width: 1000px; margin: 0 auto; }
   header { display: flex; justify-content: space-between; align-items: center; background: #16162a; padding: 15px 25px; border-radius: 16px; margin-bottom: 25px; }
   .logo { font-size: 24px; font-weight: 800; color: #a855f7; }
   .user-info { font-weight: 600; color: #ccc; }
-  .balance-top { background: #12121a; padding: 8px 16px; border-radius: 20px; font-weight: bold; color: #ffd700; }
+  .balance-top { background: #12121a; padding: 8px 16px; border-radius: 20px; font-weight: bold; color: #ffd700; cursor: pointer; }
+  
   .tabs-nav { display: flex; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; }
-  .nav-btn { padding: 12px 24px; background: #1a1a2e; border: 1px solid #2a2a4a; border-radius: 12px; color: #888; cursor: pointer; font-weight: 600; }
+  .nav-btn { padding: 12px 24px; background: #1a1a2e; border: 1px solid #2a2a4a; border-radius: 12px; color: #888; cursor: pointer; font-weight: 600; transition: 0.2s; }
   .nav-btn.active { background: #a855f7; border-color: #a855f7; color: #fff; }
   
   .content-section { display: none; }
   .content-section.active { display: block; }
+
+  /* Профиль */
+  .profile-box { background: #16162a; border-radius: 16px; padding: 25px; text-align: center; margin-bottom: 20px; border: 1px solid #2a2a4a; }
+  .profile-avatar { font-size: 80px; margin-bottom: 10px; }
+  .profile-name { font-size: 24px; font-weight: bold; color: #fff; margin-bottom: 15px; }
+  .profile-stats { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
+  .stat-box { background: #12121a; padding: 15px 25px; border-radius: 12px; flex: 1; min-width: 120px; }
+  .stat-value { font-size: 20px; font-weight: bold; color: #ffd700; }
+  .stat-label { font-size: 12px; color: #888; margin-top: 5px; }
   
+  /* Кейсы и Инвентарь */
   .cases { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
-  .case { background: #16162a; border: 1px solid #2a2a4a; border-radius: 16px; padding: 25px 20px; text-align: center; cursor: pointer; transition: 0.3s; }
+  .case { background: #16162a; border: 1px solid #2a2a4a; border-radius: 16px; padding: 25px 20px; text-align: center; cursor: pointer; transition: 0.3s; position: relative; overflow: hidden; }
   .case:hover { border-color: #a855f7; transform: translateY(-5px); }
   .case .icon { font-size: 50px; margin-bottom: 15px; }
   .case .name { font-weight: 700; font-size: 18px; color: #fff; }
   .case .desc { font-size: 12px; color: #888; margin: 5px 0 10px; }
   .case .price { color: #ffd700; font-size: 15px; font-weight: bold; }
-  
-  .inventory { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; }
-  .item { background: #16162a; border: 1px solid #2a2a4a; border-radius: 14px; padding: 15px; text-align: center; }
+
+  .inventory { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; margin-top: 15px; }
+  .item { background: #16162a; border: 1px solid #2a2a4a; border-radius: 14px; padding: 15px; text-align: center; display: flex; flex-direction: column; justify-content: space-between; }
   .item .icon { font-size: 40px; }
   .item .name { font-size: 14px; font-weight: 600; color: #fff; margin: 5px 0; }
-  .item button { width: 100%; padding: 8px; border: none; border-radius: 8px; background: #f59e0b; color: #fff; cursor: pointer; margin-top: 5px; font-weight: bold; }
-  .item button:disabled { background: #555; cursor: not-allowed; }
-  
+  .item button { width: 100%; padding: 8px; border: none; border-radius: 8px; color: #fff; cursor: pointer; margin-top: 5px; font-weight: bold; font-size: 12px; }
+  .btn-sell { background: #f59e0b; }
+  .btn-withdraw { background: #3b82f6; }
+  .btn-sell-all { background: #ef4444; width: 100%; padding: 15px; margin-bottom: 20px; border: none; border-radius: 12px; color: #fff; font-weight: bold; font-size: 16px; cursor: pointer; display: none; }
+
+  /* Апгрейд */
+  .upgrade-container { display: flex; justify-content: center; align-items: center; gap: 20px; flex-wrap: wrap; background: #16162a; padding: 30px; border-radius: 16px; border: 1px solid #2a2a4a; }
+  .upgrade-slot { width: 150px; height: 180px; border: 2px dashed #444; border-radius: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; background: #12121a; transition: 0.2s; }
+  .upgrade-slot:hover { border-color: #a855f7; }
+  .upgrade-slot .icon { font-size: 50px; }
+  .upgrade-slot .name { font-size: 14px; color: #ccc; margin-top: 10px; }
+  .upgrade-arrow { font-size: 30px; color: #a855f7; }
+  .upgrade-btn { background: #a855f7; color: #fff; border: none; padding: 15px 40px; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 20px; width: 100%; max-width: 300px; }
+
+  /* Модалки */
   .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; z-index: 100; padding: 20px; }
   .modal.show { display: flex; }
   .modal .box { background: #16162a; border-radius: 20px; padding: 30px; text-align: center; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; }
   
   .case-items-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; margin-top: 20px; text-align: left; }
   .case-item-preview { background: #0a0a0f; border: 1px solid #2a2a4a; border-radius: 10px; padding: 10px; text-align: center; }
-  
-  .admin-box { background: #16162a; padding: 20px; border-radius: 16px; max-width: 400px; margin: 20px auto; text-align: left; }
-  .admin-box input { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 8px; border: none; background: #0a0a0f; color: #fff; }
-  .admin-box button { width: 100%; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; margin-bottom: 10px; }
 
+  /* Админка */
+  .admin-box { background: #16162a; padding: 20px; border-radius: 16px; max-width: 900px; margin: 20px auto; text-align: left; }
+  .admin-box input { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 8px; border: none; background: #0a0a0f; color: #fff; }
+  .admin-box button { width: 100%; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; margin-bottom: 10px; color: #fff; }
+
+  /* Анимации */
   #animationModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); align-items: center; justify-content: center; z-index: 200; flex-direction: column; overflow: hidden; }
   #animationModal.show { display: flex; }
   .roulette-container { width: 100%; max-width: 800px; height: 150px; background: #12121a; border-top: 2px solid #2a2a4a; border-bottom: 2px solid #2a2a4a; position: relative; overflow: hidden; display: flex; align-items: center; }
@@ -92,143 +119,88 @@
   <header>
     <div class="logo">Кейсы</div>
     <div class="user-info">👤 <span id="uiUsername"></span></div>
-    <div class="balance-top"><span id="uiBalanceTop">0</span> 🌟</div>
+    <div class="balance-top" id="openPromoBtn"><span id="uiBalanceTop">0</span> 🌟</div>
   </header>
   <div class="tabs-nav">
-    <button type="button" class="nav-btn active" id="navCasesBtn">Кейсы</button>
+    <button type="button" class="nav-btn active" id="navProfileBtn">Профиль</button>
+    <button type="button" class="nav-btn" id="navCasesBtn">Кейсы</button>
     <button type="button" class="nav-btn" id="navInvBtn">Инвентарь</button>
+    <button type="button" class="nav-btn" id="navUpgradeBtn">Апгрейд</button>
     <button type="button" class="nav-btn" id="adminTabBtn" style="display:none; background:#ef4444; border-color:#ef4444; color:#fff;">Админка</button>
     <button type="button" class="nav-btn" id="logoutBtn" style="margin-left:auto; color:#ef4444;">Выйти</button>
   </div>
-  <div id="section-cases" class="content-section active"><div class="cases" id="cases"></div></div>
-  <div id="section-inventory" class="content-section"><div class="inventory" id="inventory"></div></div>
   
+  <!-- Профиль -->
+  <div id="section-profile" class="content-section active">
+    <div class="profile-box">
+      <div class="profile-avatar">👤</div>
+      <div class="profile-name" id="profileName">Игрок</div>
+      <div class="profile-stats">
+        <div class="stat-box">
+          <div class="stat-value" id="profileBalance">0 🌟</div>
+          <div class="stat-label">Баланс</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" id="profileNftCount">0</div>
+          <div class="stat-label">Предметов</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" id="profileNftValue">0 🌟</div>
+          <div class="stat-label">Стоимость NFT</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Кейсы -->
+  <div id="section-cases" class="content-section"><div class="cases" id="cases"></div></div>
+
+  <!-- Инвентарь -->
+  <div id="section-inventory" class="content-section">
+    <button type="button" class="btn-sell-all" id="btnSellAll">Продать всё</button>
+    <div class="inventory" id="inventory"></div>
+  </div>
+
+  <!-- Апгрейд -->
+  <div id="section-upgrade" class="content-section">
+    <div class="upgrade-container">
+      <div class="upgrade-slot" id="upgradeMySlot">
+        <div class="icon">?</div><div class="name">Ваш NFT</div>
+      </div>
+      <div class="upgrade-arrow">➜</div>
+      <div class="upgrade-slot" id="upgradeTargetSlot">
+        <div class="icon">?</div><div class="name">Выберите NFT</div>
+      </div>
+    </div>
+    <div style="text-align: center;">
+      <button type="button" class="upgrade-btn" id="btnDoUpgrade">Улучшить (Шанс 50%)</button>
+    </div>
+  </div>
+
+  <!-- Админка (вставим позже) -->
   <div id="section-admin" class="content-section" style="text-align: center;">
     <h2>Панель Администратора</h2>
-    <div class="admin-box" style="max-width: 900px; overflow-x: auto;">
-      <h3 style="margin-bottom:10px;">Игроки</h3>
-      <table style="width: 100%; border-collapse: collapse; color: #fff; text-align: left; min-width: 500px;">
-        <thead>
-          <tr style="border-bottom: 1px solid #444;">
-            <th style="padding: 10px;">Логин</th>
-            <th>Баланс</th>
-            <th>NFT</th>
-            <th>Действия</th>
-          </tr>
-        </thead>
-        <tbody id="adminPlayersTable"></tbody>
-      </table>
-    </div>
-
-    <div class="admin-box">
-      <h3 style="margin-bottom:10px;">Управление звездами</h3>
-      <input type="text" id="adminTarget" placeholder="Логин игрока">
-      <input type="number" id="adminAmount" placeholder="Сумма" value="1000">
-      <div style="display: flex; gap: 10px;">
-        <button type="button" id="btnAdminGive" style="background:#10b981; color:#fff; flex:1;">Выдать 🌟</button>
-        <button type="button" id="btnAdminTake" style="background:#ef4444; color:#fff; flex:1;">Забрать 🌟</button>
-      </div>
-    </div>
-
-    <div class="admin-box">
-      <h3 style="margin-bottom:10px;">Управление NFT</h3>
-      <input type="text" id="nftTarget" placeholder="Логин игрока">
-      <input type="text" id="nftItemId" placeholder="ID предмета (например, pepe)">
-      <div style="display: flex; gap: 10px; margin-bottom: 10px;">
-        <input type="text" id="nftName" placeholder="Название" style="margin:0; flex:1;">
-        <input type="text" id="nftIcon" placeholder="Иконка" style="margin:0; width: 60px;">
-      </div>
-      <input type="number" id="nftPrice" placeholder="Цена продажи" value="100" style="margin-bottom: 10px;">
-      <div style="display: flex; gap: 10px;">
-        <button type="button" id="btnAdminGiveNft" style="background:#a855f7; color:#fff; flex:1;">Выдать NFT</button>
-        <button type="button" id="btnAdminTakeNft" style="background:#ef4444; color:#fff; flex:1;">Забрать NFT</button>
-      </div>
-      <input type="text" id="nftUidToTake" placeholder="UID предмета для удаления" style="margin-top:10px;">
-    </div>
-
-    <div class="admin-box">
-      <h3 style="margin-bottom:10px;">Создать промокод</h3>
-      <input type="text" id="promoCode" placeholder="Код (например, WELCOME)">
-      <input type="number" id="promoStars" placeholder="Кол-во звезд" value="100">
-      <input type="number" id="promoLimit" placeholder="Кол-во активаций" value="10">
-      <button type="button" id="btnCreatePromo" style="background:#3b82f6; color:#fff;">Создать промокод</button>
-    </div>
-
-    <div class="admin-box" id="superAdminBox" style="display: none; border: 1px solid #ef4444;">
-      <h3 style="margin-bottom:10px; color:#ef4444;">Управление Админами</h3>
-      <input type="text" id="newAdminLogin" placeholder="Логин нового админа">
-      <button type="button" id="btnMakeAdmin" style="background:#a855f7; color:#fff;">Назначить Админом</button>
-      <button type="button" id="btnRemoveAdmin" style="background:#374151; color:#fff;">Снять права</button>
-    </div>
-  </div>
-</div>
-
-<div class="modal" id="previewModal">
-  <div class="box">
-    <h2 id="prevCaseName" style="margin-bottom:15px;">Название</h2>
-    <div class="case-items-grid" id="previewGrid"></div>
-    <button type="button" id="openCaseBtn" style="margin-top:20px; padding:14px; width:100%; background:#a855f7; color:#fff; border:none; border-radius:10px; font-weight:bold; font-size:16px; cursor:pointer;">Открыть кейс</button>
-    <button type="button" id="closePreviewBtn" style="background:transparent; border:1px solid #444; color:#aaa; margin-top:10px; padding:10px; width:100%; border-radius:10px; cursor:pointer;">Закрыть</button>
-  </div>
-</div>
-
-<div id="animationModal">
-  <div class="roulette-container">
-    <div class="roulette-pointer"></div>
-    <div class="roulette-strip" id="rouletteStrip"></div>
-  </div>
-  <div class="win-overlay" id="winOverlay">
-    <div style="font-size: 60px;" id="winIcon">?</div>
-    <h2 style="color: #fff; margin: 10px 0;" id="winName"></h2>
-    <div id="winRarity" style="font-weight: bold; margin-bottom: 15px;"></div>
-    <button type="button" class="btn-main" id="closeAnimBtn" style="padding: 12px 30px; font-size: 16px; width: auto;">Забрать в инвентарь</button>
+    <div id="adminContent"></div>
   </div>
 </div><script>
 var currentUser = null;
 var authMode = 'login';
-var playerData = { balance: 0, inventory: [] };
+var playerData = { balance: 0, inventory: [], stats: { totalItems: 0, totalValue: 0 } };
 var isSuperAdmin = false;
 var isOpening = false;
 var sellingItems = {};
+var selectedUpgradeItem = null;
 
-var RARITIES = {
-  'common': { name: 'Обычный', color: '#9ca3af' },
-  'nft': { name: 'NFT', color: '#10b981' },
-  'rare': { name: 'Редкий', color: '#3b82f6' },
-  'legendary': { name: 'Легендарный', color: '#f59e0b' }
-};
-
-var NFT_POOL = [
-  { id: 'bear', name: 'Мишка', icon: '🧸', rarity: 'common', price: 15 },
-  { id: 'gift', name: 'Подарок', icon: '🎁', rarity: 'common', price: 25 },
-  { id: 'heart', name: 'Сердечко', icon: '💖', rarity: 'common', price: 15 },
-  { id: 'rose', name: 'Роза', icon: '🌹', rarity: 'common', price: 25 },
-  { id: 'cake', name: 'Торт', icon: '🎂', rarity: 'common', price: 50 },
-  { id: 'bouquet', name: 'Букет', icon: '💐', rarity: 'common', price: 50 },
-  { id: 'rocket', name: 'Ракета', icon: '🚀', rarity: 'common', price: 50 },
-  { id: 'cup', name: 'Кубок', icon: '🏆', rarity: 'common', price: 100 },
-  { id: 'ring', name: 'Кольцо', icon: '💍', rarity: 'common', price: 100 },
-  { id: 'diamond', name: 'Алмаз', icon: '💎', rarity: 'common', price: 100 },
-  { id: 'skull', name: 'Череп', icon: '💀', rarity: 'nft', price: 50 },
-  { id: 'roses_bouquet', name: 'Розы', icon: '🌺', rarity: 'nft', price: 50 },
-  { id: 'cigarette', name: 'Сигарета', icon: '🚬', rarity: 'rare', price: 500 },
-  { id: 'cigar', name: 'Сигара', icon: '🚬', rarity: 'rare', price: 800 },
-  { id: 'socks', name: 'Носки', icon: '🧦', rarity: 'rare', price: 1000 },
-  { id: 'music_box', name: 'Шкатулка', icon: '🎵', rarity: 'rare', price: 1000 },
-  { id: 'potion', name: 'Зелье', icon: '🧪', rarity: 'rare', price: 1000 },
-  { id: 'calendar', name: 'Календарь', icon: '📅', rarity: 'rare', price: 1500 },
-  { id: 'button', name: 'Кнопка', icon: '🔘', rarity: 'rare', price: 500 },
-  { id: 'cap', name: 'Кепка', icon: '🧢', rarity: 'legendary', price: 10000 },
-  { id: 'car', name: 'Машина', icon: '🚗', rarity: 'legendary', price: 5000 },
-  { id: 'pepe', name: 'Плюш Пепе', icon: '🐸', rarity: 'legendary', price: 50000 }
-];
-
+// Серверные кейсы (для отрисовки витрины)
 var CASES = [
-  { id: 'starter', name: 'Стартовый', icon: '📦', price: 50, desc: 'Только до NFT' },
+  { id: 'starter', name: 'Стартовый', icon: '📦', price: 50, desc: 'Шанс на NFT' },
   { id: 'pro', name: 'Про', icon: '🎁', price: 500, desc: 'Обычные и Редкие' },
-  { id: 'elite', name: 'Элитный', icon: '💎', price: 8000, desc: 'Всё, включая Легендарки' }
+  { id: 'elite', name: 'Элитный', icon: '💎', price: 8000, desc: 'Шанс на Легендарку' }
 ];
 
+// ==========================================
+// АВТОРИЗАЦИЯ
+// ==========================================
 function switchAuthTab(mode) {
   authMode = mode;
   document.getElementById('tab-login').classList.toggle('active', mode === 'login');
@@ -273,6 +245,7 @@ async function enterGame() {
   document.getElementById('authScreen').style.display = 'none';
   document.getElementById('mainScreen').style.display = 'block';
   document.getElementById('uiUsername').textContent = currentUser;
+  document.getElementById('profileName').textContent = currentUser;
   localStorage.setItem('saved_user', currentUser);
   renderCases();
   
@@ -283,7 +256,6 @@ async function enterGame() {
       isSuperAdmin = data.is_super_admin;
       if (data.is_admin) {
         document.getElementById('adminTabBtn').style.display = 'block';
-        document.getElementById('superAdminBox').style.display = data.is_super_admin ? 'block' : 'none';
       } else {
         document.getElementById('adminTabBtn').style.display = 'none';
       }
@@ -315,7 +287,26 @@ async function loadPlayerData() {
 
 function updateUI() {
   document.getElementById('uiBalanceTop').textContent = playerData.balance;
+  document.getElementById('profileBalance').textContent = playerData.balance + ' 🌟';
+  
+  if (playerData.stats) {
+    document.getElementById('profileNftCount').textContent = playerData.stats.totalItems;
+    document.getElementById('profileNftValue').textContent = playerData.stats.totalValue + ' 🌟';
+  }
   renderInventory();
+}
+
+// ==========================================
+// НАВИГАЦИЯ
+// ==========================================
+function switchTab(id, btn) {
+  document.querySelectorAll('.content-section').forEach(function(el) { el.classList.remove('active'); });
+  document.querySelectorAll('.nav-btn').forEach(function(el) { el.classList.remove('active'); });
+  document.getElementById('section-' + id).classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (id === 'admin') loadAdminPlayers();
+  if (id === 'upgrade') renderUpgradeTab();
+  if (id === 'inventory') updateSellAllButton();
 }
 
 function renderCases() {
@@ -335,61 +326,44 @@ function renderInventory() {
   container.innerHTML = '';
   if (!playerData.inventory || playerData.inventory.length === 0) {
     container.innerHTML = '<div style="color:#888; grid-column: 1/-1; text-align:center; padding: 30px;">Инвентарь пуст</div>';
+    updateSellAllButton();
     return;
   }
+  
   playerData.inventory.forEach(function(item) {
-    var r = RARITIES[item.rarity] || RARITIES.common;
     var div = document.createElement('div');
     div.className = 'item';
-    div.style.borderColor = r.color;
-    var isSelling = !!sellingItems[item.uid];
+    var rColor = {'common': '#9ca3af', 'nft': '#10b981', 'rare': '#3b82f6', 'legendary': '#f59e0b'}[item.rarity] || '#fff';
+    div.style.borderColor = rColor;
     
-    var btn = document.createElement('button');
-    btn.type = 'button';
-    btn.disabled = isSelling;
-    btn.textContent = isSelling ? 'Продажа...' : 'Продать за ' + item.price + ' 🌟';
-    btn.onclick = function() { sellItem(item.uid, item.price, btn); };
-
-    div.innerHTML = '<div class="icon">' + item.icon + '</div><div class="name">' + item.name + '</div><div style="font-size:11px; color:' + r.color + '; margin-bottom:6px;">' + r.name + '</div>';
-    div.appendChild(btn);
+    div.innerHTML = '<div class="icon">' + item.icon + '</div><div class="name">' + item.name + '</div><div style="font-size:11px; color:' + rColor + '; margin-bottom:6px;">' + item.price + ' 🌟</div>';
+    
+    var btnSell = document.createElement('button');
+    btnSell.className = 'btn-sell';
+    btnSell.textContent = 'Продать';
+    btnSell.onclick = function() { sellItem(item.uid, item.price, btnSell); };
+    
+    var btnWithdraw = document.createElement('button');
+    btnWithdraw.className = 'btn-withdraw';
+    btnWithdraw.textContent = 'На вывод';
+    btnWithdraw.onclick = function() { withdrawItem(item.uid, item.name, btnWithdraw); };
+    
+    div.appendChild(btnSell);
+    div.appendChild(btnWithdraw);
     container.appendChild(div);
   });
+  updateSellAllButton();
 }
 
-function switchTab(id, btn) {
-  document.querySelectorAll('.content-section').forEach(function(el) { el.classList.remove('active'); });
-  document.querySelectorAll('.nav-btn').forEach(function(el) { el.classList.remove('active'); });
-  document.getElementById('section-' + id).classList.add('active');
-  if (btn) btn.classList.add('active');
-  if (id === 'admin') loadAdminPlayers();
-}
-
-function getPoolByCase(id) {
-  if (id === 'starter') return NFT_POOL.filter(function(i) { return i.rarity === 'common' || i.rarity === 'nft'; });
-  if (id === 'pro') return NFT_POOL.filter(function(i) { return i.rarity === 'common' || i.rarity === 'rare'; });
-  return NFT_POOL;
-}
-
+// ==========================================
+// КЕЙСЫ (БЕЗОПАСНЫЕ)
+// ==========================================
 function openPreview(c) {
   document.getElementById('prevCaseName').textContent = c.icon + ' ' + c.name;
   var openBtn = document.getElementById('openCaseBtn');
   openBtn.textContent = 'Открыть за ' + c.price + ' 🌟';
   openBtn.disabled = false;
   openBtn.onclick = function() { startOpening(c); };
-  
-  var grid = document.getElementById('previewGrid');
-  grid.innerHTML = '';
-  var pool = getPoolByCase(c.id);
-  
-  pool.forEach(function(item) {
-    var r = RARITIES[item.rarity];
-    var div = document.createElement('div');
-    div.className = 'case-item-preview';
-    div.style.borderColor = r.color;
-    div.innerHTML = '<div style="font-size:28px">' + item.icon + '</div><div style="font-size:12px; color:#ccc">' + item.name + '</div><div style="font-size:10px; color:' + r.color + '">' + r.name + '</div>';
-    grid.appendChild(div);
-  });
-  
   document.getElementById('previewModal').classList.add('show');
 }
 
@@ -401,52 +375,38 @@ async function startOpening(c) {
   var openBtn = document.getElementById('openCaseBtn');
   openBtn.disabled = true;
 
-  var pool = getPoolByCase(c.id);
-  var nft = pool[Math.floor(Math.random() * pool.length)];
-  var r = RARITIES[nft.rarity];
-
   try {
-    var res = await fetch('/api/inventory/add', {
+    // Сервер сам решает, что выпало
+    var res = await fetch('/api/cases/open', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        login: currentUser,
-        casePrice: c.price,
-        itemId: nft.id,
-        name: nft.name,
-        icon: nft.icon,
-        rarity: nft.rarity,
-        price: nft.price
-      })
+      body: JSON.stringify({ login: currentUser, caseId: c.id })
     });
 
-    var data = await res.json().catch(function() { return {}; });
-
+    var data = await res.json();
     if (!res.ok) {
-      alert(data.error || 'Недостаточно звёзд!');
+      alert(data.error || 'Ошибка открытия');
       isOpening = false;
       openBtn.disabled = false;
       return;
     }
 
-    if (typeof data.balance === 'number') {
-      playerData.balance = data.balance;
-      document.getElementById('uiBalanceTop').textContent = playerData.balance;
-    } else {
-      await loadPlayerData();
-    }
+    playerData.balance = data.balance;
+    document.getElementById('uiBalanceTop').textContent = playerData.balance;
 
     document.getElementById('previewModal').classList.remove('show');
     document.getElementById('animationModal').classList.add('show');
     document.getElementById('winOverlay').classList.remove('show');
 
+    // Генерируем ленту из пула, который прислал сервер
     var stripHtml = '';
     var stripItems = [];
     for (var i = 0; i < 50; i++) {
-      var randItem = pool[Math.floor(Math.random() * pool.length)];
+      var randItem = data.pool[Math.floor(Math.random() * data.pool.length)];
       stripItems.push(randItem);
     }
-    stripItems.splice(45, 1, nft);
+    // Вставляем выигранный предмет на 45-ю позицию
+    stripItems.splice(45, 1, data.item);
 
     stripItems.forEach(function(item) {
       stripHtml += '<div class="roulette-item"><div class="r-icon">' + item.icon + '</div><div class="r-name">' + item.name + '</div></div>';
@@ -468,11 +428,19 @@ async function startOpening(c) {
 
     setTimeout(async function() {
       await loadPlayerData();
-      document.getElementById('winIcon').textContent = nft.icon;
-      document.getElementById('winName').textContent = nft.name;
+      document.getElementById('winIcon').textContent = data.item.icon;
+      document.getElementById('winName').textContent = data.item.name;
       var rEl = document.getElementById('winRarity');
-      rEl.textContent = r.name;
-      rEl.style.color = r.color;
+      rEl.textContent = data.item.rarity.toUpperCase();
+      rEl.style.color = {'common': '#9ca3af', 'nft': '#10b981', 'rare': '#3b82f6', 'legendary': '#f59e0b'}[data.item.rarity] || '#fff';
+      
+      // Показываем кнопки "Забрать" и "Продать"
+      document.getElementById('winButtons').style.display = 'flex';
+      document.getElementById('btnSellWonItem').onclick = function() {
+        closeAnimation();
+        sellItem(data.item.uid, data.item.price, null); // Продаем
+      };
+      
       document.getElementById('winOverlay').classList.add('show');
       isOpening = false;
       openBtn.disabled = false;
@@ -489,83 +457,267 @@ function closeAnimation() {
   document.getElementById('winOverlay').classList.remove('show');
 }
 
+// ==========================================
+// ПРОДАЖА И ВЫВОД
+// ==========================================
 async function sellItem(uid, price, btn) {
   if (sellingItems[uid]) return;
   sellingItems[uid] = true;
-
-  if (btn) {
-    btn.disabled = true;
-    btn.textContent = 'Продажа...';
-  }
+  if (btn) { btn.disabled = true; btn.textContent = '...'; }
 
   try {
     if (!confirm('Продать за ' + price + ' 🌟?')) {
-      if (btn) {
-        btn.disabled = false;
-        btn.textContent = 'Продать за ' + price + ' 🌟';
-      }
+      if (btn) { btn.disabled = false; btn.textContent = 'Продать'; }
       return;
     }
 
     var res = await fetch('/api/inventory/sell', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ login: currentUser, uid: uid, price: price })
+      body: JSON.stringify({ login: currentUser, uid: uid })
     });
 
-    var data = await res.json().catch(function() { return {}; });
-
-    if (!res.ok) {
-      alert(data.error || 'Не удалось продать');
-      await loadPlayerData();
-      return;
-    }
+    var data = await res.json();
+    if (!res.ok) { alert(data.error || 'Ошибка'); await loadPlayerData(); return; }
 
     if (typeof data.balance === 'number') {
       playerData.balance = data.balance;
       document.getElementById('uiBalanceTop').textContent = playerData.balance;
     }
     await loadPlayerData();
-  } catch (e) {
-    alert('Ошибка сети');
   } finally {
     delete sellingItems[uid];
   }
-}// ==========================================
+}
+
+async function withdrawItem(uid, name, btn) {
+  if (!confirm('Вывести "' + name + '" на проверку?')) return;
+  btn.disabled = true;
+  try {
+    var res = await fetch('/api/inventory/withdraw', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ login: currentUser, uid: uid })
+    });
+    if (res.ok) {
+      alert('Заявка на вывод создана! Ожидайте проверки админом.');
+      await loadPlayerData();
+    } else {
+      alert('Ошибка вывода');
+      btn.disabled = false;
+    }
+  } catch (e) { btn.disabled = false; }
+}
+
+async function sellAllItems() {
+  if (!playerData.inventory || playerData.inventory.length === 0) return;
+  if (!confirm('Вы уверены, что хотите продать ВСЁ?')) return;
+  
+  var res = await fetch('/api/inventory/sell-all', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ login: currentUser })
+  });
+  var data = await res.json();
+  if (res.ok) {
+    alert('Выручено: ' + data.earned + ' 🌟');
+    await loadPlayerData();
+  } else {
+    alert(data.error);
+  }
+}
+
+function updateSellAllButton() {
+  var btn = document.getElementById('btnSellAll');
+  if (btn) btn.style.display = (playerData.inventory && playerData.inventory.length > 0) ? 'block' : 'none';
+}<!-- Скрытые модалки и элементы (добавляем в конец body) -->
+<div class="modal" id="previewModal">
+  <div class="box">
+    <h2 id="prevCaseName" style="margin-bottom:15px;">Название</h2>
+    <div class="case-items-grid" id="previewGrid"></div>
+    <button type="button" id="openCaseBtn" style="margin-top:20px; padding:14px; width:100%; background:#a855f7; color:#fff; border:none; border-radius:10px; font-weight:bold; font-size:16px; cursor:pointer;">Открыть кейс</button>
+    <button type="button" id="closePreviewBtn" style="background:transparent; border:1px solid #444; color:#aaa; margin-top:10px; padding:10px; width:100%; border-radius:10px; cursor:pointer;">Закрыть</button>
+  </div>
+</div>
+
+<div class="modal" id="promoModal">
+  <div class="box">
+    <h2 style="margin-bottom:15px;">Ввести промокод</h2>
+    <input type="text" id="promoInput" placeholder="Введите код" style="width:100%; padding:14px; border-radius:10px; border:1px solid #2a2a4a; background:#12121a; color:#fff; margin-bottom:15px; text-transform: uppercase;">
+    <button type="button" id="btnActivatePromo" style="margin-bottom:10px; padding:14px; width:100%; background:#3b82f6; color:#fff; border:none; border-radius:10px; font-weight:bold; cursor:pointer;">Активировать</button>
+    <button type="button" id="closePromoBtn" style="background:transparent; border:1px solid #444; color:#aaa; padding:10px; width:100%; border-radius:10px; cursor:pointer;">Закрыть</button>
+  </div>
+</div>
+
+<div id="animationModal">
+  <div class="roulette-container">
+    <div class="roulette-pointer"></div>
+    <div class="roulette-strip" id="rouletteStrip"></div>
+  </div>
+  <div class="win-overlay" id="winOverlay">
+    <div style="font-size: 60px;" id="winIcon">?</div>
+    <h2 style="color: #fff; margin: 10px 0;" id="winName"></h2>
+    <div id="winRarity" style="font-weight: bold; margin-bottom: 15px;"></div>
+    <div id="winButtons" style="display: flex; gap: 10px; justify-content: center;">
+      <button type="button" class="btn-main" id="closeAnimBtn" style="padding: 12px 20px; font-size: 14px; background:#10b981;">Забрать</button>
+      <button type="button" class="btn-main" id="btnSellWonItem" style="padding: 12px 20px; font-size: 14px; background:#f59e0b;">Продать</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ==========================================
+// АПГРЕЙД
+// ==========================================
+var upgradeSelectedMine = null;
+var upgradeSelectedTarget = null;
+
+function renderUpgradeTab() {
+  document.getElementById('upgradeMySlot').onclick = function() {
+    if (!playerData.inventory || playerData.inventory.length === 0) return alert('Инвентарь пуст');
+    var itemsList = playerData.inventory.map(i => `${i.name} (${i.price}🌟)`).join('\n');
+    var choice = prompt('Введите точное название предмета:\n' + itemsList);
+    if (!choice) return;
+    var found = playerData.inventory.find(i => i.name.toLowerCase() === choice.toLowerCase());
+    if (found) {
+      upgradeSelectedMine = found;
+      updateUpgradeUI();
+    } else {
+      alert('Предмет не найден');
+    }
+  };
+
+  document.getElementById('upgradeTargetSlot').onclick = function() {
+    var targetId = prompt('Введите ID предмета, на который хотите улучшить (например, pepe, car):');
+    if (!targetId) return;
+    var pool = { 'pepe': { name: 'Плюш Пепе', icon: '🐸', price: 50000 }, 'car': { name: 'Машина', icon: '🚗', price: 5000 }, 'calendar': { name: 'Календарь', icon: '📅', price: 1500 } };
+    var found = pool[targetId.toLowerCase()];
+    if (found) {
+      upgradeSelectedTarget = { ...found, id: targetId.toLowerCase() };
+      updateUpgradeUI();
+    } else {
+      alert('Такой предмет не найден в базе апгрейда');
+    }
+  };
+}
+
+function updateUpgradeUI() {
+  if (upgradeSelectedMine) {
+    document.getElementById('upgradeMySlot').innerHTML = '<div class="icon">' + upgradeSelectedMine.icon + '</div><div class="name">' + upgradeSelectedMine.name + '</div><div style="font-size:10px;color:#888;">' + upgradeSelectedMine.price + '🌟</div>';
+  }
+  if (upgradeSelectedTarget) {
+    document.getElementById('upgradeTargetSlot').innerHTML = '<div class="icon">' + upgradeSelectedTarget.icon + '</div><div class="name">' + upgradeSelectedTarget.name + '</div><div style="font-size:10px;color:#888;">' + upgradeSelectedTarget.price + '🌟</div>';
+  }
+}
+
+async function doUpgrade() {
+  if (!upgradeSelectedMine || !upgradeSelectedTarget) return alert('Выберите оба предмета');
+  if (upgradeSelectedMine.price >= upgradeSelectedTarget.price) return alert('Целевой предмет должен быть дороже!');
+
+  var btn = document.getElementById('btnDoUpgrade');
+  btn.disabled = true;
+  btn.textContent = 'Крутим...';
+
+  var res = await fetch('/api/upgrade', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ login: currentUser, myUid: upgradeSelectedMine.uid, targetItemId: upgradeSelectedTarget.id })
+  });
+  var data = await res.json();
+
+  setTimeout(async () => {
+    btn.disabled = false;
+    btn.textContent = 'Улучшить (Шанс 50%)';
+    upgradeSelectedMine = null;
+    upgradeSelectedTarget = null;
+    renderUpgradeTab();
+
+    if (res.ok) {
+      if (data.win) {
+        alert('УСПЕХ! Вы получили ' + data.item.name);
+      } else {
+        alert('Неудача. Ваш предмет сгорел.');
+      }
+      await loadPlayerData();
+    } else {
+      alert(data.error);
+    }
+  }, 1000);
+}
+
+// ==========================================
+// ПРОМОКОДЫ
+// ==========================================
+async function activatePromo() {
+  var code = document.getElementById('promoInput').value.trim().toUpperCase();
+  if (!code) return alert('Введите код');
+  var res = await fetch('/api/promo/activate', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ login: currentUser, code: code })
+  });
+  var data = await res.json();
+  if (res.ok) {
+    alert('Успешно! Вы получили ' + data.stars + ' 🌟');
+    document.getElementById('promoModal').classList.remove('show');
+    document.getElementById('promoInput').value = '';
+    await loadPlayerData();
+  } else {
+    alert(data.error || 'Ошибка');
+  }
+}
+
+// ==========================================
 // АДМИНКА
 // ==========================================
-
 async function loadAdminPlayers() {
+  const tbody = document.getElementById('adminPlayersTable');
+  if (!tbody) return;
   const res = await fetch('/api/admin/players');
   if (!res.ok) return;
   const players = await res.json();
-  const tbody = document.getElementById('adminPlayersTable');
   tbody.innerHTML = '';
-  
   players.forEach(p => {
     const tr = document.createElement('tr');
     tr.style.borderBottom = '1px solid #333';
     tr.innerHTML = `
-      <td style="padding: 10px; color: ${p.is_super_admin ? '#ef4444' : (p.is_admin ? '#a855f7' : '#fff')}">${p.login}</td>
+      <td style="padding: 10px;">${p.login}</td>
       <td>${p.balance} 🌟</td>
       <td>${p.nft_count} шт.</td>
-      <td style="white-space: nowrap;">
-        <button onclick="quickAdminAction('${p.login}', 'give')" style="padding: 4px 8px; font-size:12px; background:#10b981; color:#fff; border:none; border-radius:4px; cursor:pointer;">+1000🌟</button>
-        <button onclick="quickAdminAction('${p.login}', 'take')" style="padding: 4px 8px; font-size:12px; background:#ef4444; color:#fff; border:none; border-radius:4px; cursor:pointer;">-1000🌟</button>
+      <td>
+        <button onclick="quickAdmin('${p.login}', 'give')" style="background:#10b981; padding:4px 8px; border-radius:4px; border:none; color:#fff; cursor:pointer;">+1000</button>
+        <button onclick="quickAdmin('${p.login}', 'take')" style="background:#ef4444; padding:4px 8px; border-radius:4px; border:none; color:#fff; cursor:pointer;">-1000</button>
       </td>
     `;
     tbody.appendChild(tr);
   });
 }
 
-async function quickAdminAction(login, action) {
-  const url = action === 'give' ? '/api/admin/give-stars' : '/api/admin/take-stars';
-  await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+async function quickAdmin(login, action) {
+  await fetch('/api/admin/' + (action === 'give' ? 'give-stars' : 'take-stars'), {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ adminLogin: currentUser, targetLogin: login, amount: 1000 })
   });
   loadAdminPlayers();
+}
+
+async function loadWithdraws() {
+  const res = await fetch('/api/admin/withdraws');
+  const data = await res.json();
+  const container = document.getElementById('withdrawList');
+  if (!container) return;
+  if (data.length === 0) { container.innerHTML = '<div style="color:#888;">Нет заявок</div>'; return; }
+  container.innerHTML = data.map(w => `
+    <div style="background:#12121a; padding:10px; border-radius:8px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
+      <span>👤 ${w.user_login} хочет вывести ${w.item_name} (${w.item_price}🌟)</span>
+      <button onclick="acceptWithdraw(${w.id})" style="background:#10b981; color:#fff; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;">Выдать</button>
+    </div>
+  `).join('');
+}
+
+async function acceptWithdraw(id) {
+  await fetch('/api/admin/withdraws/accept', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id }) });
+  loadWithdraws();
 }
 
 async function adminGiveStars() {
@@ -573,17 +725,10 @@ async function adminGiveStars() {
   var a = parseInt(document.getElementById('adminAmount').value, 10);
   if (!t || !a) return alert('Заполните поля');
   var res = await fetch('/api/admin/give-stars', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ adminLogin: currentUser, targetLogin: t, amount: a })
   });
-  if (res.ok) {
-    alert('Выдано ' + a + ' 🌟');
-    loadAdminPlayers();
-    if (t === currentUser) loadPlayerData();
-  } else {
-    alert('Ошибка');
-  }
+  if (res.ok) { alert('Выдано'); loadAdminPlayers(); } else alert('Ошибка');
 }
 
 async function adminTakeStars() {
@@ -594,102 +739,84 @@ async function adminTakeStars() {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ adminLogin: currentUser, targetLogin: t, amount: a })
   });
-  if (res.ok) { alert('Списано ' + a + ' 🌟'); loadAdminPlayers(); if (t === currentUser) loadPlayerData(); }
-  else alert('Ошибка');
-}
-
-async function adminGiveNft() {
-  var t = document.getElementById('nftTarget').value.trim();
-  var id = document.getElementById('nftItemId').value.trim();
-  var name = document.getElementById('nftName').value.trim();
-  var icon = document.getElementById('nftIcon').value.trim();
-  var price = parseInt(document.getElementById('nftPrice').value, 10);
-  if (!t || !id || !name || !icon) return alert('Заполните все поля NFT');
-  
-  var res = await fetch('/api/admin/give-nft', {
-    method: 'POST', headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ adminLogin: currentUser, targetLogin: t, itemId: id, name, icon, rarity: 'common', price })
-  });
-  if (res.ok) { alert('NFT выдан'); loadAdminPlayers(); } else alert('Ошибка');
-}
-
-async function adminTakeNft() {
-  var t = document.getElementById('nftTarget').value.trim();
-  var uid = document.getElementById('nftUidToTake').value.trim();
-  if (!t || !uid) return alert('Укажите логин и UID предмета');
-  
-  var res = await fetch('/api/admin/take-nft', {
-    method: 'POST', headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ adminLogin: currentUser, targetLogin: t, uid })
-  });
-  if (res.ok) { alert('NFT забран'); loadAdminPlayers(); } else alert('Ошибка: предмет не найден');
+  if (res.ok) { alert('Списано'); loadAdminPlayers(); } else alert('Ошибка');
 }
 
 async function adminCreatePromo() {
   var code = document.getElementById('promoCode').value.trim();
   var stars = parseInt(document.getElementById('promoStars').value, 10);
   var limit = parseInt(document.getElementById('promoLimit').value, 10);
-  if (!code || !stars || !limit) return alert('Заполните все поля промокода');
-  
+  if (!code || !stars || !limit) return alert('Заполните поля');
   var res = await fetch('/api/admin/create-promo', {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ adminLogin: currentUser, code, stars, limit })
   });
-  if (res.ok) alert('Промокод создан!'); else alert('Ошибка (возможно, код уже есть)');
+  if (res.ok) alert('Промокод создан!'); else alert('Ошибка (возможно, код есть)');
 }
 
-async function makeAdmin() {
-  var t = document.getElementById('newAdminLogin').value.trim();
-  var res = await fetch('/api/admin/make-admin', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ superAdminLogin: currentUser, targetLogin: t })
-  });
-  if (res.ok) alert('Теперь Админ!'); else alert('Ошибка');
-}
-
-async function removeAdmin() {
-  var t = document.getElementById('newAdminLogin').value.trim();
-  var res = await fetch('/api/admin/remove-admin', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ superAdminLogin: currentUser, targetLogin: t })
-  });
-  if (res.ok) alert('Права сняты!'); else alert('Ошибка');
+// Рендер админки (вызывается при переходе на вкладку)
+function renderAdminUI() {
+  var container = document.getElementById('adminContent');
+  if (container.innerHTML !== '') return; // Уже отрисовано
+  container.innerHTML = `
+    <div class="admin-box" style="max-width: 900px; overflow-x: auto;">
+      <h3>Игроки</h3>
+      <table style="width:100%; border-collapse:collapse; color:#fff;"><tbody id="adminPlayersTable"></tbody></table>
+    </div>
+    <div class="admin-box">
+      <h3>Управление звездами</h3>
+      <input type="text" id="adminTarget" placeholder="Логин">
+      <input type="number" id="adminAmount" value="1000">
+      <div style="display:flex; gap:10px;">
+        <button id="btnAdminGive" style="background:#10b981; flex:1;">Выдать</button>
+        <button id="btnAdminTake" style="background:#ef4444; flex:1;">Забрать</button>
+      </div>
+    </div>
+    <div class="admin-box" style="border: 1px solid #3b82f6;">
+      <h3 style="color:#3b82f6;">Заявки на вывод</h3>
+      <div id="withdrawList"></div>
+    </div>
+    <div class="admin-box">
+      <h3>Создать промокод</h3>
+      <input type="text" id="promoCode" placeholder="Код">
+      <input type="number" id="promoStars" placeholder="Звезды" value="100">
+      <input type="number" id="promoLimit" placeholder="Активаций" value="10">
+      <button id="btnCreatePromo" style="background:#a855f7;">Создать</button>
+    </div>
+  `;
+  document.getElementById('btnAdminGive').onclick = adminGiveStars;
+  document.getElementById('btnAdminTake').onclick = adminTakeStars;
+  document.getElementById('btnCreatePromo').onclick = adminCreatePromo;
+  loadAdminPlayers();
+  loadWithdraws();
 }
 
 // ==========================================
 // ИНИЦИАЛИЗАЦИЯ
 // ==========================================
-
 document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('tab-login').addEventListener('click', function() { switchAuthTab('login'); });
   document.getElementById('tab-register').addEventListener('click', function() { switchAuthTab('register'); });
   document.getElementById('mainAuthBtn').addEventListener('click', handleAuth);
   
+  document.getElementById('navProfileBtn').addEventListener('click', function() { switchTab('profile', this); });
   document.getElementById('navCasesBtn').addEventListener('click', function() { switchTab('cases', this); });
   document.getElementById('navInvBtn').addEventListener('click', function() { switchTab('inventory', this); });
-  document.getElementById('adminTabBtn').addEventListener('click', function() { switchTab('admin', this); });
+  document.getElementById('navUpgradeBtn').addEventListener('click', function() { switchTab('upgrade', this); });
+  document.getElementById('adminTabBtn').addEventListener('click', function() { switchTab('admin', this); renderAdminUI(); });
   document.getElementById('logoutBtn').addEventListener('click', logout);
   
-  document.getElementById('btnAdminGive').addEventListener('click', adminGiveStars);
-  document.getElementById('btnAdminTake').addEventListener('click', adminTakeStars);
-  document.getElementById('btnAdminGiveNft').addEventListener('click', adminGiveNft);
-  document.getElementById('btnAdminTakeNft').addEventListener('click', adminTakeNft);
-  document.getElementById('btnCreatePromo').addEventListener('click', adminCreatePromo);
-  document.getElementById('btnMakeAdmin').addEventListener('click', makeAdmin);
-  document.getElementById('btnRemoveAdmin').addEventListener('click', removeAdmin);
-  
-  document.getElementById('closePreviewBtn').addEventListener('click', function() {
-    document.getElementById('previewModal').classList.remove('show');
-  });
+  document.getElementById('btnSellAll').addEventListener('click', sellAllItems);
+  document.getElementById('btnDoUpgrade').addEventListener('click', doUpgrade);
+  document.getElementById('closePreviewBtn').addEventListener('click', function() { document.getElementById('previewModal').classList.remove('show'); });
   document.getElementById('closeAnimBtn').addEventListener('click', closeAnimation);
 
+  document.getElementById('openPromoBtn').addEventListener('click', function() { document.getElementById('promoModal').classList.add('show'); });
+  document.getElementById('closePromoBtn').addEventListener('click', function() { document.getElementById('promoModal').classList.remove('show'); });
+  document.getElementById('btnActivatePromo').addEventListener('click', activatePromo);
+
   var saved = localStorage.getItem('saved_user');
-  if (saved) {
-    currentUser = saved;
-    enterGame();
-  }
+  if (saved) { currentUser = saved; enterGame(); }
 });
 </script>
 </body>
