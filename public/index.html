@@ -2,80 +2,79 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Кейсы</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Segoe UI', Roboto, sans-serif; background: #0a0a0f; color: #e2e2e2; min-height: 100vh; padding: 20px; overflow-x: hidden; }
+  body { font-family: 'Segoe UI', Roboto, sans-serif; background: #0a0a0f; color: #e2e2e2; min-height: 100vh; padding: 10px; overflow-x: hidden; }
   #authScreen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 90vh; }
-  .auth-box { background: #16162a; border: 1px solid #2a2a4a; border-radius: 24px; padding: 40px; width: 100%; max-width: 420px; }
-  .auth-box h1 { font-size: 32px; text-align: center; color: #a855f7; margin-bottom: 10px; }
-  .tabs { display: flex; background: #12121a; border-radius: 12px; padding: 4px; margin-bottom: 25px; }
-  .tab { flex: 1; padding: 12px; text-align: center; border-radius: 8px; cursor: pointer; font-weight: 600; color: #888; }
+  .auth-box { background: #16162a; border: 1px solid #2a2a4a; border-radius: 24px; padding: 30px; width: 100%; max-width: 400px; }
+  .auth-box h1 { font-size: 28px; text-align: center; color: #a855f7; margin-bottom: 10px; }
+  .tabs { display: flex; background: #12121a; border-radius: 12px; padding: 4px; margin-bottom: 20px; }
+  .tab { flex: 1; padding: 10px; text-align: center; border-radius: 8px; cursor: pointer; font-weight: 600; color: #888; font-size: 14px;}
   .tab.active { background: #1a1a2e; color: #fff; }
-  .input-group { margin-bottom: 18px; }
-  .input-group input { width: 100%; padding: 14px 16px; border-radius: 12px; border: 1px solid #2a2a4a; background: #12121a; color: #fff; font-size: 16px; }
-  .btn-main { width: 100%; padding: 16px; border: none; border-radius: 12px; background: #a855f7; color: #fff; font-size: 16px; font-weight: bold; cursor: pointer; }
-  #mainScreen { display: none; max-width: 1000px; margin: 0 auto; }
-  header { display: flex; justify-content: space-between; align-items: center; background: #16162a; padding: 15px 25px; border-radius: 16px; margin-bottom: 25px; }
-  .logo { font-size: 24px; font-weight: 800; color: #a855f7; }
-  .balance-top { background: #12121a; padding: 8px 16px; border-radius: 20px; font-weight: bold; color: #ffd700; cursor: pointer; }
-  .tabs-nav { display: flex; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; }
-  .nav-btn { padding: 12px 24px; background: #1a1a2e; border: 1px solid #2a2a4a; border-radius: 12px; color: #888; cursor: pointer; font-weight: 600; }
+  .input-group { margin-bottom: 15px; }
+  .input-group input { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #2a2a4a; background: #12121a; color: #fff; font-size: 15px; }
+  .btn-main { width: 100%; padding: 14px; border: none; border-radius: 12px; background: #a855f7; color: #fff; font-size: 15px; font-weight: bold; cursor: pointer; }
+  #mainScreen { display: none; max-width: 800px; margin: 0 auto; }
+  header { display: flex; justify-content: space-between; align-items: center; background: #16162a; padding: 10px 15px; border-radius: 16px; margin-bottom: 15px; }
+  .logo { font-size: 20px; font-weight: 800; color: #a855f7; }
+  .balance-top { background: #12121a; padding: 6px 12px; border-radius: 20px; font-weight: bold; color: #ffd700; cursor: pointer; font-size: 14px;}
+  .tabs-nav { display: flex; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; }
+  .nav-btn { padding: 8px 14px; background: #1a1a2e; border: 1px solid #2a2a4a; border-radius: 10px; color: #888; cursor: pointer; font-weight: 600; font-size: 13px; }
   .nav-btn.active { background: #a855f7; border-color: #a855f7; color: #fff; }
   .content-section { display: none; }
   .content-section.active { display: block; }
-  .profile-box { background: #16162a; border-radius: 16px; padding: 25px; text-align: center; border: 1px solid #2a2a4a; }
-  .profile-stats { display: flex; justify-content: center; gap: 20px; margin-top: 15px; flex-wrap: wrap; }
-  .stat-box { background: #12121a; padding: 15px 25px; border-radius: 12px; flex: 1; min-width: 120px; }
-  .stat-value { font-size: 20px; font-weight: bold; color: #ffd700; }
-  .stat-label { font-size: 12px; color: #888; }
-  .cases { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
-  .case { background: #16162a; border: 1px solid #2a2a4a; border-radius: 16px; padding: 25px; text-align: center; cursor: pointer; }
-  .case:hover { border-color: #a855f7; }
-  .case .icon { font-size: 50px; margin-bottom: 15px; }
-  .case .name { font-weight: 700; color: #fff; }
-  .case .price { color: #ffd700; font-weight: bold; margin-top: 10px; }
-  .inventory { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; }
-  .item { background: #16162a; border: 1px solid #2a2a4a; border-radius: 14px; padding: 15px; text-align: center; }
-  .item button { width: 100%; padding: 8px; border: none; border-radius: 8px; color: #fff; font-weight: bold; margin-top: 5px; cursor: pointer; }
+  .profile-box { background: #16162a; border-radius: 16px; padding: 15px; text-align: center; border: 1px solid #2a2a4a; }
+  .profile-stats { display: flex; justify-content: center; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
+  .stat-box { background: #12121a; padding: 10px; border-radius: 12px; flex: 1; min-width: 90px; }
+  .stat-value { font-size: 16px; font-weight: bold; color: #ffd700; }
+  .stat-label { font-size: 11px; color: #888; }
+  .cases { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+  .case { background: #16162a; border: 1px solid #2a2a4a; border-radius: 16px; padding: 15px; text-align: center; cursor: pointer; }
+  .case .icon { font-size: 40px; margin-bottom: 10px; }
+  .case .name { font-weight: 700; color: #fff; font-size: 14px;}
+  .case .price { color: #ffd700; font-weight: bold; margin-top: 5px; font-size: 13px;}
+  .inventory { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; }
+  .item { background: #16162a; border: 1px solid #2a2a4a; border-radius: 12px; padding: 10px; text-align: center; }
+  .item button { width: 100%; padding: 6px; border: none; border-radius: 6px; color: #fff; font-weight: bold; margin-top: 5px; cursor: pointer; font-size: 11px;}
   .btn-sell { background: #f59e0b; } .btn-withdraw { background: #3b82f6; }
-  .btn-sell-all { background: #ef4444; width: 100%; padding: 15px; margin-bottom: 20px; border: none; border-radius: 12px; color: #fff; font-weight: bold; cursor: pointer; display: none; }
+  .btn-sell-all { background: #ef4444; width: 100%; padding: 12px; margin-bottom: 15px; border: none; border-radius: 10px; color: #fff; font-weight: bold; cursor: pointer; display: none; }
   
-  .upgrade-wrapper { display: flex; flex-direction: column; align-items: center; background: #16162a; padding: 20px; border-radius: 16px; border: 1px solid #2a2a4a; }
-  .upgrade-slots { display: flex; justify-content: space-between; width: 100%; max-width: 500px; gap: 15px; margin-bottom: 20px; }
-  .upgrade-slot { flex: 1; height: 140px; border: 2px dashed #444; border-radius: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; background: #12121a; transition: 0.2s; }
-  .upgrade-slot:hover { border-color: #a855f7; }
-  .upgrade-slot .icon { font-size: 40px; }
-  .upgrade-slot .name { font-size: 12px; color: #ccc; margin-top: 5px; text-align: center; }
+  /* АПГРЕЙД */
+  .upgrade-wrapper { display: flex; flex-direction: column; align-items: center; background: #16162a; padding: 15px; border-radius: 16px; border: 1px solid #2a2a4a; }
+  .upgrade-slots { display: flex; justify-content: space-between; width: 100%; gap: 10px; margin-bottom: 10px; }
+  .upgrade-slot { flex: 1; height: 100px; border: 2px dashed #444; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; background: #12121a; }
+  .upgrade-slot .icon { font-size: 30px; }
+  .upgrade-slot .name { font-size: 10px; color: #ccc; margin-top: 5px; text-align: center; }
   
-  /* SVG Спидометр (Адаптивный) */
-  .speedometer-wrap { position: relative; width: 100%; max-width: 350px; margin: 10px 0; }
+  /* КОЛЕСО (УМЕНЬШЕНО) */
+  .speedometer-wrap { position: relative; width: 100%; max-width: 240px; margin: 5px 0; }
   .speedometer-svg { width: 100%; height: auto; display: block; }
-  .chance-text { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); font-size: 28px; font-weight: bold; color: #fff; text-shadow: 0 0 10px rgba(0,0,0,0.8); }
+  .chance-text { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); font-size: 22px; font-weight: bold; color: #fff; text-shadow: 0 0 10px rgba(0,0,0,0.8); }
   .needle-svg { transition: transform 2s cubic-bezier(0.1, 0.7, 0.1, 1); transform-origin: 100px 100px; }
   
-  .upgrade-btn { background: #a855f7; color: #fff; border: none; padding: 15px; border-radius: 12px; font-weight: bold; cursor: pointer; margin-top: 10px; width: 100%; max-width: 300px; font-size: 16px;}
-  .toggle-fast { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 15px 0; color: #ccc; font-size: 14px; cursor: pointer; }
+  .upgrade-btn { background: #a855f7; color: #fff; border: none; padding: 12px; border-radius: 12px; font-weight: bold; cursor: pointer; margin-top: 10px; width: 100%; max-width: 280px; font-size: 15px;}
+  .toggle-fast { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 10px 0; color: #ccc; font-size: 13px; cursor: pointer; }
   
-  .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; z-index: 100; padding: 20px; }
+  .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; z-index: 100; padding: 15px; }
   .modal.show { display: flex; }
-  .modal .box { background: #16162a; border-radius: 20px; padding: 20px; text-align: center; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; }
-  .admin-box { background: #16162a; padding: 20px; border-radius: 16px; max-width: 900px; margin: 20px auto; text-align: left; }
-  .admin-box input { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 8px; border: none; background: #0a0a0f; color: #fff; }
-  .admin-box button { width: 100%; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; margin-bottom: 10px; color: #fff; }
+  .modal .box { background: #16162a; border-radius: 20px; padding: 15px; text-align: center; width: 100%; max-width: 400px; max-height: 90vh; overflow-y: auto; }
+  .admin-box { background: #16162a; padding: 15px; border-radius: 16px; max-width: 800px; margin: 15px auto; text-align: left; }
+  .admin-box input { width: 100%; padding: 8px; margin-bottom: 8px; border-radius: 6px; border: none; background: #0a0a0f; color: #fff; font-size: 13px;}
+  .admin-box button { width: 100%; padding: 10px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; margin-bottom: 8px; color: #fff; font-size: 13px;}
   #animationModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); align-items: center; justify-content: center; z-index: 200; flex-direction: column; }
   #animationModal.show { display: flex; }
-  .roulette-container { width: 100%; max-width: 800px; height: 150px; background: #12121a; border-top: 2px solid #2a2a4a; border-bottom: 2px solid #2a2a4a; position: relative; overflow: hidden; display: flex; align-items: center; }
+  .roulette-container { width: 100%; max-width: 600px; height: 120px; background: #12121a; border-top: 2px solid #2a2a4a; border-bottom: 2px solid #2a2a4a; position: relative; overflow: hidden; display: flex; align-items: center; }
   .roulette-strip { display: flex; position: absolute; left: 0; }
-  .roulette-item { width: 120px; height: 146px; display: flex; flex-direction: column; align-items: center; justify-content: center; border-right: 1px solid #2a2a4a; flex-shrink: 0; }
-  .roulette-item .r-icon { font-size: 50px; }
-  .roulette-item .r-name { font-size: 10px; color: #aaa; }
-  .roulette-pointer { position: absolute; left: 50%; top: 0; bottom: 0; width: 4px; background: #ffd700; transform: translateX(-50%); z-index: 10; }
-  .win-overlay { display: none; text-align: center; margin-top: 30px; background: #16162a; padding: 20px 40px; border-radius: 16px; border: 2px solid #a855f7; }
+  .roulette-item { width: 90px; height: 116px; display: flex; flex-direction: column; align-items: center; justify-content: center; border-right: 1px solid #2a2a4a; flex-shrink: 0; }
+  .roulette-item .r-icon { font-size: 35px; }
+  .roulette-item .r-name { font-size: 9px; color: #aaa; }
+  .roulette-pointer { position: absolute; left: 50%; top: 0; bottom: 0; width: 3px; background: #ffd700; transform: translateX(-50%); z-index: 10; }
+  .win-overlay { display: none; text-align: center; margin-top: 15px; background: #16162a; padding: 15px 25px; border-radius: 16px; border: 2px solid #a855f7; }
   .win-overlay.show { display: block; }
-  .drop-feed { position: fixed; bottom: 20px; left: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 50; pointer-events: none; }
-  .feed-item { background: #16162a; border: 1px solid #3b82f6; padding: 10px 20px; border-radius: 8px; font-size: 12px; color: #fff; opacity: 0.8; }
+  .drop-feed { position: fixed; bottom: 10px; left: 10px; display: flex; flex-direction: column; gap: 5px; z-index: 50; pointer-events: none; }
+  .feed-item { background: #16162a; border: 1px solid #3b82f6; padding: 6px 10px; border-radius: 6px; font-size: 10px; color: #fff; opacity: 0.8; }
 </style>
 </head>
 <body>
@@ -96,7 +95,7 @@
 <div id="mainScreen">
   <header>
     <div class="logo">Кейсы</div>
-    <div class="user-info">👤 <span id="uiUsername"></span></div>
+    <div class="user-info" style="font-size: 12px;">👤 <span id="uiUsername"></span></div>
     <div class="balance-top" id="openPromoBtn"><span id="uiBalanceTop">0</span> 🌟</div>
   </header>
   <div class="tabs-nav">
@@ -110,16 +109,16 @@
   
   <div id="section-profile" class="content-section active">
     <div class="profile-box">
-      <div style="font-size: 80px;">👤</div>
-      <div id="profileName" style="font-size:24px; font-weight:bold; margin-bottom:15px;"></div>
+      <div style="font-size: 60px;">👤</div>
+      <div id="profileName" style="font-size:20px; font-weight:bold; margin-bottom:10px;"></div>
       <div class="profile-stats">
         <div class="stat-box"><div class="stat-value" id="profileBalance">0 🌟</div><div class="stat-label">Баланс</div></div>
         <div class="stat-box"><div class="stat-value" id="profileNftCount">0</div><div class="stat-label">Предметов</div></div>
-        <div class="stat-box"><div class="stat-value" id="profileNftValue">0 🌟</div><div class="stat-label">Стоимость NFT</div></div>
+        <div class="stat-box"><div class="stat-value" id="profileNftValue">0 🌟</div><div class="stat-label">Стоимость</div></div>
       </div>
-      <div style="display:flex; gap:10px; margin-top:15px; flex-wrap:wrap;">
-        <button class="btn-main" id="btnClaimBonus" style="background:#10b981; flex:1;">Бонус +50 🌟</button>
-        <button class="btn-main" id="btnProfilePromo" style="background:#3b82f6; flex:1;">Промокод</button>
+      <div style="display:flex; gap:8px; margin-top:10px; flex-wrap:wrap;">
+        <button class="btn-main" id="btnClaimBonus" style="background:#10b981; flex:1; padding:10px; font-size:13px;">Бонус +50 🌟</button>
+        <button class="btn-main" id="btnProfilePromo" style="background:#3b82f6; flex:1; padding:10px; font-size:13px;">Промокод</button>
       </div>
     </div>
   </div>
@@ -140,9 +139,7 @@
       
       <div class="speedometer-wrap">
         <svg class="speedometer-svg" viewBox="0 0 200 110">
-          <!-- Фоновая дуга -->
           <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#2a2a4a" stroke-width="20" stroke-linecap="round"/>
-          <!-- Градиентная дуга -->
           <defs>
             <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
               <stop offset="0%" stop-color="#ef4444" />
@@ -151,10 +148,8 @@
             </linearGradient>
           </defs>
           <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="url(#grad)" stroke-width="20" stroke-linecap="round"/>
-          <!-- Стрелка -->
           <line class="needle-svg" id="upgradeNeedle" x1="100" y1="100" x2="100" y2="35" stroke="#fff" stroke-width="4" stroke-linecap="round" />
-          <!-- Центр -->
-          <circle cx="100" cy="100" r="10" fill="#fff" />
+          <circle cx="100" cy="100" r="8" fill="#fff" />
         </svg>
         <div class="chance-text" id="upgradeChanceText">0%</div>
       </div>
@@ -174,24 +169,24 @@
 
 <div class="drop-feed" id="dropFeed"></div>
 
-<div class="modal" id="previewModal"><div class="box"><h2 id="prevCaseName">...</h2><div class="toggle-fast"><input type="checkbox" id="fastCaseToggle"> Быстрое открытие</div><button class="btn-main" id="openCaseBtn" style="margin-top:15px;">Открыть</button><button class="btn-main" id="closePreviewBtn" style="background:#444; margin-top:10px;">Закрыть</button></div></div>
-<div class="modal" id="promoModal"><div class="box"><h2>Промокод</h2><input type="text" id="promoInput" style="width:100%; padding:14px; margin:15px 0; border-radius:10px; border:1px solid #444; background:#12121a; color:#fff;"><button class="btn-main" id="btnActivatePromo">Активировать</button><button class="btn-main" id="closePromoBtn" style="background:#444; margin-top:10px;">Закрыть</button></div></div>
+<div class="modal" id="previewModal"><div class="box"><h2 id="prevCaseName">...</h2><div class="toggle-fast"><input type="checkbox" id="fastCaseToggle"> Быстрое открытие</div><button class="btn-main" id="openCaseBtn" style="margin-top:10px;">Открыть</button><button class="btn-main" id="closePreviewBtn" style="background:#444; margin-top:8px;">Закрыть</button></div></div>
+<div class="modal" id="promoModal"><div class="box"><h2>Промокод</h2><input type="text" id="promoInput" style="width:100%; padding:12px; margin:10px 0; border-radius:8px; border:1px solid #444; background:#12121a; color:#fff;"><button class="btn-main" id="btnActivatePromo">Активировать</button><button class="btn-main" id="closePromoBtn" style="background:#444; margin-top:8px;">Закрыть</button></div></div>
 
 <div class="modal" id="selectItemModal">
   <div class="box" style="text-align: left;">
-    <h2 style="margin-bottom:15px; text-align: center;">Выберите предмет</h2>
-    <div id="selectItemList" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 10px; max-height: 50vh; overflow-y: auto;"></div>
-    <button class="btn-main" id="closeSelectItemBtn" style="background:#444; margin-top: 15px;">Отмена</button>
+    <h2 style="margin-bottom:10px; text-align: center; font-size: 18px;">Выберите предмет</h2>
+    <div id="selectItemList" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 8px; max-height: 50vh; overflow-y: auto;"></div>
+    <button class="btn-main" id="closeSelectItemBtn" style="background:#444; margin-top: 10px;">Отмена</button>
   </div>
 </div>
 
 <div id="animationModal">
   <div class="roulette-container"><div class="roulette-pointer"></div><div class="roulette-strip" id="rouletteStrip"></div></div>
   <div class="win-overlay" id="winOverlay">
-    <div style="font-size: 60px;" id="winIcon">?</div><h2 id="winName"></h2><div id="winRarity"></div>
-    <div id="winButtons" style="display:none; gap:10px; justify-content:center; margin-top:15px;">
-      <button class="btn-main" id="closeAnimBtn" style="background:#10b981; width:auto; padding:10px 20px;">Забрать</button>
-      <button class="btn-main" id="btnSellWonItem" style="background:#f59e0b; width:auto; padding:10px 20px;">Продать</button>
+    <div style="font-size: 50px;" id="winIcon">?</div><h2 id="winName"></h2><div id="winRarity"></div>
+    <div id="winButtons" style="display:none; gap:8px; justify-content:center; margin-top:10px;">
+      <button class="btn-main" id="closeAnimBtn" style="background:#10b981; width:auto; padding:8px 15px; font-size:13px;">Забрать</button>
+      <button class="btn-main" id="btnSellWonItem" style="background:#f59e0b; width:auto; padding:8px 15px; font-size:13px;">Продать</button>
     </div>
   </div>
 </div><script>
@@ -202,6 +197,23 @@ document.addEventListener('DOMContentLoaded', function() {
     { id: 'starter', name: 'Стартовый', icon: '📦', price: 50 },
     { id: 'pro', name: 'Про', icon: '🎁', price: 500 },
     { id: 'elite', name: 'Элитный', icon: '💎', price: 8000 }
+  ];
+  var ALL_ITEMS = [
+    { id: 'bear', name: 'Мишка', icon: '🧸', price: 15 },
+    { id: 'gift', name: 'Подарок', icon: '🎁', price: 25 },
+    { id: 'heart', name: 'Сердечко', icon: '💖', price: 15 },
+    { id: 'rose', name: 'Роза', icon: '🌹', price: 25 },
+    { id: 'skull', name: 'Череп', icon: '💀', price: 50 },
+    { id: 'cake', name: 'Торт', icon: '🎂', price: 50 },
+    { id: 'bouquet', name: 'Букет', icon: '💐', price: 50 },
+    { id: 'rocket', name: 'Ракета', icon: '🚀', price: 50 },
+    { id: 'cup', name: 'Кубок', icon: '🏆', price: 100 },
+    { id: 'ring', name: 'Кольцо', icon: '💍', price: 100 },
+    { id: 'cigarette', name: 'Сигарета', icon: '🚬', price: 500 },
+    { id: 'socks', name: 'Носки', icon: '🧦', price: 1000 },
+    { id: 'calendar', name: 'Календарь', icon: '📅', price: 1500 },
+    { id: 'car', name: 'Машина', icon: '🚗', price: 5000 },
+    { id: 'pepe', name: 'Плюш Пепе', icon: '🐸', price: 50000 }
   ];
   var el = function(id) { return document.getElementById(id); };
   var spinSound = el('soundSpin'), winSound = el('soundWin');
@@ -285,8 +297,8 @@ document.addEventListener('DOMContentLoaded', function() {
         stripItems.forEach(i => stripHtml += `<div class="roulette-item"><div class="r-icon">${i.icon}</div><div class="r-name">${i.name}</div></div>`);
         var strip = el('rouletteStrip'); strip.innerHTML = stripHtml; strip.style.transition = 'none'; strip.style.transform = 'translateX(0)';
         setTimeout(() => {
-          var w = 121, cw = document.querySelector('.roulette-container').offsetWidth;
-          strip.style.transition = 'transform 5s cubic-bezier(0.1, 0.7, 0.1, 1)'; strip.style.transform = `translateX(-${(45 * w) - ((cw / 2) - (w / 2))}px)`;
+          var w = 91, cw = document.querySelector('.roulette-container').offsetWidth;
+          strip.style.transition = 'transform 4s cubic-bezier(0.1, 0.7, 0.1, 1)'; strip.style.transform = `translateX(-${(45 * w) - ((cw / 2) - (w / 2))}px)`;
         }, 100);
         setTimeout(async () => {
           if (winSound) { winSound.play().catch(e=>{}); }
@@ -294,7 +306,7 @@ document.addEventListener('DOMContentLoaded', function() {
           el('winIcon').textContent = data.item.icon; el('winName').textContent = data.item.name; el('winRarity').textContent = data.item.rarity.toUpperCase();
           el('winButtons').style.display = 'flex'; el('winOverlay').classList.add('show'); isOpening = false; el('openCaseBtn').disabled = false;
           el('btnSellWonItem').onclick = () => { el('animationModal').classList.remove('show'); sellItem(data.item.uid, data.item.price, null); };
-        }, 5100);
+        }, 4100);
       } else {
         if (winSound) { winSound.play().catch(e=>{}); }
         await enterGame(); loadDropFeed();
@@ -312,7 +324,7 @@ document.addEventListener('DOMContentLoaded', function() {
     el('btnSellAll').style.display = 'block';
     playerData.inventory.forEach(item => {
       var div = document.createElement('div'); div.className = 'item';
-      div.innerHTML = `<div style="font-size:40px;">${item.icon}</div><div>${item.name}</div><div style="color:#ffd700;">${item.price} 🌟</div>`;
+      div.innerHTML = `<div style="font-size:30px;">${item.icon}</div><div style="font-size:12px; margin-top:5px;">${item.name}</div><div style="color:#ffd700; font-size:11px;">${item.price} 🌟</div>`;
       var b1 = document.createElement('button'); b1.className='btn-sell'; b1.textContent='Продать'; b1.onclick = () => sellItem(item.uid, item.price, b1);
       var b2 = document.createElement('button'); b2.className='btn-withdraw'; b2.textContent='На вывод'; b2.onclick = () => withdrawItem(item.uid, item.name, b2);
       div.appendChild(b1); div.appendChild(b2); c.appendChild(div);
@@ -365,29 +377,11 @@ document.addEventListener('DOMContentLoaded', function() {
     var res = await fetch('/api/promo/activate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ login: currentUser, code }) });
     var data = await res.json();
     if (res.ok) { alert('+' + data.stars + '🌟'); el('promoModal').classList.remove('show'); await enterGame(); } else alert(data.error);
-  };  // ==========================================
-  // АПГРЕЙД (С ВЫБОРОМ ВСЕХ ПРЕДМЕТОВ И SVG-КОЛЕСОМ)
-  // ==========================================
-  
-  // Собираем ВСЕ предметы из игры для выбора цели
-  var ALL_ITEMS = [
-    { id: 'bear', name: 'Мишка', icon: '🧸', price: 15 },
-    { id: 'gift', name: 'Подарок', icon: '🎁', price: 25 },
-    { id: 'heart', name: 'Сердечко', icon: '💖', price: 15 },
-    { id: 'rose', name: 'Роза', icon: '🌹', price: 25 },
-    { id: 'skull', name: 'Череп', icon: '💀', price: 50 },
-    { id: 'cake', name: 'Торт', icon: '🎂', price: 50 },
-    { id: 'bouquet', name: 'Букет', icon: '💐', price: 50 },
-    { id: 'rocket', name: 'Ракета', icon: '🚀', price: 50 },
-    { id: 'cup', name: 'Кубок', icon: '🏆', price: 100 },
-    { id: 'ring', name: 'Кольцо', icon: '💍', price: 100 },
-    { id: 'cigarette', name: 'Сигарета', icon: '🚬', price: 500 },
-    { id: 'socks', name: 'Носки', icon: '🧦', price: 1000 },
-    { id: 'calendar', name: 'Календарь', icon: '📅', price: 1500 },
-    { id: 'car', name: 'Машина', icon: '🚗', price: 5000 },
-    { id: 'pepe', name: 'Плюш Пепе', icon: '🐸', price: 50000 }
-  ];
+  };
 
+  // ==========================================
+  // АПГРЕЙД
+  // ==========================================
   function renderUpgradeTab() {
     el('upgradeMySlot').onclick = () => {
       if (!playerData.inventory.length) return alert('Инвентарь пуст');
@@ -399,7 +393,6 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     el('upgradeTargetSlot').onclick = () => {
-      // Теперь показываем ВСЕ предметы игры
       openSelectItemModal(ALL_ITEMS, (selected) => {
         upgradeSelectedTarget = selected;
         el('upgradeTargetSlot').innerHTML = `<div class="icon">${selected.icon}</div><div class="name">${selected.name}</div>`;
@@ -409,53 +402,34 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   function updateUpgradeUI() {
-    var btn = el('btnDoUpgrade');
-    var needle = el('upgradeNeedle');
-    var chanceText = el('upgradeChanceText');
-
+    var btn = el('btnDoUpgrade'), needle = el('upgradeNeedle'), chanceText = el('upgradeChanceText');
     if (upgradeSelectedMine && upgradeSelectedTarget) {
       if (upgradeSelectedMine.price >= upgradeSelectedTarget.price) {
-        btn.textContent = 'Цель должна быть дороже';
-        chanceText.textContent = '0%';
-        needle.style.transform = `rotate(-90deg)`; // Стрелка влево
-        return;
+        btn.textContent = 'Цель должна быть дороже'; chanceText.textContent = '0%'; needle.style.transform = `rotate(-90deg)`; return;
       }
-
       let chance = (upgradeSelectedMine.price / upgradeSelectedTarget.price) * 50;
       if (chance > 50) chance = 50;
       if (chance < 1) chance = 1;
-      
       btn.textContent = 'Улучшить (Шанс ' + chance.toFixed(1) + '%)';
       chanceText.textContent = chance.toFixed(1) + '%';
-      
-      // Стрелка двигается от -90 (0%) до +90 (100%).
       var angle = -90 + (chance / 100) * 180; 
       needle.style.transform = `rotate(${angle}deg)`;
     } else {
-      btn.textContent = 'Выберите предметы';
-      chanceText.textContent = '0%';
-      needle.style.transform = `rotate(-90deg)`;
+      btn.textContent = 'Выберите предметы'; chanceText.textContent = '0%'; needle.style.transform = `rotate(-90deg)`;
     }
   }
 
   function openSelectItemModal(items, onSelect) {
     var list = el('selectItemList'); list.innerHTML = '';
-    if (!items.length) { list.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:#888;">Нет предметов</div>'; }
-    
-    // Сортируем по цене (сначала дешевые, потом дорогие)
+    if (!items.length) list.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:#888; font-size:12px;">Нет предметов</div>';
     var sortedItems = [...items].sort((a, b) => a.price - b.price);
-
     sortedItems.forEach(item => {
       var div = document.createElement('div');
-      div.style.cssText = 'background:#12121a; border:1px solid #444; border-radius:10px; padding:10px; text-align:center; cursor:pointer;';
-      div.innerHTML = `<div style="font-size:30px;">${item.icon}</div><div style="font-size:12px; color:#fff;">${item.name}</div><div style="font-size:10px; color:#ffd700;">${item.price} 🌟</div>`;
-      div.onclick = () => {
-        onSelect(item);
-        el('selectItemModal').classList.remove('show');
-      };
+      div.style.cssText = 'background:#12121a; border:1px solid #444; border-radius:8px; padding:8px; text-align:center; cursor:pointer;';
+      div.innerHTML = `<div style="font-size:24px;">${item.icon}</div><div style="font-size:10px; color:#fff; margin-top:2px;">${item.name}</div><div style="font-size:9px; color:#ffd700;">${item.price} 🌟</div>`;
+      div.onclick = () => { onSelect(item); el('selectItemModal').classList.remove('show'); };
       list.appendChild(div);
     });
-    
     el('selectItemModal').classList.add('show');
     el('closeSelectItemBtn').onclick = () => el('selectItemModal').classList.remove('show');
   }
@@ -463,28 +437,17 @@ document.addEventListener('DOMContentLoaded', function() {
   el('btnDoUpgrade').onclick = async () => {
     if (!upgradeSelectedMine || !upgradeSelectedTarget) return alert('Выберите оба предмета');
     if (upgradeSelectedMine.price >= upgradeSelectedTarget.price) return alert('Целевой предмет должен быть дороже!');
-    
-    var isFast = el('fastUpgradeToggle').checked;
-    var btn = el('btnDoUpgrade');
+    var isFast = el('fastUpgradeToggle').checked, btn = el('btnDoUpgrade'), needle = el('upgradeNeedle');
     btn.disabled = true;
-    var needle = el('upgradeNeedle');
 
     var res = await fetch('/api/upgrade', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ login: currentUser, myUid: upgradeSelectedMine.uid, targetItemId: upgradeSelectedTarget.id }) });
     var data = await res.json();
-    
     if (!res.ok) { alert(data.error); btn.disabled = false; return; }
 
     if (!isFast) {
       if (spinSound) { spinSound.currentTime = 0; spinSound.play().catch(e=>{}); }
       btn.textContent = 'Крутим...';
-      
-      // Анимация кручения (случайные колебания)
-      var currentAngle = -90;
-      var spinInterval = setInterval(() => {
-        currentAngle += 30;
-        needle.style.transform = `rotate(${currentAngle}deg)`;
-      }, 100);
-
+      var currentAngle = -90, spinInterval = setInterval(() => { currentAngle += 30; needle.style.transform = `rotate(${currentAngle}deg)`; }, 100);
       setTimeout(() => {
         clearInterval(spinInterval);
         var finalAngle = -90 + (data.chance / 100) * 180;
@@ -500,7 +463,6 @@ document.addEventListener('DOMContentLoaded', function() {
   async function finishUpgrade(data, btn) {
     btn.disabled = false;
     alert(data.win ? 'УСПЕХ! Вы получили ' + data.item.name : 'НЕУДАЧА. Предмет сгорел.');
-    
     upgradeSelectedMine = null; upgradeSelectedTarget = null;
     el('upgradeMySlot').innerHTML = '<div class="icon">?</div><div class="name">Ваш предмет</div>';
     el('upgradeTargetSlot').innerHTML = '<div class="icon">?</div><div class="name">Цель</div>';
@@ -513,43 +475,36 @@ document.addEventListener('DOMContentLoaded', function() {
   // ==========================================
   function renderAdminUI() {
     var c = el('adminContent'); if (c.innerHTML !== '') return;
-    c.innerHTML = `<div class="admin-box"><table style="width:100%; color:#fff;" id="adminTable"></table></div>
+    c.innerHTML = `<div class="admin-box"><table style="width:100%; color:#fff; font-size:12px;" id="adminTable"></table></div>
     <div class="admin-box"><input type="text" id="aTarget" placeholder="Логин"><input type="number" id="aAmount" value="1000"><button onclick="quickAdmin('give')" style="background:#10b981;">Выдать</button><button onclick="quickAdmin('take')" style="background:#ef4444;">Забрать</button></div>
-    <div class="admin-box"><h3>Выводы</h3><div id="aWithdraws"></div></div>
+    <div class="admin-box"><h3>Выводы</h3><div id="aWithdraws" style="font-size:12px;"></div></div>
     <div class="admin-box"><input type="text" id="pCode" placeholder="Код"><input type="number" id="pStars" placeholder="Звезды" value="100"><input type="number" id="pLimit" placeholder="Лимит" value="10"><button onclick="createPromo()" style="background:#a855f7;">Создать Промо</button></div>`;
     loadAdminTable(); loadWithdraws();
   }
 
   window.loadAdminTable = async function() {
     var res = await fetch('/api/admin/players'); if (!res.ok) return; var players = await res.json();
-    el('adminTable').innerHTML = players.map(p => `<tr><td>${p.login}</td><td>${p.balance}🌟</td><td>${p.nft_count} шт</td></tr>`).join('');
+    el('adminTable').innerHTML = players.map(p => `<tr><td style="padding:5px;">${p.login}</td><td>${p.balance}🌟</td><td>${p.nft_count} шт</td></tr>`).join('');
   };
-
   window.loadWithdraws = async function() {
     var res = await fetch('/api/admin/withdraws'); var data = await res.json();
-    el('aWithdraws').innerHTML = data.map(w => `<div>${w.user_login} -> ${w.item_name} (${w.item_price}🌟) <button onclick="acceptWithdraw(${w.id})">ОК</button></div>`).join('') || 'Пусто';
+    el('aWithdraws').innerHTML = data.map(w => `<div style="margin-bottom:5px;">${w.user_login} -> ${w.item_name} (${w.item_price}🌟) <button onclick="acceptWithdraw(${w.id})" style="width:auto; padding:4px 8px; margin:0;">ОК</button></div>`).join('') || 'Пусто';
   };
-
   window.quickAdmin = async function(act) {
     var t = el('aTarget').value, a = el('aAmount').value;
     await fetch('/api/admin/' + (act==='give'?'give-stars':'take-stars'), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ adminLogin: currentUser, targetLogin: t, amount: a }) });
     loadAdminTable();
   };
-
   window.acceptWithdraw = async function(id) {
     await fetch('/api/admin/withdraws/accept', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id }) });
     loadWithdraws();
   };
-
   window.createPromo = async function() {
     var code = el('pCode').value, stars = el('pStars').value, limit = el('pLimit').value;
     var res = await fetch('/api/admin/create-promo', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ adminLogin: currentUser, code, stars, limit }) });
     if (res.ok) alert('Создан'); else alert('Ошибка');
   };
 
-  // ==========================================
-  // ИНИЦИАЛИЗАЦИЯ
-  // ==========================================
   var saved = localStorage.getItem('saved_user');
   if (saved) { currentUser = saved; enterGame(); }
 });
