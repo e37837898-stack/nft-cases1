@@ -13,6 +13,9 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
+// ==========================================
+// БАЗА
+// ==========================================
 app.post('/api/register', async (req, res) => {
     const { login, password } = req.body;
     if (!login || !password) return res.status(400).json({ error: 'Введите логин и пароль' });
@@ -39,6 +42,9 @@ app.get('/api/user/:login', async (req, res) => {
     res.json({ balance: user.balance, inventory: inventory || [], is_admin: user.is_admin || false, is_super_admin: user.is_super_admin || false, stats: { totalItems, totalValue } });
 });
 
+// ==========================================
+// КЕЙСЫ И ЛЕНТА
+// ==========================================
 const CASE_POOLS = {
     'starter': [
         { id: 'bear', name: 'Мишка', icon: '🧸', rarity: 'common', price: 15, chance: 25 },
@@ -64,6 +70,11 @@ const CASE_POOLS = {
 };
 const CASE_PRICES = { 'starter': 50, 'pro': 500, 'elite': 8000 };
 
+app.get('/api/cases/drops', async (req, res) => {
+    const { data } = await supabase.from('drop_history').select('*').order('created_at', { ascending: false }).limit(10);
+    res.json(data || []);
+});
+
 app.post('/api/cases/open', async (req, res) => {
     const { login, caseId } = req.body;
     const price = CASE_PRICES[caseId];
@@ -82,11 +93,15 @@ app.post('/api/cases/open', async (req, res) => {
 
     const uid = Date.now() + '_' + Math.random().toString(36).slice(2);
     await supabase.from('inventory').insert([{ uid, user_login: login, item_id: droppedItem.id, name: droppedItem.name, icon: droppedItem.icon, rarity: droppedItem.rarity, price: droppedItem.price, status: 'inventory' }]);
+    await supabase.from('drop_history').insert([{ user_login: login, item_name: droppedItem.name, item_icon: droppedItem.icon }]);
     
-    droppedItem.uid = uid; // Передаем UID клиенту для продажи
+    droppedItem.uid = uid;
     res.json({ success: true, balance: newBalance, item: droppedItem, pool: pool });
 });
 
+// ==========================================
+// ПРОДАЖА И ВЫВОД
+// ==========================================
 app.post('/api/inventory/sell', async (req, res) => {
     const { login, uid } = req.body;
     const { data: deletedItems } = await supabase.from('inventory').delete().eq('user_login', login).eq('uid', uid).select();
@@ -117,25 +132,53 @@ app.post('/api/inventory/withdraw', async (req, res) => {
     res.json({ success: true });
 });
 
+// ==========================================
+// АПГРЕЙД (УМНЫЕ ПРОЦЕНТЫ)
+// ==========================================
 app.post('/api/upgrade', async (req, res) => {
     const { login, myUid, targetItemId } = req.body;
     const { data: myItem } = await supabase.from('inventory').select('*').eq('user_login', login).eq('uid', myUid).single();
     if (!myItem) return res.status(404).json({ error: 'Ваш предмет не найден' });
     
-    const targetPool = CASE_POOLS['elite'];
-    const targetItem = targetPool.find(i => i.id === targetItemId);
+    // Ищем целевой предмет во всех пулах
+    let targetItem = null;
+    for (const pool of Object.values(CASE_POOLS)) {
+        targetItem = pool.find(i => i.id === targetItemId);
+        if (targetItem) break;
+    }
     if (!targetItem) return res.status(400).json({ error: 'Целевой предмет не найден' });
 
+    // Считаем шанс по формуле: (цена моей вещи / цена целевой) * 100, но не более 50%
+    let winChance = (myItem.price / targetItem.price) * 50; 
+    if (winChance > 50) winChance = 50; // Максимальный шанс 50%
+    if (winChance < 1) winChance = 1; // Минимальный шанс 1%
+
     await supabase.from('inventory').delete().eq('uid', myUid);
-    const isWin = Math.random() < 0.5;
+    const isWin = Math.random() * 100 < winChance;
     
     if (isWin) {
         const newUid = Date.now() + '_' + Math.random().toString(36).slice(2);
         await supabase.from('inventory').insert([{ uid: newUid, user_login: login, item_id: targetItem.id, name: targetItem.name, icon: targetItem.icon, rarity: targetItem.rarity, price: targetItem.price, status: 'inventory' }]);
-        res.json({ success: true, win: true, item: targetItem });
+        res.json({ success: true, win: true, item: targetItem, chance: winChance });
     } else {
-        res.json({ success: true, win: false, item: myItem });
+        res.json({ success: true, win: false, item: myItem, chance: winChance });
     }
+});
+
+// ==========================================
+// БОНУС
+// ==========================================
+app.post('/api/bonus/claim', async (req, res) => {
+    const { login } = req.body;
+    const { data: user } = await supabase.from('users').select('last_bonus').eq('login', login).single();
+    const now = new Date();
+    if (user.last_bonus) {
+        const last = new Date(user.last_bonus);
+        const hours = (now - last) / (1000 * 60 * 60);
+        if (hours < 24) return res.status(400).json({ error: 'Бонус будет доступен через ' + Math.ceil(24 - hours) + ' ч.' });
+    }
+    const { data: updatedUser } = await supabase.from('users').update({ balance: user.balance + 50, last_bonus: now.toISOString() }).eq('login', login).select().single();
+    res.json({ success: true, balance: updatedUser.balance });
 });
 
 app.post('/api/promo/activate', async (req, res) => {
@@ -152,6 +195,9 @@ app.post('/api/promo/activate', async (req, res) => {
     res.json({ success: true, stars: promo.stars });
 });
 
+// ==========================================
+// АДМИНКА
+// ==========================================
 app.get('/api/admin/players', async (req, res) => {
     const { data: users } = await supabase.from('users').select('login, balance, is_admin, is_super_admin');
     const { data: inventory } = await supabase.from('inventory').select('user_login');
