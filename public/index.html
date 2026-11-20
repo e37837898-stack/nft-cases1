@@ -16,7 +16,6 @@
   .input-group { margin-bottom: 15px; }
   .input-group input { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #2a2a4a; background: #12121a; color: #fff; font-size: 15px; }
   .btn-main { width: 100%; padding: 14px; border: none; border-radius: 12px; background: #a855f7; color: #fff; font-size: 15px; font-weight: bold; cursor: pointer; }
-  
   #mainScreen { display: none; max-width: 800px; margin: 0 auto; }
   header { display: flex; justify-content: space-between; align-items: center; background: #16162a; padding: 10px 15px; border-radius: 16px; margin-bottom: 10px; }
   .logo { font-size: 20px; font-weight: 800; color: #a855f7; }
@@ -26,53 +25,48 @@
   .nav-btn.active { background: #a855f7; border-color: #a855f7; color: #fff; }
   .content-section { display: none; }
   .content-section.active { display: block; }
-  
   .profile-box { background: #16162a; border-radius: 16px; padding: 15px; text-align: center; border: 1px solid #2a2a4a; position: relative; }
-  .avatar-frame { font-size: 60px; position: relative; display: inline-block; padding: 10px; border-radius: 50%; }
+  .avatar-frame { font-size: 50px; position: relative; display: inline-block; padding: 8px; border-radius: 50%; }
   .frame-gold { border: 4px solid #ffd700; box-shadow: 0 0 20px #ffd700; }
   .frame-neon { border: 4px solid #00ffff; box-shadow: 0 0 20px #00ffff; }
   .frame-fire { border: 4px solid #ef4444; box-shadow: 0 0 20px #ef4444; }
-  
   .profile-stats { display: flex; justify-content: center; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
   .stat-box { background: #12121a; padding: 10px; border-radius: 12px; flex: 1; min-width: 90px; }
   .stat-value { font-size: 16px; font-weight: bold; color: #ffd700; }
   .stat-label { font-size: 11px; color: #888; }
-  
-  .cases { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
-  .case { background: #16162a; border: 1px solid #2a2a4a; border-radius: 16px; padding: 15px; text-align: center; cursor: pointer; }
-  .case .icon { font-size: 40px; margin-bottom: 10px; }
-  .case .name { font-weight: 700; color: #fff; font-size: 14px;}
-  .case .price { color: #ffd700; font-weight: bold; margin-top: 5px; font-size: 13px;}
-  
-  .inventory { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px; }
-  .item { background: #16162a; border: 1px solid #2a2a4a; border-radius: 12px; padding: 10px; text-align: center; }
-  .item button { width: 100%; padding: 6px; border: none; border-radius: 6px; color: #fff; font-weight: bold; margin-top: 5px; cursor: pointer; font-size: 10px;}
+  .cases { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; }
+  .case { background: #16162a; border: 1px solid #2a2a4a; border-radius: 16px; padding: 12px; text-align: center; cursor: pointer; }
+  .case .icon { font-size: 35px; margin-bottom: 5px; }
+  .case .name { font-weight: 700; color: #fff; font-size: 13px;}
+  .case .price { color: #ffd700; font-weight: bold; margin-top: 5px; font-size: 12px;}
+  .inventory { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 8px; }
+  .item { background: #16162a; border: 1px solid #2a2a4a; border-radius: 12px; padding: 8px; text-align: center; }
+  .item button { width: 100%; padding: 5px; border: none; border-radius: 6px; color: #fff; font-weight: bold; margin-top: 5px; cursor: pointer; font-size: 10px;}
   .btn-sell { background: #f59e0b; } .btn-withdraw { background: #3b82f6; }
   .btn-sell-all { background: #ef4444; width: 100%; padding: 10px; margin-bottom: 5px; border: none; border-radius: 10px; color: #fff; font-weight: bold; cursor: pointer; display: none; font-size: 13px;}
   .btn-sell-junk { background: #6b7280; width: 100%; padding: 10px; margin-bottom: 10px; border: none; border-radius: 10px; color: #fff; font-weight: bold; cursor: pointer; display: none; font-size: 13px;}
   
-  /* АПГРЕЙД (КОЛЕСО) */
+  /* АПГРЕЙД */
   .upgrade-wrapper { display: flex; flex-direction: column; align-items: center; background: #16162a; padding: 10px; border-radius: 16px; border: 1px solid #2a2a4a; }
   .upgrade-slots { display: flex; justify-content: space-between; width: 100%; gap: 8px; margin-bottom: 5px; }
-  .upgrade-slot { flex: 1; height: 70px; border: 2px dashed #444; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; background: #12121a; }
-  .upgrade-slot .icon { font-size: 22px; }
-  .upgrade-slot .name { font-size: 9px; color: #ccc; margin-top: 2px; text-align: center; }
-  .speedometer-wrap { position: relative; width: 100%; max-width: 150px; margin: 5px 0; }
+  .upgrade-slot { flex: 1; height: 60px; border: 2px dashed #444; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; background: #12121a; }
+  .upgrade-slot .icon { font-size: 20px; }
+  .upgrade-slot .name { font-size: 8px; color: #ccc; margin-top: 2px; text-align: center; }
+  .speedometer-wrap { position: relative; width: 100%; max-width: 130px; margin: 0; }
   .speedometer-svg { width: 100%; height: auto; display: block; }
-  .chance-text { position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%); font-size: 14px; font-weight: bold; color: #fff; text-shadow: 0 0 10px rgba(0,0,0,0.8); }
+  .chance-text { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); font-size: 12px; font-weight: bold; color: #fff; text-shadow: 0 0 10px rgba(0,0,0,0.8); }
   .needle-svg { transition: transform 2s cubic-bezier(0.1, 0.7, 0.1, 1); transform-origin: 100px 100px; }
   .upgrade-btn { background: #a855f7; color: #fff; border: none; padding: 8px; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 5px; width: 100%; max-width: 220px; font-size: 12px;}
-  .toggle-fast { display: flex; align-items: center; justify-content: center; gap: 5px; margin: 5px 0; color: #ccc; font-size: 11px; cursor: pointer; }
+  .toggle-fast { display: flex; align-items: center; justify-content: center; gap: 5px; margin: 2px 0; color: #ccc; font-size: 10px; cursor: pointer; }
   
-  /* БАТЛ */
+  /* БАТЛ И МАГАЗИН */
   .battle-container { text-align: center; background: #16162a; padding: 20px; border-radius: 16px; border: 1px solid #2a2a4a; }
   .battle-vs { font-size: 30px; font-weight: bold; color: #ef4444; margin: 15px 0; }
-
+  
   /* МОДАЛКИ */
   .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; z-index: 100; padding: 10px; }
   .modal.show { display: flex; }
   .modal .box { background: #16162a; border-radius: 20px; padding: 15px; text-align: center; width: 100%; max-width: 400px; max-height: 90vh; overflow-y: auto; }
-  
   .admin-box { background: #16162a; padding: 15px; border-radius: 16px; max-width: 800px; margin: 10px auto; text-align: left; }
   .admin-box input, .admin-box textarea { width: 100%; padding: 8px; margin-bottom: 8px; border-radius: 6px; border: none; background: #0a0a0f; color: #fff; font-size: 13px;}
   .admin-box button { width: 100%; padding: 10px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; margin-bottom: 8px; color: #fff; font-size: 13px;}
@@ -100,14 +94,11 @@
   .toast.error { border-left-color: #ef4444; }
   @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
   
-  /* КОНФЕТТИ */
   .confetti { position: fixed; width: 10px; height: 10px; background: #ffd700; z-index: 300; pointer-events: none; animation: fall 2s linear forwards; }
   @keyframes fall { to { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
 </style>
 </head>
-<body>
-
-<audio id="soundSpin" src="https://assets.mixkit.co/active_storage/sfx/2003/2003-preview.mp3" preload="auto"></audio>
+<body><audio id="soundSpin" src="https://assets.mixkit.co/active_storage/sfx/2003/2003-preview.mp3" preload="auto"></audio>
 <audio id="soundWin" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3" preload="auto"></audio>
 
 <div id="toastContainer"></div>
@@ -168,7 +159,7 @@
     <div class="inventory" id="inventory"></div>
   </div>
 
-  <div id="section-upgrade" class="content-section">
+  <div id="section-upgrade" class="content-section" style="display:flex; justify-content:center;">
     <div class="upgrade-wrapper">
       <div class="upgrade-slots">
         <div class="upgrade-slot" id="upgradeMySlot"><div class="icon">?</div><div class="name">Ваш предмет</div></div>
@@ -229,10 +220,7 @@
       <button class="btn-main" id="btnSellWonItem" style="background:#f59e0b; width:auto; padding:8px 15px; font-size:13px;">Продать</button>
     </div>
   </div>
-   </div><script>
-var SUPABASE_URL = 'https://jmbnfxlnrdapcblipcqx.supabase.co';
-var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImptYm5meGxucmRhcGNibGlwY3F4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUxODQ5OTgsImV4cCI6MjExMDc2MDk5OH0.HBvYC5M_HKqIfGuZ7-8Vuqwd3oH4BcrsTpMbaROaJTs';
-
+</div><script>
 document.addEventListener('DOMContentLoaded', function() {
   var currentUser = null, authMode = 'login';
   var playerData = { balance: 0, inventory: [], stats: { totalItems: 0, totalValue: 0 }, is_admin: false, is_super_admin: false, avatar: '👤', frame: 'none' };
@@ -248,7 +236,7 @@ document.addEventListener('DOMContentLoaded', function() {
     div.className = 'toast ' + type;
     div.textContent = msg;
     container.appendChild(div);
-    setTimeout(() => { div.style.opacity = '0'; setTimeout(() => div.remove(), 300); }, 3000);
+    setTimeout(() => { div.style.opacity = '0'; setTimeout(() => div.remove(), 300); }, 4000);
   }
 
   function spawnConfetti() {
@@ -263,7 +251,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  // === АВТОРИЗАЦИЯ ===
   el('tab-login').onclick = function() { authMode='login'; this.classList.add('active'); el('tab-register').classList.remove('active'); el('mainAuthBtn').textContent='Войти'; };
   el('tab-register').onclick = function() { authMode='register'; this.classList.add('active'); el('tab-login').classList.remove('active'); el('mainAuthBtn').textContent='Зарегистрироваться'; };
   
@@ -292,13 +279,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     try {
-      var resC = await fetch('/api/cases');
+      var resC = await fetch('/api/cases?login=' + encodeURIComponent(currentUser));
       if (resC.ok) { DB_CASES = await resC.json(); renderCases(); }
-      else {
-        var supaRes = await fetch(SUPABASE_URL + '/rest/v1/cases?select=*', { headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY } });
-        if (supaRes.ok) { DB_CASES = await supaRes.json(); renderCases(); }
-      }
-    } catch(e) {}
+    } catch(e) { toast("Сбой загрузки кейсов", "error"); }
     
     loadDropFeed();
     updateOnline();
@@ -310,15 +293,12 @@ document.addEventListener('DOMContentLoaded', function() {
     el('uiBalanceTop').textContent = playerData.balance;
     el('profileBalance').textContent = playerData.balance + ' 🌟';
     if (playerData.stats) { el('profileNftCount').textContent = playerData.stats.totalItems; el('profileNftValue').textContent = playerData.stats.totalValue + ' 🌟'; }
-    
-    // Кастомизация
     el('profileAvatar').textContent = playerData.avatar || '👤';
     var frameWrap = el('profileAvatarWrap');
     frameWrap.className = 'avatar-frame';
     if (playerData.frame === 'gold') frameWrap.classList.add('frame-gold');
     if (playerData.frame === 'neon') frameWrap.classList.add('frame-neon');
     if (playerData.frame === 'fire') frameWrap.classList.add('frame-fire');
-
     renderInventory();
   }
 
@@ -349,9 +329,9 @@ document.addEventListener('DOMContentLoaded', function() {
     if (id === 'shop') renderShopTab();
   }
 
-  // === КЕЙСЫ ===
   function renderCases() {
     var c = el('cases'); c.innerHTML = '';
+    if (!DB_CASES || DB_CASES.length === 0) { c.innerHTML = '<div style="color:#888; text-align:center; width:100%;">Нет кейсов</div>'; return; }
     DB_CASES.forEach(cs => {
       var d = document.createElement('div'); d.className = 'case';
       d.innerHTML = `<div class="icon">${cs.icon}</div><div class="name">${cs.name}</div><div class="price">${cs.price} 🌟</div>`;
@@ -405,7 +385,6 @@ document.addEventListener('DOMContentLoaded', function() {
     } catch (e) { toast('Ошибка сети', 'error'); isOpening = false; el('openCaseBtn').disabled = false; }
   }
 
-  // === ИНВЕНТАРЬ ===
   function renderInventory() {
     var c = el('inventory'); c.innerHTML = '';
     if (!playerData.inventory.length) { c.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:#888;">Пусто</div>'; el('btnSellAll').style.display='none'; el('btnSellJunk').style.display='none'; return; }
@@ -474,7 +453,6 @@ document.addEventListener('DOMContentLoaded', function() {
     if (res.ok) { toast('+' + data.stars + '🌟', 'success'); el('promoModal').classList.remove('show'); await enterGame(); } else toast(data.error, 'error');
   };
 
-  // === ПОПОЛНЕНИЕ ===
   el('btnDeposit').onclick = () => el('depositModal').classList.add('show');
   el('closeDepositBtn').onclick = () => el('depositModal').classList.remove('show');
   el('btnSendDeposit').onclick = async () => {
@@ -484,27 +462,16 @@ document.addEventListener('DOMContentLoaded', function() {
     if (res.ok) { toast('Заявка отправлена! Напишите @tagen', 'success'); el('depositModal').classList.remove('show'); } else toast('Ошибка', 'error');
   };
 
-  // === МАГАЗИН ===
   function renderShopTab() {
     var avatars = ['👤', '😎', '👽', '🐸', '👑', '💎', '🔥', '💀'];
     var frames = [{id:'none', name:'Нет'}, {id:'gold', name:'Золотая'}, {id:'neon', name:'Неон'}, {id:'fire', name:'Огонь'}];
-    
     var avContainer = el('shopAvatars'); avContainer.innerHTML = '';
     avatars.forEach(av => {
-      var btn = document.createElement('button');
-      btn.style.cssText = 'padding:10px; font-size:24px; background:#12121a; border:1px solid #444; border-radius:8px; cursor:pointer;';
-      btn.textContent = av;
-      btn.onclick = () => buyCustomization('avatar', av);
-      avContainer.appendChild(btn);
+      var btn = document.createElement('button'); btn.style.cssText = 'padding:10px; font-size:24px; background:#12121a; border:1px solid #444; border-radius:8px; cursor:pointer;'; btn.textContent = av; btn.onclick = () => buyCustomization('avatar', av); avContainer.appendChild(btn);
     });
-
     var frContainer = el('shopFrames'); frContainer.innerHTML = '';
     frames.forEach(fr => {
-      var btn = document.createElement('button');
-      btn.style.cssText = 'padding:10px; background:#12121a; border:1px solid #444; border-radius:8px; cursor:pointer; color:#fff;';
-      btn.textContent = fr.name;
-      btn.onclick = () => buyCustomization('frame', fr.id);
-      frContainer.appendChild(btn);
+      var btn = document.createElement('button'); btn.style.cssText = 'padding:10px; background:#12121a; border:1px solid #444; border-radius:8px; cursor:pointer; color:#fff;'; btn.textContent = fr.name; btn.onclick = () => buyCustomization('frame', fr.id); frContainer.appendChild(btn);
     });
   }
 
@@ -513,43 +480,53 @@ document.addEventListener('DOMContentLoaded', function() {
     var res = await fetch('/api/customization/buy', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ login: currentUser, type, item }) });
     var data = await res.json();
     if (res.ok) { toast('Куплено!', 'success'); await enterGame(); } else toast(data.error, 'error');
-  }  // === АПГРЕЙД ===
+  }  // АПГРЕЙД
+  var ALL_ITEMS = [
+    { id: 'bear', name: 'Мишка', icon: '🧸', price: 15 },
+    { id: 'gift', name: 'Подарок', icon: '🎁', price: 25 },
+    { id: 'heart', name: 'Сердечко', icon: '💖', price: 15 },
+    { id: 'rose', name: 'Роза', icon: '🌹', price: 25 },
+    { id: 'skull', name: 'Череп', icon: '💀', price: 50 },
+    { id: 'cake', name: 'Торт', icon: '🎂', price: 50 },
+    { id: 'bouquet', name: 'Букет', icon: '💐', price: 50 },
+    { id: 'rocket', name: 'Ракета', icon: '🚀', price: 50 },
+    { id: 'cup', name: 'Кубок', icon: '🏆', price: 100 },
+    { id: 'ring', name: 'Кольцо', icon: '💍', price: 100 },
+    { id: 'cigarette', name: 'Сигарета', icon: '🚬', price: 500 },
+    { id: 'socks', name: 'Носки', icon: '🧦', price: 1000 },
+    { id: 'music_box', name: 'Шкатулка', icon: '🎵', price: 1000 },
+    { id: 'calendar', name: 'Календарь', icon: '📅', price: 1500 },
+    { id: 'button', name: 'Кнопка', icon: '🔘', price: 500 },
+    { id: 'potion', name: 'Зелье', icon: '🧪', price: 1000 },
+    { id: 'car', name: 'Машина', icon: '🚗', price: 5000 },
+    { id: 'cap', name: 'Кепка', icon: '🧢', price: 10000 },
+    { id: 'pepe', name: 'Плюш Пепе', icon: '🐸', price: 50000 },
+    { id: 'golden_cup', name: 'Золотой Кубок', icon: '🏆', price: 100000 },
+    { id: 'dragon', name: 'Дракон', icon: '🐉', price: 250000 },
+    { id: 'crown', name: 'Корона', icon: '👑', price: 500000 },
+    { id: 'alien', name: 'Пришелец', icon: '👽', price: 1000000 },
+    { id: 'galaxy', name: 'Галактика', icon: '🌌', price: 2000000 }
+  ];
+
   function renderUpgradeTab() {
     el('upgradeMySlot').onclick = () => {
       if (!playerData.inventory.length) return toast('Инвентарь пуст', 'error');
-      openSelectItemModal(playerData.inventory, (selected) => {
-        upgradeSelectedMine = selected;
-        el('upgradeMySlot').innerHTML = `<div class="icon">${selected.icon}</div><div class="name">${selected.name}</div>`;
-        updateUpgradeUI();
-      });
+      openSelectItemModal(playerData.inventory, (selected) => { upgradeSelectedMine = selected; el('upgradeMySlot').innerHTML = `<div class="icon">${selected.icon}</div><div class="name">${selected.name}</div>`; updateUpgradeUI(); });
     };
     el('upgradeTargetSlot').onclick = () => {
-      var allItems = [];
-      DB_CASES.forEach(c => c.items.forEach(i => { if(!allItems.find(x=>x.id===i.id)) allItems.push(i); }));
-      openSelectItemModal(allItems, (selected) => {
-        upgradeSelectedTarget = selected;
-        el('upgradeTargetSlot').innerHTML = `<div class="icon">${selected.icon}</div><div class="name">${selected.name}</div>`;
-        updateUpgradeUI();
-      });
+      openSelectItemModal(ALL_ITEMS, (selected) => { upgradeSelectedTarget = selected; el('upgradeTargetSlot').innerHTML = `<div class="icon">${selected.icon}</div><div class="name">${selected.name}</div>`; updateUpgradeUI(); });
     };
   }
 
   function updateUpgradeUI() {
     var btn = el('btnDoUpgrade'), needle = el('upgradeNeedle'), chanceText = el('upgradeChanceText');
     if (upgradeSelectedMine && upgradeSelectedTarget) {
-      if (upgradeSelectedMine.price >= upgradeSelectedTarget.price) {
-        btn.textContent = 'Цель должна быть дороже'; chanceText.textContent = '0%'; needle.style.transform = `rotate(-90deg)`; return;
-      }
+      if (upgradeSelectedMine.price >= upgradeSelectedTarget.price) { btn.textContent = 'Цель должна быть дороже'; chanceText.textContent = '0%'; needle.style.transform = `rotate(-90deg)`; return; }
       let chance = (upgradeSelectedMine.price / upgradeSelectedTarget.price) * 50;
-      if (chance > 50) chance = 50;
-      if (chance < 1) chance = 1;
-      btn.textContent = 'Улучшить (Шанс ' + chance.toFixed(1) + '%)';
-      chanceText.textContent = chance.toFixed(1) + '%';
-      var angle = -90 + (chance / 100) * 180; 
-      needle.style.transform = `rotate(${angle}deg)`;
-    } else {
-      btn.textContent = 'Выберите предметы'; chanceText.textContent = '0%'; needle.style.transform = `rotate(-90deg)`;
-    }
+      if (chance > 50) chance = 50; if (chance < 1) chance = 1;
+      btn.textContent = 'Улучшить (Шанс ' + chance.toFixed(1) + '%)'; chanceText.textContent = chance.toFixed(1) + '%';
+      var angle = -90 + (chance / 100) * 180; needle.style.transform = `rotate(${angle}deg)`;
+    } else { btn.textContent = 'Выберите предметы'; chanceText.textContent = '0%'; needle.style.transform = `rotate(-90deg)`; }
   }
 
   function openSelectItemModal(items, onSelect) {
@@ -557,8 +534,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!items.length) list.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:#888; font-size:12px;">Нет предметов</div>';
     var sortedItems = [...items].sort((a, b) => a.price - b.price);
     sortedItems.forEach(item => {
-      var div = document.createElement('div');
-      div.style.cssText = 'background:#12121a; border:1px solid #444; border-radius:8px; padding:8px; text-align:center; cursor:pointer;';
+      var div = document.createElement('div'); div.style.cssText = 'background:#12121a; border:1px solid #444; border-radius:8px; padding:8px; text-align:center; cursor:pointer;';
       div.innerHTML = `<div style="font-size:24px;">${item.icon}</div><div style="font-size:10px; color:#fff; margin-top:2px;">${item.name}</div><div style="font-size:9px; color:#ffd700;">${item.price} 🌟</div>`;
       div.onclick = () => { onSelect(item); el('selectItemModal').classList.remove('show'); };
       list.appendChild(div);
@@ -572,25 +548,15 @@ document.addEventListener('DOMContentLoaded', function() {
     if (upgradeSelectedMine.price >= upgradeSelectedTarget.price) return toast('Целевой предмет должен быть дороже!', 'error');
     var isFast = el('fastUpgradeToggle').checked, btn = el('btnDoUpgrade'), needle = el('upgradeNeedle');
     btn.disabled = true;
-
     var res = await fetch('/api/upgrade', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ login: currentUser, myUid: upgradeSelectedMine.uid, targetItemId: upgradeSelectedTarget.id }) });
     var data = await res.json();
     if (!res.ok) { toast(data.error, 'error'); btn.disabled = false; return; }
-
     if (!isFast) {
       if (spinSound) { spinSound.currentTime = 0; spinSound.play().catch(e=>{}); }
       btn.textContent = 'Крутим...';
       var currentAngle = -90, spinInterval = setInterval(() => { currentAngle += 30; needle.style.transform = `rotate(${currentAngle}deg)`; }, 100);
-      setTimeout(() => {
-        clearInterval(spinInterval);
-        var finalAngle = -90 + (data.chance / 100) * 180;
-        needle.style.transform = `rotate(${finalAngle}deg)`;
-        finishUpgrade(data, btn);
-      }, 2500);
-    } else {
-      if (winSound) { winSound.play().catch(e=>{}); }
-      finishUpgrade(data, btn);
-    }
+      setTimeout(() => { clearInterval(spinInterval); var finalAngle = -90 + (data.chance / 100) * 180; needle.style.transform = `rotate(${finalAngle}deg)`; finishUpgrade(data, btn); }, 2500);
+    } else { if (winSound) { winSound.play().catch(e=>{}); } finishUpgrade(data, btn); }
   };
 
   async function finishUpgrade(data, btn) {
@@ -599,225 +565,59 @@ document.addEventListener('DOMContentLoaded', function() {
     upgradeSelectedMine = null; upgradeSelectedTarget = null;
     el('upgradeMySlot').innerHTML = '<div class="icon">?</div><div class="name">Ваш предмет</div>';
     el('upgradeTargetSlot').innerHTML = '<div class="icon">?</div><div class="name">Цель</div>';
-    updateUpgradeUI();
-    await enterGame();
+    updateUpgradeUI(); await enterGame();
   }
 
-  // === БАТЛ ===
+  // БАТЛ
   function renderBattleTab() {
     var sel = el('battleCaseSelect'); sel.innerHTML = '';
-    DB_CASES.forEach(c => {
-      var opt = document.createElement('option');
-      opt.value = c.id; opt.textContent = `${c.name} (${c.price} 🌟)`;
-      sel.appendChild(opt);
-    });
+    DB_CASES.forEach(c => { var opt = document.createElement('option'); opt.value = c.id; opt.textContent = `${c.name} (${c.price} 🌟)`; sel.appendChild(opt); });
   }
-
   el('btnCreateBattle').onclick = async () => {
-    var caseId = el('battleCaseSelect').value;
-    if (!caseId) return;
+    var caseId = el('battleCaseSelect').value; if (!caseId) return;
     var res = await fetch('/api/battle/create', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ login: currentUser, caseId }) });
     var data = await res.json();
-    if (res.ok) {
-      toast('Батл создан! Ожидайте противника...', 'success');
-      el('battleStatus').innerHTML = 'Батл создан! ID: ' + data.battleId + '. Ждем второго игрока...';
-      await enterGame();
-    } else toast(data.error, 'error');
+    if (res.ok) { toast('Батл создан!', 'success'); el('battleStatus').innerHTML = 'Батл создан! Ждем второго игрока...'; await enterGame(); } else toast(data.error, 'error');
   };
 
-  // === УМНАЯ АДМИНКА ===
+  // АДМИНКА
   function renderAdminUI() {
     var c = el('adminContent'); c.innerHTML = '';
     el('adminTitle').textContent = playerData.is_super_admin ? 'Главная Админка' : 'Админка';
-    
-    var html = '';
-    html += `<div class="admin-box"><h3>Игроки</h3><table id="adminTable"></table></div>`;
-    html += `<div class="admin-box"><h3>Выдача звезд</h3>
-      <input type="text" id="aTarget" placeholder="Логин получателя">
-      <input type="number" id="aAmount" value="1000">
-      <button onclick="quickAdmin('give')" style="background:#10b981;">Выдать звезды</button>
-    </div>`;
-    html += `<div class="admin-box"><h3>Выдача NFT</h3>
-      <input type="text" id="nftTarget" placeholder="Логин получателя">
-      <input type="text" id="nftItemId" placeholder="ID (например, pepe)">
-      <input type="text" id="nftName" placeholder="Название">
-      <input type="text" id="nftIcon" placeholder="Иконка (эмодзи)">
-      <input type="number" id="nftPrice" value="100">
-      <button onclick="adminGiveNft()" style="background:#a855f7;">Выдать NFT</button>
-    </div>`;
-
+    var html = `<div class="admin-box"><h3>Игроки</h3><table id="adminTable"></table></div>
+    <div class="admin-box"><h3>Выдача звезд</h3><input type="text" id="aTarget" placeholder="Логин"><input type="number" id="aAmount" value="1000"><button onclick="quickAdmin('give')" style="background:#10b981;">Выдать</button></div>
+    <div class="admin-box"><h3>Выдача NFT</h3><input type="text" id="nftTarget" placeholder="Логин"><input type="text" id="nftItemId" placeholder="ID"><input type="text" id="nftName" placeholder="Название"><input type="text" id="nftIcon" placeholder="Иконка"><input type="number" id="nftPrice" value="100"><button onclick="adminGiveNft()" style="background:#a855f7;">Выдать NFT</button></div>`;
     if (playerData.is_super_admin) {
-      html += `<div class="admin-box" style="border: 1px solid #ef4444;">
-        <h3 style="color:#ef4444;">Только для Главного Админа</h3>
-        <input type="text" id="aTargetTake" placeholder="Логин (забрать)">
-        <input type="number" id="aAmountTake" value="1000">
-        <button onclick="quickAdmin('take')" style="background:#ef4444;">Забрать звезды</button>
-        <button onclick="massGive()" style="background:#f59e0b; margin-top:10px;">Выдать всем по 1000 🌟</button>
-        <button onclick="toggleMaintenance()" style="background:#6b7280; margin-top:10px;">Вкл/Выкл Тех. Работы</button>
-      </div>`;
-      
-      html += `<div class="admin-box"><h3>Заявки на вывод</h3><div id="aWithdraws"></div></div>`;
-      html += `<div class="admin-box"><h3>Заявки на пополнение</h3><div id="aDeposits"></div></div>`;
-      
-      html += `<div class="admin-box"><h3>Заметка об игроке</h3>
-        <input type="text" id="noteTarget" placeholder="Логин игрока" oninput="loadNote(this.value)">
-        <input type="text" id="noteText" placeholder="Текст заметки">
-        <button onclick="saveNote()" style="background:#3b82f6;">Сохранить заметку</button>
-      </div>`;
-
-      html += `<div class="admin-box"><h3>Создать промокод</h3>
-        <input type="text" id="pCode" placeholder="Код"><input type="number" id="pStars" value="100"><input type="number" id="pLimit" value="10">
-        <button onclick="createPromo()" style="background:#a855f7;">Создать</button>
-      </div>`;
-      
-      html += `<div class="admin-box"><h3>Управление правами</h3>
-        <input type="text" id="adminLoginTarget" placeholder="Логин игрока">
-        <button onclick="makeAdmin()" style="background:#10b981;">Сделать админом</button>
-        <button onclick="removeAdmin()" style="background:#ef4444;">Снять права</button>
-      </div>`;
-      
-      html += `<div class="admin-box"><h3>Рассылка</h3>
-        <input type="text" id="broadcastMsg" placeholder="Текст сообщения">
-        <button onclick="broadcast()" style="background:#3b82f6;">Отправить</button>
-      </div>`;
-      
-      html += `<div class="admin-box"><h3>Логи админов</h3><div id="adminLogs"></div></div>`;
+      html += `<div class="admin-box" style="border: 1px solid #ef4444;"><h3 style="color:#ef4444;">Для Главного Админа</h3><input type="text" id="aTargetTake" placeholder="Логин"><input type="number" id="aAmountTake" value="1000"><button onclick="quickAdmin('take')" style="background:#ef4444;">Забрать звезды</button></div>
+      <div class="admin-box"><h3>Выводы</h3><div id="aWithdraws"></div></div>
+      <div class="admin-box"><h3>Пополнения</h3><div id="aDeposits"></div></div>
+      <div class="admin-box"><h3>Заметка</h3><input type="text" id="noteTarget" placeholder="Логин" oninput="loadNote(this.value)"><input type="text" id="noteText" placeholder="Текст"><button onclick="saveNote()" style="background:#3b82f6;">Сохранить</button></div>
+      <div class="admin-box"><h3>Промокод</h3><input type="text" id="pCode" placeholder="Код"><input type="number" id="pStars" value="100"><input type="number" id="pLimit" value="10"><button onclick="createPromo()" style="background:#a855f7;">Создать</button></div>
+      <div class="admin-box"><h3>Права</h3><input type="text" id="adminLoginTarget" placeholder="Логин"><button onclick="makeAdmin()" style="background:#10b981;">Сделать админом</button><button onclick="removeAdmin()" style="background:#ef4444;">Снять права</button></div>
+      <div class="admin-box"><h3>Рассылка</h3><input type="text" id="broadcastMsg" placeholder="Текст"><button onclick="broadcast()" style="background:#3b82f6;">Отправить</button></div>
+      <div class="admin-box"><h3>Логи</h3><div id="adminLogs"></div></div>`;
     }
-
-    c.innerHTML = html;
-    loadAdminTable();
+    c.innerHTML = html; loadAdminTable();
     if (playerData.is_super_admin) { loadWithdraws(); loadDeposits(); loadLogs(); }
   }
-
-  window.loadAdminTable = async function() {
-    var res = await fetch('/api/admin/players'); if (!res.ok) return; var players = await res.json();
-    el('adminTable').innerHTML = players.map(p => `<tr><td style="color:${p.is_super_admin?'#ef4444':(p.is_admin?'#a855f7':'#fff')}">${p.login}</td><td>${p.balance}🌟</td><td>${p.nft_count} шт</td></tr>`).join('');
-  };
-  window.loadWithdraws = async function() {
-    var res = await fetch('/api/admin/withdraws'); var data = await res.json();
-    el('aWithdraws').innerHTML = data.map(w => `<div style="margin-bottom:5px;">${w.user_login} -> ${w.item_name} (${w.item_price}🌟) <button onclick="acceptWithdraw(${w.id})" style="width:auto; padding:4px 8px; margin:0;">ОК</button></div>`).join('') || 'Пусто';
-  };
-  window.loadDeposits = async function() {
-    var res = await fetch('/api/admin/deposits'); var data = await res.json();
-    el('aDeposits').innerHTML = data.map(d => `<div style="margin-bottom:5px;">${d.user_login} просит пополнить на ${d.amount_stars}🌟 <button onclick="acceptDeposit(${d.id})" style="width:auto; padding:4px 8px; margin:0;">ОК</button></div>`).join('') || 'Пусто';
-  };
-  window.loadLogs = async function() {
-    var res = await fetch('/api/admin/logs'); var data = await res.json();
-    el('adminLogs').innerHTML = data.map(l => `<div style="font-size:11px; margin-bottom:4px; border-bottom:1px solid #333; padding-bottom:2px;">[${new Date(l.created_at).toLocaleTimeString()}] <span style="color:#ef4444">${l.admin_login}</span>: ${l.action} (${l.details})</div>`).join('') || 'Пусто';
-  };
-  
-  window.loadNote = async function(login) {
-    if (!login) return;
-    var res = await fetch('/api/admin/note/' + login);
-    var data = await res.json();
-    if (el('noteText')) el('noteText').value = data.note || '';
-  };
-
-  window.saveNote = async function() {
-    var t = el('noteTarget').value, n = el('noteText').value;
-    if (!t) return toast('Введите логин', 'error');
-    await fetch('/api/admin/note', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ adminLogin: currentUser, targetLogin: t, note: n }) });
-    toast('Заметка сохранена', 'success');
-  };
-
-  window.quickAdmin = async function(act) {
-    var t = act === 'take' ? el('aTargetTake').value : el('aTarget').value;
-    var a = act === 'take' ? el('aAmountTake').value : el('aAmount').value;
-    if (!t || !a) return toast('Заполните поля', 'error');
-    var url = '/api/admin/' + (act === 'give' ? 'give-stars' : 'take-stars');
-    var res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ adminLogin: currentUser, targetLogin: t, amount: a }) });
-    var data = await res.json();
-    if(res.ok) { toast('Успешно', 'success'); loadAdminTable(); if(act==='take') loadLogs(); } else toast(data.error, 'error');
-  };
-  
-  window.massGive = async function() {
-    if(!confirm('Выдать ВСЕМ игрокам по 1000 звезд?')) return;
-    var res = await fetch('/api/admin/mass-give', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ adminLogin: currentUser, amount: 1000 }) });
-    if(res.ok) { toast('Выдано всем', 'success'); loadAdminTable(); loadLogs(); } else toast('Ошибка', 'error');
-  };
-
-  window.toggleMaintenance = async function() {
-    var res = await fetch('/api/admin/settings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ adminLogin: currentUser, key: 'maintenance', value: 'true' }) });
-    if(res.ok) toast('Тех. работы включены (обратно не выключатся, надо менять в базе)', 'info');
-  };
-
-  window.acceptDeposit = async function(id) {
-    var res = await fetch('/api/admin/deposit/accept', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ adminLogin: currentUser, id }) });
-    if(res.ok) { toast('Пополнение одобрено', 'success'); loadDeposits(); loadLogs(); } else { var d = await res.json(); toast(d.error, 'error'); }
-  };
-
-  window.acceptWithdraw = async function(id) {
-    var res = await fetch('/api/admin/withdraws/accept', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ adminLogin: currentUser, id }) });
-    if(res.ok) { toast('Одобрено', 'success'); loadWithdraws(); loadLogs(); } else { var d = await res.json(); toast(d.error, 'error'); }
-  };
-  
-  window.adminGiveNft = async function() {
-    var t = el('nftTarget').value, id = el('nftItemId').value, name = el('nftName').value, icon = el('nftIcon').value, price = el('nftPrice').value;
-    if(!t || !id || !name) return toast('Заполните поля', 'error');
-    var res = await fetch('/api/admin/give-nft', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ adminLogin: currentUser, targetLogin: t, item: { id, name, icon, price } }) });
-    if(res.ok) { toast('NFT выдан', 'success'); loadAdminTable(); } else toast('Ошибка', 'error');
-  };
-
-  window.createPromo = async function() {
-    var code = el('pCode').value, stars = el('pStars').value, limit = el('pLimit').value;
-    var res = await fetch('/api/admin/create-promo', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ adminLogin: currentUser, code, stars, limit }) });
-    if (res.ok) { toast('Создан', 'success'); loadLogs(); } else { var d = await res.json(); toast(d.error, 'error'); }
-  };
-  
-  window.makeAdmin = async function() {
-    var t = el('adminLoginTarget').value;
-    var res = await fetch('/api/admin/make-admin', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ adminLogin: currentUser, targetLogin: t }) });
-    if(res.ok) { toast('Теперь админ', 'success'); loadAdminTable(); loadLogs(); } else { var d = await res.json(); toast(d.error, 'error'); }
-  };
-  
-  window.removeAdmin = async function() {
-    var t = el('adminLoginTarget').value;
-    var res = await fetch('/api/admin/remove-admin', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ adminLogin: currentUser, targetLogin: t }) });
-    if(res.ok) { toast('Права сняты', 'success'); loadAdminTable(); loadLogs(); } else { var d = await res.json(); toast(d.error, 'error'); }
-  };
-  
-  window.broadcast = async function() {
-    var msg = el('broadcastMsg').value;
-    if(!msg) return;
-    var res = await fetch('/api/admin/broadcast', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ adminLogin: currentUser, message: msg }) });
-    if(res.ok) { toast('Отправлено', 'success'); el('broadcastMsg').value=''; loadLogs(); } else { var d = await res.json(); toast(d.error, 'error'); }
-  };
+  window.loadAdminTable = async function() { var res = await fetch('/api/admin/players'); if (!res.ok) return; var players = await res.json(); el('adminTable').innerHTML = players.map(p => `<tr><td style="color:${p.is_super_admin?'#ef4444':(p.is_admin?'#a855f7':'#fff')}">${p.login}</td><td>${p.balance}🌟</td><td>${p.nft_count} шт</td></tr>`).join(''); };
+  window.loadWithdraws = async function() { var res = await fetch('/api/admin/withdraws'); var data = await res.json(); el('aWithdraws').innerHTML = data.map(w => `<div style="margin-bottom:5px;">${w.user_login} -> ${w.item_name} (${w.item_price}🌟) <button onclick="acceptWithdraw(${w.id})" style="width:auto; padding:4px 8px; margin:0;">ОК</button></div>`).join('') || 'Пусто'; };
+  window.loadDeposits = async function() { var res = await fetch('/api/admin/deposits'); var data = await res.json(); el('aDeposits').innerHTML = data.map(d => `<div style="margin-bottom:5px;">${d.user_login} просит ${d.amount_stars}🌟 <button onclick="acceptDeposit(${d.id})" style="width:auto; padding:4px 8px; margin:0;">ОК</button></div>`).join('') || 'Пусто'; };
+  window.loadLogs = async function() { var res = await fetch('/api/admin/logs'); var data = await res.json(); el('adminLogs').innerHTML = data.map(l => `<div style="font-size:11px; margin-bottom:4px; border-bottom:1px solid #333; padding-bottom:2px;">[${new Date(l.created_at).toLocaleTimeString()}] <span style="color:#ef4444">${l.admin_login}</span>: ${l.action} (${l.details})</div>`).join('') || 'Пусто'; };
+  window.loadNote = async function(login) { if (!login) return; var res = await fetch('/api/admin/note/' + login); var data = await res.json(); if (el('noteText')) el('noteText').value = data.note || ''; };
+  window.saveNote = async function() { var t = el('noteTarget').value, n = el('noteText').value; if (!t) return toast('Введите логин', 'error'); await fetch('/api/admin/note', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ adminLogin: currentUser, targetLogin: t, note: n }) }); toast('Сохранено', 'success'); };
+  window.quickAdmin = async function(act) { var t = act === 'take' ? el('aTargetTake').value : el('aTarget').value; var a = act === 'take' ? el('aAmountTake').value : el('aAmount').value; if (!t || !a) return toast('Заполните поля', 'error'); var url = '/api/admin/' + (act === 'give' ? 'give-stars' : 'take-stars'); var res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ adminLogin: currentUser, targetLogin: t, amount: a }) }); var data = await res.json(); if(res.ok) { toast('Успешно', 'success'); loadAdminTable(); if(act==='take') loadLogs(); } else toast(data.error, 'error'); };
+  window.acceptDeposit = async function(id) { var res = await fetch('/api/admin/deposit/accept', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ adminLogin: currentUser, id }) }); if(res.ok) { toast('Одобрено', 'success'); loadDeposits(); loadLogs(); } else { var d = await res.json(); toast(d.error, 'error'); } };
+  window.acceptWithdraw = async function(id) { var res = await fetch('/api/admin/withdraws/accept', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ adminLogin: currentUser, id }) }); if(res.ok) { toast('Одобрено', 'success'); loadWithdraws(); loadLogs(); } else { var d = await res.json(); toast(d.error, 'error'); } };
+  window.adminGiveNft = async function() { var t = el('nftTarget').value, id = el('nftItemId').value, name = el('nftName').value, icon = el('nftIcon').value, price = el('nftPrice').value; if(!t || !id || !name) return toast('Заполните поля', 'error'); var res = await fetch('/api/admin/give-nft', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ adminLogin: currentUser, targetLogin: t, item: { id, name, icon, price } }) }); if(res.ok) { toast('NFT выдан', 'success'); loadAdminTable(); } else toast('Ошибка', 'error'); };
+  window.createPromo = async function() { var code = el('pCode').value, stars = el('pStars').value, limit = el('pLimit').value; var res = await fetch('/api/admin/create-promo', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ adminLogin: currentUser, code, stars, limit }) }); if (res.ok) { toast('Создан', 'success'); loadLogs(); } else { var d = await res.json(); toast(d.error, 'error'); } };
+  window.makeAdmin = async function() { var t = el('adminLoginTarget').value; var res = await fetch('/api/admin/make-admin', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ adminLogin: currentUser, targetLogin: t }) }); if(res.ok) { toast('Теперь админ', 'success'); loadAdminTable(); loadLogs(); } else { var d = await res.json(); toast(d.error, 'error'); } };
+  window.removeAdmin = async function() { var t = el('adminLoginTarget').value; var res = await fetch('/api/admin/remove-admin', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ adminLogin: currentUser, targetLogin: t }) }); if(res.ok) { toast('Права сняты', 'success'); loadAdminTable(); loadLogs(); } else { var d = await res.json(); toast(d.error, 'error'); } };
+  window.broadcast = async function() { var msg = el('broadcastMsg').value; if(!msg) return; var res = await fetch('/api/admin/broadcast', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ adminLogin: currentUser, message: msg }) }); if(res.ok) { toast('Отправлено', 'success'); el('broadcastMsg').value=''; loadLogs(); } else { var d = await res.json(); toast(d.error, 'error'); } };
 
   var saved = localStorage.getItem('saved_user');
   if (saved) { currentUser = saved; enterGame(); }
 });
-</script><script>
-window.addEventListener('load', function() {
-  setTimeout(function() {
-    var HARDCODED_CASES = [
-      { id: 'starter', name: 'Стартовый', icon: '📦', price: 50, items: [{id:'bear',name:'Мишка',icon:'🧸',rarity:'common',price:15,chance:25},{id:'gift',name:'Подарок',icon:'🎁',rarity:'common',price:25,chance:20},{id:'heart',name:'Сердечко',icon:'💖',rarity:'common',price:15,chance:25},{id:'rose',name:'Роза',icon:'🌹',rarity:'common',price:25,chance:20},{id:'skull',name:'Череп',icon:'💀',rarity:'nft',price:50,chance:10}] },
-      { id: 'pro', name: 'Про', icon: '🎁', price: 500, items: [{id:'cake',name:'Торт',icon:'🎂',rarity:'common',price:50,chance:40},{id:'bouquet',name:'Букет',icon:'💐',rarity:'common',price:50,chance:30},{id:'rocket',name:'Ракета',icon:'🚀',rarity:'common',price:50,chance:15},{id:'cigarette',name:'Сигарета',icon:'🚬',rarity:'rare',price:500,chance:10},{id:'socks',name:'Носки',icon:'🧦',rarity:'rare',price:1000,chance:5}] },
-      { id: 'elite', name: 'Элитный', icon: '💎', price: 8000, items: [{id:'cup',name:'Кубок',icon:'🏆',rarity:'common',price:100,chance:30},{id:'ring',name:'Кольцо',icon:'💍',rarity:'common',price:100,chance:30},{id:'calendar',name:'Календарь',icon:'📅',rarity:'rare',price:1500,chance:20},{id:'car',name:'Машина',icon:'🚗',rarity:'legendary',price:5000,chance:15},{id:'pepe',name:'Плюш Пепе',icon:'🐸',rarity:'legendary',price:50000,chance:5}] }
-    ];
-
-    var casesContainer = document.getElementById('cases');
-    if (casesContainer) {
-      casesContainer.innerHTML = '';
-      HARDCODED_CASES.forEach(function(cs) {
-        var d = document.createElement('div'); 
-        d.className = 'case';
-        d.innerHTML = '<div class="icon">' + cs.icon + '</div><div class="name">' + cs.name + '</div><div class="price">' + cs.price + ' 🌟</div>';
-        d.onclick = function() { 
-          document.getElementById('prevCaseName').textContent = cs.icon + ' ' + cs.name; 
-          document.getElementById('openCaseBtn').onclick = function() { 
-            if (typeof startOpening === 'function') {
-                startOpening(cs); 
-            } else {
-                alert('Ошибка: функция открытия не найдена. Сервер не обновлен.');
-            }
-          }; 
-          document.getElementById('previewModal').classList.add('show'); 
-        };
-        casesContainer.appendChild(d);
-      });
-    }
-  }, 1000); // Ждем 1 секунду
-});
 </script>
-</body><
+</body>
 </html>
