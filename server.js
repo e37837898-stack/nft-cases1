@@ -17,6 +17,7 @@ async function logAction(admin, action, details) {
     await supabase.from('admin_logs').insert([{ admin_login: admin, action, details }]);
 }
 
+// === БАЗА ===
 app.post('/api/register', async (req, res) => {
     const { login, password } = req.body;
     if (!login || !password) return res.status(400).json({ error: 'Введите логин и пароль' });
@@ -24,6 +25,8 @@ app.post('/api/register', async (req, res) => {
     if (existingUser) return res.status(400).json({ error: 'Логин уже занят' });
     const { data, error } = await supabase.from('users').insert([{ login, password, balance: 30 }]).select().single();
     if (error) return res.status(500).json({ error: error.message });
+    
+    await supabase.from('user_customization').insert([{ user_login: login }]);
     res.json({ success: true, user: data });
 });
 
@@ -34,7 +37,6 @@ app.post('/api/login', async (req, res) => {
     res.json({ success: true, user });
 });
 
-// ОНЛАЙН (просто считаем всех, кто заходил за последние 5 минут)
 app.get('/api/online', async (req, res) => {
     const fiveMinsAgo = new Date(Date.now() - 5 * 60000).toISOString();
     const { count } = await supabase.from('users').select('*', { count: 'exact', head: true }).gte('last_seen', fiveMinsAgo);
@@ -42,19 +44,33 @@ app.get('/api/online', async (req, res) => {
 });
 
 app.get('/api/user/:login', async (req, res) => {
-    // Обновляем время последнего визита
     await supabase.from('users').update({ last_seen: new Date().toISOString() }).eq('login', req.params.login);
-    
     const { data: user, error } = await supabase.from('users').select('*').eq('login', req.params.login).single();
     if (error || !user) return res.status(404).json({ error: 'Юзер не найден' });
+    
     const { data: inventory } = await supabase.from('inventory').select('*').eq('user_login', req.params.login);
+    const { data: custom } = await supabase.from('user_customization').select('*').eq('user_login', req.params.login).single();
+    
     const totalItems = inventory ? inventory.length : 0;
     const totalValue = inventory ? inventory.reduce((sum, item) => sum + (Number(item.price) || 0), 0) : 0;
-    res.json({ balance: user.balance, inventory: inventory || [], is_admin: user.is_admin || false, is_super_admin: user.is_super_admin || false, stats: { totalItems, totalValue } });
+    
+    res.json({ 
+        balance: user.balance, 
+        inventory: inventory || [], 
+        is_admin: user.is_admin || false, 
+        is_super_admin: user.is_super_admin || false, 
+        stats: { totalItems, totalValue },
+        avatar: custom ? custom.avatar : '👤',
+        frame: custom ? custom.frame : 'none',
+        owned_avatars: custom ? custom.owned_avatars : ['👤'],
+        owned_frames: custom ? custom.owned_frames : ['none']
+    });
 });
 
+// === КЕЙСЫ ===
 app.get('/api/cases', async (req, res) => {
-    const { data } = await supabase.from('cases').select('*');
+    const { data, error } = await supabase.from('cases').select('*');
+    if (error) return res.status(500).json({ error: error.message });
     res.json(data || []);
 });
 
@@ -89,6 +105,7 @@ app.get('/api/cases/drops', async (req, res) => {
     res.json(data || []);
 });
 
+// === ИНВЕНТАРЬ ===
 app.post('/api/inventory/sell', async (req, res) => {
     const { login, uid } = req.body;
     const { data: deletedItems } = await supabase.from('inventory').delete().eq('user_login', login).eq('uid', uid).select();
@@ -131,7 +148,8 @@ app.post('/api/inventory/withdraw', async (req, res) => {
     await supabase.from('inventory').delete().eq('uid', uid);
     await supabase.from('withdraw_requests').insert([{ user_login: login, item_id: item.item_id, item_name: item.name, item_price: item.price }]);
     res.json({ success: true });
-});app.post('/api/upgrade', async (req, res) => {
+});// === АПГРЕЙД ===
+app.post('/api/upgrade', async (req, res) => {
     const { login, myUid, targetItemId } = req.body;
     const { data: myItem } = await supabase.from('inventory').select('*').eq('user_login', login).eq('uid', myUid).single();
     if (!myItem) return res.status(404).json({ error: 'Ваш предмет не найден' });
@@ -160,6 +178,92 @@ app.post('/api/inventory/withdraw', async (req, res) => {
     }
 });
 
+// === БИТВА КЕЙСОВ (PVP) ===
+app.post('/api/battle/create', async (req, res) => {
+    const { login, caseId } = req.body;
+    const { data: box } = await supabase.from('cases').select('*').eq('id', caseId).single();
+    if (!box) return res.status(400).json({ error: 'Кейс не найден' });
+    
+    const price = Number(box.price);
+    const { data: newBalance, error } = await supabase.rpc('spend_balance', { p_login: login, p_amount: price });
+    if (error || newBalance === null) return res.status(400).json({ error: 'Недостаточно звезд' });
+
+    const { data: battle } = await supabase.from('case_battles').insert([{ player1: login, player2: 'waiting', case_id: caseId }]).select().single();
+    res.json({ success: true, battleId: battle.id, balance: newBalance });
+});
+
+app.post('/api/battle/join', async (req, res) => {
+    const { login, battleId } = req.body;
+    const { data: battle } = await supabase.from('case_battles').select('*').eq('id', battleId).eq('player2', 'waiting').single();
+    if (!battle) return res.status(400).json({ error: 'Батл недоступен' });
+
+    const { data: box } = await supabase.from('cases').select('*').eq('id', battle.case_id).single();
+    const price = Number(box.price);
+    const { data: newBalance, error } = await supabase.rpc('spend_balance', { p_login: login, p_amount: price });
+    if (error || newBalance === null) return res.status(400).json({ error: 'Недостаточно звезд' });
+
+    await supabase.from('case_battles').update({ player2: login }).eq('id', battleId);
+
+    // Кидаем кейс (победитель определяется рандомно)
+    const isWin = Math.random() > 0.5;
+    const winner = isWin ? battle.player1 : login;
+    const loser = isWin ? login : battle.player1;
+
+    await supabase.from('case_battles').update({ winner }).eq('id', battleId);
+
+    // Даем предмет победителю
+    const pool = box.items;
+    let random = Math.random() * pool.reduce((sum, item) => sum + Number(item.chance), 0);
+    let droppedItem = pool[0];
+    for (let item of pool) {
+        if (random < Number(item.chance)) { droppedItem = item; break; }
+        random -= Number(item.chance);
+    }
+
+    const uid = Date.now() + '_' + Math.random().toString(36).slice(2);
+    await supabase.from('inventory').insert([{ uid, user_login: winner, item_id: droppedItem.id, name: droppedItem.name, icon: droppedItem.icon, rarity: droppedItem.rarity, price: droppedItem.price, status: 'inventory' }]);
+    
+    res.json({ success: true, winner: winner, loser: loser, item: droppedItem });
+});
+
+// === ПОПОЛНЕНИЕ БАЛАНСА ===
+app.post('/api/deposit/request', async (req, res) => {
+    const { login, amount } = req.body;
+    if (amount <= 0) return res.status(400).json({ error: 'Введите корректную сумму' });
+    await supabase.from('deposit_requests').insert([{ user_login: login, amount_stars: Number(amount) }]);
+    res.json({ success: true });
+});
+
+// === КАСТОМИЗАЦИЯ (АВАТАРКИ И РАМКИ) ===
+app.post('/api/customization/buy', async (req, res) => {
+    const { login, type, item } = req.body; // type: 'avatar' или 'frame'
+    const { data: user } = await supabase.from('users').select('balance').eq('login', login).single();
+    const { data: custom } = await supabase.from('user_customization').select('*').eq('user_login', login).single();
+    
+    let price = type === 'avatar' ? 500 : 1000;
+    if (user.balance < price) return res.status(400).json({ error: 'Недостаточно звезд' });
+
+    if (type === 'avatar' && custom.owned_avatars.includes(item)) return res.status(400).json({ error: 'Уже куплено' });
+    if (type === 'frame' && custom.owned_frames.includes(item)) return res.status(400).json({ error: 'Уже куплено' });
+
+    await supabase.from('users').update({ balance: user.balance - price }).eq('login', login);
+
+    if (type === 'avatar') {
+        const newAvatars = [...custom.owned_avatars, item];
+        await supabase.from('user_customization').update({ owned_avatars: newAvatars }).eq('user_login', login);
+    } else {
+        const newFrames = [...custom.owned_frames, item];
+        await supabase.from('user_customization').update({ owned_frames: newFrames }).eq('user_login', login);
+    }
+    res.json({ success: true, balance: user.balance - price });
+});
+
+app.post('/api/customization/equip', async (req, res) => {
+    const { login, type, item } = req.body;
+    if (type === 'avatar') await supabase.from('user_customization').update({ avatar: item }).eq('user_login', login);
+    else await supabase.from('user_customization').update({ frame: item }).eq('user_login', login);
+    res.json({ success: true });
+});// === БОНУС И ПРОМО ===
 app.post('/api/bonus/claim', async (req, res) => {
     const { login } = req.body;
     const { data: user } = await supabase.from('users').select('last_bonus, balance').eq('login', login).single();
@@ -187,11 +291,7 @@ app.post('/api/promo/activate', async (req, res) => {
     res.json({ success: true, stars: promo.stars });
 });
 
-app.get('/api/global-feed', async (req, res) => {
-    const { data } = await supabase.from('global_feed').select('*').order('created_at', { ascending: false }).limit(20);
-    res.json(data || []);
-});
-
+// === АДМИНКА ===
 async function checkAdmin(login) {
     const { data } = await supabase.from('users').select('is_admin, is_super_admin').eq('login', login).single();
     return data || { is_admin: false, is_super_admin: false };
@@ -207,6 +307,45 @@ app.get('/api/admin/players', async (req, res) => {
 app.get('/api/admin/withdraws', async (req, res) => {
     const { data } = await supabase.from('withdraw_requests').select('*').eq('status', 'pending');
     res.json(data || []);
+});
+
+app.get('/api/admin/deposits', async (req, res) => {
+    const { data } = await supabase.from('deposit_requests').select('*').eq('status', 'pending');
+    res.json(data || []);
+});
+
+app.get('/api/admin/logs', async (req, res) => {
+    const { data } = await supabase.from('admin_logs').select('*').order('created_at', { ascending: false }).limit(50);
+    res.json(data || []);
+});
+
+app.get('/api/admin/settings', async (req, res) => {
+    const { data } = await supabase.from('game_settings').select('*');
+    res.json(data || []);
+});
+
+app.post('/api/admin/settings', async (req, res) => {
+    const { adminLogin, key, value } = req.body;
+    const admin = await checkAdmin(adminLogin);
+    if (!admin.is_super_admin) return res.status(403).json({ error: 'Только главный админ' });
+    await supabase.from('game_settings').upsert([{ key, value }]);
+    await logAction(adminLogin, 'Настройки', `Изменил ${key} на ${value}`);
+    res.json({ success: true });
+});
+
+app.post('/api/admin/deposit/accept', async (req, res) => {
+    const { adminLogin, id } = req.body;
+    const admin = await checkAdmin(adminLogin);
+    if (!admin.is_super_admin) return res.status(403).json({ error: 'Только главный админ' });
+    
+    const { data: deposit } = await supabase.from('deposit_requests').select('*').eq('id', id).single();
+    if (!deposit) return res.status(404).json({ error: 'Не найдено' });
+
+    const { data: user } = await supabase.from('users').select('balance').eq('login', deposit.user_login).single();
+    await supabase.from('users').update({ balance: user.balance + deposit.amount_stars }).eq('login', deposit.user_login);
+    await supabase.from('deposit_requests').update({ status: 'accepted' }).eq('id', id);
+    await logAction(adminLogin, 'Пополнение', `Одобрил пополнение на ${deposit.amount_stars} для ${deposit.user_login}`);
+    res.json({ success: true });
 });
 
 app.post('/api/admin/withdraws/accept', async (req, res) => {
@@ -244,6 +383,31 @@ app.post('/api/admin/take-stars', async (req, res) => {
     res.json({ success: true });
 });
 
+app.post('/api/admin/mass-give', async (req, res) => {
+    const { adminLogin, amount } = req.body;
+    const admin = await checkAdmin(adminLogin);
+    if (!admin.is_super_admin) return res.status(403).json({ error: 'Только главный админ' });
+    const { data: users } = await supabase.from('users').select('login, balance');
+    for (let u of users) {
+        await supabase.from('users').update({ balance: u.balance + Number(amount) }).eq('login', u.login);
+    }
+    await logAction(adminLogin, 'Массовая выдача', `Выдал всем по ${amount} 🌟`);
+    res.json({ success: true });
+});
+
+app.post('/api/admin/note', async (req, res) => {
+    const { adminLogin, targetLogin, note } = req.body;
+    const admin = await checkAdmin(adminLogin);
+    if (!admin.is_super_admin) return res.status(403).json({ error: 'Только главный админ' });
+    await supabase.from('admin_notes').upsert([{ user_login: targetLogin, note }]);
+    res.json({ success: true });
+});
+
+app.get('/api/admin/note/:login', async (req, res) => {
+    const { data } = await supabase.from('admin_notes').select('note').eq('user_login', req.params.login).single();
+    res.json({ note: data ? data.note : '' });
+});
+
 app.post('/api/admin/give-nft', async (req, res) => {
     const { adminLogin, targetLogin, item } = req.body;
     const admin = await checkAdmin(adminLogin);
@@ -261,7 +425,7 @@ app.post('/api/admin/create-promo', async (req, res) => {
     const { data: existing } = await supabase.from('promocodes').select('*').eq('code', code.toUpperCase()).single();
     if (existing) return res.status(400).json({ error: 'Код уже есть' });
     await supabase.from('promocodes').insert([{ code: code.toUpperCase(), stars: Number(stars), max_uses: Number(limit), uses: 0 }]);
-    await logAction(adminLogin, 'Промокод', `Создал код ${code} на ${stars} звезд`);
+    await logAction(adminLogin, 'Промокод', `Создал код ${code}`);
     res.json({ success: true });
 });
 
@@ -279,13 +443,8 @@ app.post('/api/admin/remove-admin', async (req, res) => {
     const admin = await checkAdmin(adminLogin);
     if (!admin.is_super_admin) return res.status(403).json({ error: 'Только главный админ' });
     await supabase.from('users').update({ is_admin: false }).eq('login', targetLogin);
-    await logAction(adminLogin, 'Права', `Снял права админа с ${targetLogin}`);
+    await logAction(adminLogin, 'Права', `Снял админа ${targetLogin}`);
     res.json({ success: true });
-});
-
-app.get('/api/admin/logs', async (req, res) => {
-    const { data } = await supabase.from('admin_logs').select('*').order('created_at', { ascending: false }).limit(50);
-    res.json(data || []);
 });
 
 app.post('/api/admin/broadcast', async (req, res) => {
