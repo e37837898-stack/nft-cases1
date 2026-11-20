@@ -42,27 +42,27 @@
   .btn-sell-all { background: #ef4444; width: 100%; padding: 10px; margin-bottom: 5px; border: none; border-radius: 10px; color: #fff; font-weight: bold; cursor: pointer; display: none; font-size: 13px;}
   .btn-sell-junk { background: #6b7280; width: 100%; padding: 10px; margin-bottom: 10px; border: none; border-radius: 10px; color: #fff; font-weight: bold; cursor: pointer; display: none; font-size: 13px;}
   
-  /* АПГРЕЙД (УМЕНЬШЕН) */
+  /* АПГРЕЙД (ВСЁ УМЕНЬШЕНО) */
   .upgrade-wrapper { display: flex; flex-direction: column; align-items: center; background: #16162a; padding: 10px; border-radius: 16px; border: 1px solid #2a2a4a; }
   .upgrade-slots { display: flex; justify-content: space-between; width: 100%; gap: 8px; margin-bottom: 5px; }
-  .upgrade-slot { flex: 1; height: 80px; border: 2px dashed #444; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; background: #12121a; }
-  .upgrade-slot .icon { font-size: 24px; }
+  .upgrade-slot { flex: 1; height: 70px; border: 2px dashed #444; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; background: #12121a; }
+  .upgrade-slot .icon { font-size: 22px; }
   .upgrade-slot .name { font-size: 9px; color: #ccc; margin-top: 2px; text-align: center; }
   
-  .speedometer-wrap { position: relative; width: 100%; max-width: 170px; margin: 5px 0; }
+  .speedometer-wrap { position: relative; width: 100%; max-width: 150px; margin: 5px 0; }
   .speedometer-svg { width: 100%; height: auto; display: block; }
-  .chance-text { position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%); font-size: 16px; font-weight: bold; color: #fff; text-shadow: 0 0 10px rgba(0,0,0,0.8); }
+  .chance-text { position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%); font-size: 14px; font-weight: bold; color: #fff; text-shadow: 0 0 10px rgba(0,0,0,0.8); }
   .needle-svg { transition: transform 2s cubic-bezier(0.1, 0.7, 0.1, 1); transform-origin: 100px 100px; }
   
-  .upgrade-btn { background: #a855f7; color: #fff; border: none; padding: 10px; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 5px; width: 100%; max-width: 240px; font-size: 13px;}
-  .toggle-fast { display: flex; align-items: center; justify-content: center; gap: 5px; margin: 5px 0; color: #ccc; font-size: 12px; cursor: pointer; }
+  .upgrade-btn { background: #a855f7; color: #fff; border: none; padding: 8px; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 5px; width: 100%; max-width: 220px; font-size: 12px;}
+  .toggle-fast { display: flex; align-items: center; justify-content: center; gap: 5px; margin: 5px 0; color: #ccc; font-size: 11px; cursor: pointer; }
   
   /* МОДАЛКИ И АДМИНКА */
   .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; z-index: 100; padding: 10px; }
   .modal.show { display: flex; }
   .modal .box { background: #16162a; border-radius: 20px; padding: 15px; text-align: center; width: 100%; max-width: 400px; max-height: 90vh; overflow-y: auto; }
   .admin-box { background: #16162a; padding: 15px; border-radius: 16px; max-width: 800px; margin: 10px auto; text-align: left; }
-  .admin-box input, .admin-box textarea { width: 100%; padding: 8px; margin-bottom: 8px; border-radius: 6px; border: none; background: #0a0a0f; color: #fff; font-size: 13px;}
+  .admin-box input { width: 100%; padding: 8px; margin-bottom: 8px; border-radius: 6px; border: none; background: #0a0a0f; color: #fff; font-size: 13px;}
   .admin-box button { width: 100%; padding: 10px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; margin-bottom: 8px; color: #fff; font-size: 13px;}
   .admin-box table { width: 100%; border-collapse: collapse; color: #fff; font-size: 12px; margin-bottom: 10px; }
   .admin-box td, .admin-box th { border-bottom: 1px solid #333; padding: 5px; text-align: left; }
@@ -78,10 +78,12 @@
   .roulette-pointer { position: absolute; left: 50%; top: 0; bottom: 0; width: 3px; background: #ffd700; transform: translateX(-50%); z-index: 10; }
   .win-overlay { display: none; text-align: center; margin-top: 10px; background: #16162a; padding: 10px 20px; border-radius: 16px; border: 2px solid #a855f7; }
   .win-overlay.show { display: block; }
+  
+  /* ЛЕНТА ДРОПА */
   .drop-feed { position: fixed; bottom: 5px; left: 5px; display: flex; flex-direction: column; gap: 3px; z-index: 50; pointer-events: none; }
   .feed-item { background: #16162a; border: 1px solid #3b82f6; padding: 4px 8px; border-radius: 4px; font-size: 9px; color: #fff; opacity: 0.8; }
   
-  /* ВСПЛЫВАЮЩИЕ УВЕДОМЛЕНИЯ (TOAST) */
+  /* УВЕДОМЛЕНИЯ (TOAST) */
   #toastContainer { position: fixed; top: 10px; right: 10px; display: flex; flex-direction: column; gap: 5px; z-index: 1000; pointer-events: none; }
   .toast { background: #16162a; border-left: 4px solid #a855f7; padding: 10px 15px; border-radius: 8px; color: #fff; font-size: 13px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); animation: slideIn 0.3s ease-out; max-width: 250px; word-wrap: break-word;}
   .toast.success { border-left-color: #10b981; }
@@ -109,7 +111,10 @@
 <div id="mainScreen">
   <header>
     <div class="logo">Кейсы</div>
-    <div class="user-info" style="font-size: 12px;">👤 <span id="uiUsername"></span></div>
+    <div class="user-info" style="font-size: 12px; display:flex; align-items:center; gap:5px;">
+      👤 <span id="uiUsername"></span>
+      <span style="color:#10b981; font-size:10px; margin-left:5px;">● <span id="uiOnline">0</span> онлайн</span>
+    </div>
     <div class="balance-top" id="openPromoBtn"><span id="uiBalanceTop">0</span> 🌟</div>
   </header>
   <div class="tabs-nav">
@@ -205,6 +210,9 @@
     </div>
   </div>
 </div><script>
+var SUPABASE_URL = 'https://jmbnfxlnrdapcblipcqx.supabase.co';
+var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImptYm5meGxucmRhcGNibGlwY3F4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUxODQ5OTgsImV4cCI6MjExMDc2MDk5OH0.HBvYC5M_HKqIfGuZ7-8Vuqwd3oH4BcrsTpMbaROaJTs';
+
 document.addEventListener('DOMContentLoaded', function() {
   var currentUser = null, authMode = 'login';
   var playerData = { balance: 0, inventory: [], stats: { totalItems: 0, totalValue: 0 }, is_admin: false, is_super_admin: false };
@@ -223,7 +231,6 @@ document.addEventListener('DOMContentLoaded', function() {
     setTimeout(() => { div.style.opacity = '0'; setTimeout(() => div.remove(), 300); }, 3000);
   }
 
-  // === АВТОРИЗАЦИЯ ===
   el('tab-login').onclick = function() { authMode='login'; this.classList.add('active'); el('tab-register').classList.remove('active'); el('mainAuthBtn').textContent='Войти'; };
   el('tab-register').onclick = function() { authMode='register'; this.classList.add('active'); el('tab-login').classList.remove('active'); el('mainAuthBtn').textContent='Зарегистрироваться'; };
   
@@ -251,10 +258,17 @@ document.addEventListener('DOMContentLoaded', function() {
       updateUI(); 
     }
     
-    var resC = await fetch('/api/cases');
-    if (resC.ok) { DB_CASES = await resC.json(); renderCases(); }
+    try {
+      var resC = await fetch('/api/cases');
+      if (resC.ok) { DB_CASES = await resC.json(); renderCases(); }
+      else {
+        var supaRes = await fetch(SUPABASE_URL + '/rest/v1/cases?select=*', { headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY } });
+        if (supaRes.ok) { DB_CASES = await supaRes.json(); renderCases(); }
+      }
+    } catch(e) {}
     
     loadDropFeed();
+    updateOnline();
   }
 
   el('logoutBtn').onclick = function() { currentUser = null; localStorage.removeItem('saved_user'); el('mainScreen').style.display = 'none'; el('authScreen').style.display = 'flex'; };
@@ -265,6 +279,15 @@ document.addEventListener('DOMContentLoaded', function() {
     if (playerData.stats) { el('profileNftCount').textContent = playerData.stats.totalItems; el('profileNftValue').textContent = playerData.stats.totalValue + ' 🌟'; }
     renderInventory();
   }
+
+  async function updateOnline() {
+    try {
+      var res = await fetch('/api/online');
+      var data = await res.json();
+      el('uiOnline').textContent = data.online;
+    } catch(e) {}
+  }
+  setInterval(updateOnline, 30000);
 
   el('navProfileBtn').onclick = function() { switchTab('profile', this); };
   el('navCasesBtn').onclick = function() { switchTab('cases', this); };
@@ -280,7 +303,6 @@ document.addEventListener('DOMContentLoaded', function() {
     if (id === 'upgrade') renderUpgradeTab();
   }
 
-  // === КЕЙСЫ ===
   function renderCases() {
     var c = el('cases'); c.innerHTML = '';
     DB_CASES.forEach(cs => {
@@ -334,7 +356,6 @@ document.addEventListener('DOMContentLoaded', function() {
     } catch (e) { toast('Ошибка сети', 'error'); isOpening = false; el('openCaseBtn').disabled = false; }
   }
 
-  // === ИНВЕНТАРЬ ===
   function renderInventory() {
     var c = el('inventory'); c.innerHTML = '';
     if (!playerData.inventory.length) { c.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:#888;">Пусто</div>'; el('btnSellAll').style.display='none'; el('btnSellJunk').style.display='none'; return; }
