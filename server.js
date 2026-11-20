@@ -13,7 +13,9 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// === АВТОРИЗАЦИЯ ===
+// ==========================================
+// АВТОРИЗАЦИЯ И ПРОФИЛЬ
+// ==========================================
 app.post('/api/register', async (req, res) => {
     const { login, password } = req.body;
     if (!login || !password) return res.status(400).json({ error: 'Введите логин и пароль' });
@@ -35,40 +37,87 @@ app.get('/api/user/:login', async (req, res) => {
     const { data: user, error } = await supabase.from('users').select('*').eq('login', req.params.login).single();
     if (error || !user) return res.status(404).json({ error: 'Юзер не найден' });
     const { data: inventory } = await supabase.from('inventory').select('*').eq('user_login', req.params.login);
-    res.json({ balance: user.balance, inventory: inventory || [], is_admin: user.is_admin || false, is_super_admin: user.is_super_admin || false });
+    
+    // Считаем статистику для профиля
+    const totalItems = inventory ? inventory.length : 0;
+    const totalValue = inventory ? inventory.reduce((sum, item) => sum + (Number(item.price) || 0), 0) : 0;
+
+    res.json({ 
+        balance: user.balance, 
+        inventory: inventory || [], 
+        is_admin: user.is_admin || false, 
+        is_super_admin: user.is_super_admin || false,
+        stats: { totalItems, totalValue }
+    });
 });
 
-// === КЕЙСЫ ===
-app.post('/api/inventory/add', async (req, res) => {
-    const { login, casePrice, itemId, name, icon, rarity, price } = req.body;
-    const cost = Number(casePrice) || 0;
-    if (!login || cost <= 0) return res.status(400).json({ error: 'Некорректные данные' });
+// ==========================================
+// КЕЙСЫ (СЕРВЕРНАЯ ЛОГИКА)
+// ==========================================
+const CASE_POOLS = {
+    'starter': [
+        { id: 'bear', name: 'Мишка', icon: '🧸', rarity: 'common', price: 15, chance: 25 },
+        { id: 'gift', name: 'Подарок', icon: '🎁', rarity: 'common', price: 25, chance: 20 },
+        { id: 'heart', name: 'Сердечко', icon: '💖', rarity: 'common', price: 15, chance: 25 },
+        { id: 'rose', name: 'Роза', icon: '🌹', rarity: 'common', price: 25, chance: 20 },
+        { id: 'skull', name: 'Череп', icon: '💀', rarity: 'nft', price: 50, chance: 10 }
+    ],
+    'pro': [
+        { id: 'cake', name: 'Торт', icon: '🎂', rarity: 'common', price: 50, chance: 40 },
+        { id: 'bouquet', name: 'Букет', icon: '💐', rarity: 'common', price: 50, chance: 30 },
+        { id: 'rocket', name: 'Ракета', icon: '🚀', rarity: 'common', price: 50, chance: 15 },
+        { id: 'cigarette', name: 'Сигарета', icon: '🚬', rarity: 'rare', price: 500, chance: 10 },
+        { id: 'socks', name: 'Носки', icon: '🧦', rarity: 'rare', price: 1000, chance: 5 }
+    ],
+    'elite': [
+        { id: 'cup', name: 'Кубок', icon: '🏆', rarity: 'common', price: 100, chance: 30 },
+        { id: 'ring', name: 'Кольцо', icon: '💍', rarity: 'common', price: 100, chance: 30 },
+        { id: 'calendar', name: 'Календарь', icon: '📅', rarity: 'rare', price: 1500, chance: 20 },
+        { id: 'car', name: 'Машина', icon: '🚗', rarity: 'legendary', price: 5000, chance: 15 },
+        { id: 'pepe', name: 'Плюш Пепе', icon: '🐸', rarity: 'legendary', price: 50000, chance: 5 }
+    ]
+};
 
-    const { data: newBalance, error: balError } = await supabase.rpc('spend_balance', {
-        p_login: login,
-        p_amount: cost
-    });
+const CASE_PRICES = { 'starter': 50, 'pro': 500, 'elite': 8000 };
 
-    if (balError) {
-        console.error('Ошибка RPC spend_balance:', balError);
-        return res.status(500).json({ error: balError.message });
-    }
+app.post('/api/cases/open', async (req, res) => {
+    const { login, caseId } = req.body;
+    const price = CASE_PRICES[caseId];
+    if (!price) return res.status(400).json({ error: 'Неизвестный кейс' });
+
+    // 1. Атомарно списываем баланс
+    const { data: newBalance, error: balError } = await supabase.rpc('spend_balance', { p_login: login, p_amount: price });
+    if (balError) return res.status(500).json({ error: balError.message });
     if (newBalance === null) return res.status(400).json({ error: 'Недостаточно звёзд!' });
 
+    // 2. Сервер сам выбирает предмет по шансам
+    const pool = CASE_POOLS[caseId];
+    const totalChance = pool.reduce((sum, item) => sum + item.chance, 0);
+    let random = Math.random() * totalChance;
+    let droppedItem = pool[0];
+    for (let item of pool) {
+        if (random < item.chance) { droppedItem = item; break; }
+        random -= item.chance;
+    }
+
+    // 3. Выдаем предмет
     const uid = Date.now() + '_' + Math.random().toString(36).slice(2);
     const { error } = await supabase.from('inventory').insert([{ 
-        uid, user_login: login, item_id: itemId, name, icon, rarity, price, status: 'inventory' 
+        uid, user_login: login, item_id: droppedItem.id, name: droppedItem.name, 
+        icon: droppedItem.icon, rarity: droppedItem.rarity, price: droppedItem.price, status: 'inventory' 
     }]);
-    
     if (error) return res.status(500).json({ error: error.message });
-    res.json({ success: true, balance: newBalance });
+
+    // Возвращаем предмет и пул для анимации (чтобы клиент нарисовал рулетку)
+    res.json({ success: true, balance: newBalance, item: droppedItem, pool: pool });
 });
 
-// === ПРОДАЖА ПРЕДМЕТА ===
+// ==========================================
+// ПРОДАЖА (ЗАЩИЩЕННАЯ)
+// ==========================================
 app.post('/api/inventory/sell', async (req, res) => {
     const { login, uid } = req.body;
-    if (!login || !uid) return res.status(400).json({ error: 'Некорректные данные' });
-
+    // Удаляем предмет. Сервер сам берет его цену из БД, клиент не может ее подделать.
     const { data: deletedItems, error: delError } = await supabase
         .from('inventory').delete().eq('user_login', login).eq('uid', uid).select();
 
@@ -77,22 +126,108 @@ app.post('/api/inventory/sell', async (req, res) => {
 
     const realPrice = Number(deletedItems[0].price) || 0;
     const { data: user } = await supabase.from('users').select('balance').eq('login', login).single();
-    if (!user) return res.status(404).json({ error: 'Юзер не найден' });
+    
+    const { data: updatedUser } = await supabase.from('users')
+        .update({ balance: user.balance + realPrice }).eq('login', login).select().single();
 
-    const { data: updatedUser, error: balErr } = await supabase
-        .from('users').update({ balance: user.balance + realPrice }).eq('login', login).select().single();
-
-    if (balErr || !updatedUser) return res.status(500).json({ error: 'Ошибка начисления' });
-    res.json({ success: true, balance: updatedUser.balance });
+    res.json({ success: true, balance: updatedUser.balance, soldPrice: realPrice });
 });
 
-// === АДМИНКА: ПОЛУЧЕНИЕ СПИСКА ИГРОКОВ ===
+app.post('/api/inventory/sell-all', async (req, res) => {
+    const { login } = req.body;
+    const { data: inventory } = await supabase.from('inventory').select('*').eq('user_login', login);
+    if (!inventory || inventory.length === 0) return res.status(400).json({ error: 'Инвентарь пуст' });
+
+    const totalPrice = inventory.reduce((sum, item) => sum + (Number(item.price) || 0), 0);
+    
+    await supabase.from('inventory').delete().eq('user_login', login);
+    
+    const { data: user } = await supabase.from('users').select('balance').eq('login', login).single();
+    const { data: updatedUser } = await supabase.from('users')
+        .update({ balance: user.balance + totalPrice }).eq('login', login).select().single();
+
+    res.json({ success: true, balance: updatedUser.balance, earned: totalPrice });
+});
+
+// ==========================================
+// ВЫВОД СРЕДСТВ
+// ==========================================
+app.post('/api/inventory/withdraw', async (req, res) => {
+    const { login, uid } = req.body;
+    const { data: item } = await supabase.from('inventory').select('*').eq('user_login', login).eq('uid', uid).single();
+    if (!item) return res.status(404).json({ error: 'Предмет не найден' });
+
+    // Удаляем из инвентаря
+    await supabase.from('inventory').delete().eq('uid', uid);
+
+    // Создаем заявку
+    await supabase.from('withdraw_requests').insert([{
+        user_login: login, item_id: item.item_id, item_name: item.name, item_price: item.price
+    }]);
+
+    res.json({ success: true });
+});
+
+// ==========================================
+// АПГРЕЙД
+// ==========================================
+app.post('/api/upgrade', async (req, res) => {
+    const { login, myUid, targetItemId } = req.body;
+    
+    // 1. Забираем предмет игрока
+    const { data: myItem } = await supabase.from('inventory').select('*').eq('user_login', login).eq('uid', myUid).single();
+    if (!myItem) return res.status(404).json({ error: 'Ваш предмет не найден' });
+
+    // Защита: нельзя апгрейдить на то, что дешевле
+    const targetPool = CASE_POOLS['elite']; // Берем пул для поиска цели
+    const targetItem = targetPool.find(i => i.id === targetItemId);
+    if (!targetItem) return res.status(400).json({ error: 'Целевой предмет не найден' });
+
+    // Удаляем старый предмет
+    await supabase.from('inventory').delete().eq('uid', myUid);
+
+    // 2. Крутим рулетку (шанс 50%)
+    const isWin = Math.random() < 0.5;
+    
+    if (isWin) {
+        // Выдаем новый
+        const newUid = Date.now() + '_' + Math.random().toString(36).slice(2);
+        await supabase.from('inventory').insert([{ 
+            uid: newUid, user_login: login, item_id: targetItem.id, name: targetItem.name, 
+            icon: targetItem.icon, rarity: targetItem.rarity, price: targetItem.price, status: 'inventory' 
+        }]);
+        res.json({ success: true, win: true, item: targetItem });
+    } else {
+        res.json({ success: true, win: false, item: myItem });
+    }
+});
+
+// ==========================================
+// ПРОМОКОДЫ
+// ==========================================
+app.post('/api/promo/activate', async (req, res) => {
+    const { login, code } = req.body;
+    const { data: promo } = await supabase.from('promocodes').select('*').eq('code', code).single();
+    if (!promo) return res.status(404).json({ error: 'Промокод не найден' });
+    if (promo.uses >= promo.max_uses) return res.status(400).json({ error: 'Лимит исчерпан' });
+
+    const { data: used } = await supabase.from('promo_history').select('*').eq('user_login', login).eq('code', code).single();
+    if (used) return res.status(400).json({ error: 'Вы уже активировали этот код' });
+
+    const { data: user } = await supabase.from('users').select('balance').eq('login', login).single();
+    await supabase.from('users').update({ balance: user.balance + promo.stars }).eq('login', login);
+    await supabase.from('promo_history').insert([{ user_login: login, code: code }]);
+    await supabase.from('promocodes').update({ uses: promo.uses + 1 }).eq('code', code);
+
+    res.json({ success: true, stars: promo.stars });
+});
+
+// ==========================================
+// АДМИНКА
+// ==========================================
 app.get('/api/admin/players', async (req, res) => {
-    const { data: users, error } = await supabase.from('users').select('login, balance, is_admin, is_super_admin');
-    if (error) return res.status(500).json({ error: error.message });
-    
+    const { data: users } = await supabase.from('users').select('login, balance, is_admin, is_super_admin');
     const { data: inventory } = await supabase.from('inventory').select('user_login');
-    
     const players = users.map(u => {
         const invCount = inventory ? inventory.filter(i => i.user_login === u.login).length : 0;
         return { ...u, nft_count: invCount };
@@ -100,88 +235,52 @@ app.get('/api/admin/players', async (req, res) => {
     res.json(players);
 });
 
-// === АДМИНКА: ЗВЕЗДЫ ===
+app.get('/api/admin/withdraws', async (req, res) => {
+    const { data } = await supabase.from('withdraw_requests').select('*').eq('status', 'pending');
+    res.json(data || []);
+});
+
+app.post('/api/admin/withdraws/accept', async (req, res) => {
+    const { id } = req.body;
+    const { data: reqItem } = await supabase.from('withdraw_requests').select('*').eq('id', id).single();
+    if (!reqItem) return res.status(404).json({ error: 'Заявка не найдена' });
+
+    // Начисляем игроку деньги
+    const { data: user } = await supabase.from('users').select('balance').eq('login', reqItem.user_login).single();
+    await supabase.from('users').update({ balance: user.balance + reqItem.item_price }).eq('login', reqItem.user_login);
+    await supabase.from('withdraw_requests').delete().eq('id', id);
+
+    res.json({ success: true });
+});
+
 app.post('/api/admin/give-stars', async (req, res) => {
     const { adminLogin, targetLogin, amount } = req.body;
     const { data: admin } = await supabase.from('users').select('is_admin').eq('login', adminLogin).single();
     if (!admin || !admin.is_admin) return res.status(403).json({ error: 'Доступ запрещен' });
-    
     const { data: user } = await supabase.from('users').select('balance').eq('login', targetLogin).single();
-    if (!user) return res.status(404).json({ error: 'Игрок не найден' });
-
-    const { data: updatedUser } = await supabase.from('users')
-        .update({ balance: user.balance + Number(amount) }).eq('login', targetLogin).select().single();
-    res.json({ success: true, balance: updatedUser.balance });
+    await supabase.from('users').update({ balance: user.balance + Number(amount) }).eq('login', targetLogin);
+    res.json({ success: true });
 });
 
 app.post('/api/admin/take-stars', async (req, res) => {
     const { adminLogin, targetLogin, amount } = req.body;
     const { data: admin } = await supabase.from('users').select('is_admin').eq('login', adminLogin).single();
     if (!admin || !admin.is_admin) return res.status(403).json({ error: 'Доступ запрещен' });
-    
     const { data: user } = await supabase.from('users').select('balance').eq('login', targetLogin).single();
-    if (!user) return res.status(404).json({ error: 'Игрок не найден' });
-
     const newBalance = Math.max(0, user.balance - Number(amount));
-    const { data: updatedUser } = await supabase.from('users')
-        .update({ balance: newBalance }).eq('login', targetLogin).select().single();
-    res.json({ success: true, balance: updatedUser.balance });
-});
-
-// === АДМИНКА: NFT ===
-app.post('/api/admin/give-nft', async (req, res) => {
-    const { adminLogin, targetLogin, itemId, name, icon, rarity, price } = req.body;
-    const { data: admin } = await supabase.from('users').select('is_admin').eq('login', adminLogin).single();
-    if (!admin || !admin.is_admin) return res.status(403).json({ error: 'Доступ запрещен' });
-    
-    const uid = Date.now() + '_' + Math.random().toString(36).slice(2);
-    const { error } = await supabase.from('inventory').insert([{
-        uid, user_login: targetLogin, item_id: itemId, name, icon, rarity, price, status: 'inventory'
-    }]);
-    if (error) return res.status(500).json({ error: error.message });
+    await supabase.from('users').update({ balance: newBalance }).eq('login', targetLogin);
     res.json({ success: true });
 });
 
-app.post('/api/admin/take-nft', async (req, res) => {
-    const { adminLogin, targetLogin, uid } = req.body;
-    const { data: admin } = await supabase.from('users').select('is_admin').eq('login', adminLogin).single();
-    if (!admin || !admin.is_admin) return res.status(403).json({ error: 'Доступ запрещен' });
-    
-    const { data: deleted } = await supabase.from('inventory').delete().eq('user_login', targetLogin).eq('uid', uid).select();
-    if (!deleted || deleted.length === 0) return res.status(404).json({ error: 'NFT не найден' });
-    res.json({ success: true });
-});
-
-// === АДМИНКА: ПРОМОКОДЫ ===
 app.post('/api/admin/create-promo', async (req, res) => {
     const { adminLogin, code, stars, limit } = req.body;
     const { data: admin } = await supabase.from('users').select('is_admin').eq('login', adminLogin).single();
     if (!admin || !admin.is_admin) return res.status(403).json({ error: 'Доступ запрещен' });
     
     const { data: existing } = await supabase.from('promocodes').select('*').eq('code', code.toUpperCase()).single();
-    if (existing) return res.status(400).json({ error: 'Такой промокод уже существует' });
+    if (existing) return res.status(400).json({ error: 'Промокод уже существует' });
 
-    const { error } = await supabase.from('promocodes').insert([{ 
-        code: code.toUpperCase(), stars: Number(stars), max_uses: Number(limit), uses: 0 
-    }]);
-    if (error) return res.status(500).json({ error: error.message });
-    res.json({ success: true });
-});
-
-// === АДМИНКА: ПРАВА ===
-app.post('/api/admin/make-admin', async (req, res) => {
-    const { superAdminLogin, targetLogin } = req.body;
-    const { data: superAdmin } = await supabase.from('users').select('is_super_admin').eq('login', superAdminLogin).single();
-    if (!superAdmin || !superAdmin.is_super_admin) return res.status(403).json({ error: 'Только главный админ может назначать!' });
-    await supabase.from('users').update({ is_admin: true }).eq('login', targetLogin);
-    res.json({ success: true });
-});
-
-app.post('/api/admin/remove-admin', async (req, res) => {
-    const { superAdminLogin, targetLogin } = req.body;
-    const { data: superAdmin } = await supabase.from('users').select('is_super_admin').eq('login', superAdminLogin).single();
-    if (!superAdmin || !superAdmin.is_super_admin) return res.status(403).json({ error: 'Только главный админ может снимать!' });
-    await supabase.from('users').update({ is_admin: false }).eq('login', targetLogin);
+    await supabase.from('promocodes').insert([{ code: code.toUpperCase(), stars: Number(stars), max_uses: Number(limit), uses: 0 }]);
     res.json({ success: true });
 });
 
