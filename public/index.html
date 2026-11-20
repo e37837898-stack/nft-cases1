@@ -786,6 +786,38 @@ document.addEventListener('DOMContentLoaded', function() {
   var saved = localStorage.getItem('saved_user');
   if (saved) { currentUser = saved; enterGame(); }
 });
+</script><script>
+window.addEventListener('load', function() {
+  setTimeout(async function() {
+    try {
+      var supaRes = await fetch('https://jmbnfxlnrdapcblipcqx.supabase.co/rest/v1/cases?select=*', { 
+        headers: { 
+          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImptYm5meGxucmRhcGNibGlwY3F4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUxODQ5OTgsImV4cCI6MjExMDc2MDk5OH0.HBvYC5M_HKqIfGuZ7-8Vuqwd3oH4BcrsTpMbaROaJTs', 
+          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImptYm5meGxucmRhcGNibGlwY3F4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUxODQ5OTgsImV4cCI6MjExMDc2MDk5OH0.HBvYC5M_HKqIfGuZ7-8Vuqwd3oH4BcrsTpMbaROaJTs' 
+        } 
+      });
+      
+      if (supaRes.ok) {
+        var data = await supaRes.json();
+        var casesContainer = document.getElementById('cases');
+        if (casesContainer && data.length > 0) {
+          casesContainer.innerHTML = '';
+          data.forEach(function(cs) {
+            var d = document.createElement('div'); 
+            d.className = 'case';
+            d.innerHTML = '<div class="icon">' + cs.icon + '</div><div class="name">' + cs.name + '</div><div class="price">' + cs.price + ' 🌟</div>';
+            d.onclick = function() { 
+              document.getElementById('prevCaseName').textContent = cs.icon + ' ' + cs.name; 
+              document.getElementById('openCaseBtn').onclick = function() { startOpening(cs); }; 
+              document.getElementById('previewModal').classList.add('show'); 
+            };
+            casesContainer.appendChild(d);
+          });
+        }
+      }
+    } catch(e) {}
+  }, 2000); // Ждем 2 секунды, чтобы сайт точно загрузился
+});
 </script>
 </body>
 </html>
